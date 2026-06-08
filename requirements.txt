@@ -1,0 +1,23 @@
+# Core
+numpy
+pandas
+scipy
+matplotlib
+seaborn
+tqdm
+
+# Geospatial
+geopandas
+shapely
+alphashape
+
+# ML
+scikit-learn
+
+# Spatial statistics
+libpysal
+esda
+pointpats
+
+# Performance
+joblib
