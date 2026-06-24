@@ -420,8 +420,11 @@ ratio. Figure~\ref{fig:scatters} presents key pairwise scatter plots.
 \begin{figure}[htb]
   \centering
   \includegraphics[width=\linewidth]{fig2_histograms.png}
-  \caption{Distributions of key cluster metrics across all 14,582 clusters.
-           All metrics exhibit right-skewed or moderately skewed distributions.}
+  \caption{Distributions of key cluster metrics across all 14,582 clusters, coloured by metric
+           family (blue: size/extent; orange: shape/form; green: internal structure). Panels
+           (a)--(c) span two to three orders of magnitude and use a logarithmic x-axis with
+           log-spaced bins; on this scale area and perimeter are approximately lognormal. The
+           remaining panels use linear axes. Dashed lines mark per-metric medians.}
   \label{fig:histograms}
 \end{figure}
 
@@ -707,9 +710,10 @@ driven by correlated shape dimensions rather than landscape connectivity.
 \begin{figure}[htb]
   \centering
   \includegraphics[width=\linewidth]{fig_shap_heldout.png}
-  \caption{SHAP beeswarm plot for the held-out Random Forest (E10). Compactness
-           is the dominant predictor; reach\_200m (shape-independent connectivity)
-           ranks last.}
+  \caption{Mean $|$SHAP$|$ feature importance for the held-out Random Forest (E10).
+           Compactness dominates; reach\_200m (the only shape-orthogonal feature,
+           highlighted) ranks last---so the high AUC reflects geometric redundancy among
+           shape descriptors rather than independent signal.}
   \label{fig:shap}
 \end{figure}
 
