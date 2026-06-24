@@ -1,0 +1,37 @@
+% ── Author comment macros ────────────────────────────────────────────────────
+\newcommand{\red}[1]{{\color{red}#1}}
+\newcommand{\todo}[1]{{\color{red}#1}}
+\newcommand{\TODO}[1]{\textbf{\color{red}[TODO: #1]}}
+\newcommand{\mypar}[1]{\noindent\textbf{#1}}
+
+\newcommand{\anis}[1]{{\color{magenta}{[AR] #1}}}
+\newcommand{\einari}[1]{{\color{teal}{[EH] #1}}}
+\newcommand{\mete}[1]{{\color{orange}{[MA] #1}}}
+\newcommand{\samuli}[1]{{\color{blue}{[SJ] #1}}}
+
+% ── Layout & typography ───────────────────────────────────────────────────────
+\usepackage[letterpaper, top=0.75in, bottom=0.75in, left=0.75in, right=0.75in, columnsep=0.25in]{geometry}
+\usepackage[protrusion=true,expansion=false]{microtype}
+
+% ── Author affiliations ───────────────────────────────────────────────────────
+\usepackage{authblk}
+\usepackage{cuted}
+
+% ── Tables ───────────────────────────────────────────────────────────────────
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{adjustbox}
+
+% ── Figures ──────────────────────────────────────────────────────────────────
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+
+% ── References ───────────────────────────────────────────────────────────────
+\usepackage{natbib}
+\setcitestyle{numbers,square}
+
+% ── Colours & links ──────────────────────────────────────────────────────────
+\usepackage[table]{xcolor}
+\usepackage[colorlinks=true, linkcolor=blue, urlcolor=cyan, citecolor=green]{hyperref}

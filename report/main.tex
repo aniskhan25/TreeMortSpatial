@@ -1,0 +1,877 @@
+\documentclass[twocolumn]{article}
+
+\input{preamble}
+
+\graphicspath{{../figures/}}
+
+\title{\textbf{A Morphological-Gradient Characterisation of Dead-Tree Clusters\\
+       in Southeastern Finland's Boreal Forests}}
+
+\author[1]{\textbf{Anis Ur Rahman}}
+\author[2,3]{\textbf{Samuli Junttila}}
+\affil[1]{CSC -- IT Center for Science Ltd., Espoo, Finland}
+\affil[2]{University of Eastern Finland, Joensuu, Finland}
+\affil[3]{University of Helsinki, Helsinki, Finland}
+\affil[ ]{\texttt{anis.rahman@csc.fi}}
+
+\date{}
+
+\begin{document}
+
+\twocolumn[
+  \begin{center}
+    \maketitle
+    \begin{abstract}
+    Finland's boreal forests are experiencing a significant and documented increase in
+    non-harvest tree mortality \citep{junttila2024significant}. Characterising the spatial
+    morphology of mortality clusters is a prerequisite for hypothesising the disturbance
+    processes that generate them. We present a regional-scale analysis of 698,223 dead-tree
+    locations identified from aerial imagery in southeastern Finland in 2023. Using DBSCAN
+    (eps\,=\,20\,m, min\_samples\,=\,3) we derived 14,582 quality-filtered clusters and characterised
+    each with a suite of spatial metrics including the Donnelly-corrected Clark--Evans index,
+    fractal dimension, compactness, aspect ratio, alpha compactness, core-to-edge ratio, and
+    within-cluster nearest-neighbour distance. K-means clustering on three morphological features
+    ($k=2$; silhouette\,=\,0.401) recovers a dominant \emph{compactness--elongation gradient},
+    which we summarise---as an interpretive simplification rather than a discovered boundary---by
+    two endpoint classes: an \textit{elongated/dispersed} type (23.5\% of clusters) and a
+    \textit{compact/aggregated} type (76.5\%). This structure exceeds a covariance-preserving
+    null distribution (single multivariate Gaussian matched to the observed feature covariance;
+    $p=0.001$), confirming it is not an artefact of correlated marginals; however, mixture-model
+    selection (BIC) favours more than two components and the primary morphological axis is
+    unimodal, indicating a continuum rather than a clean dichotomy. A held-out Random Forest
+    with spatial block cross-validation reproduces the partition (AUC\,=\,0.976\,$\pm$\,0.002),
+    but we show this reflects geometric redundancy among shape features rather than independent
+    corroboration: the only shape-orthogonal feature (landscape connectivity) adds no
+    discriminative information. Four stability gates, run by re-clustering from raw, show that the
+    \emph{discrete} two-class reading is not robust---the split is not invariant to the clustering
+    radius, its prevalence is an artefact of the aspect-ratio filter, it carries no directional
+    signal beyond hull shape, and it is partly entangled with detector behaviour---whereas the
+    underlying compactness--elongation \emph{gradient} is stable. We therefore report the gradient,
+    not a typology, and deliberately avoid disturbance-agent labels: associations with wind, bark
+    beetle, or other agents are not supported by these data, which lack the species, dating, and
+    ground-truth layers required for attribution.
+    \end{abstract}
+    \vspace{0.3in}
+  \end{center}
+]
+
+\textbf{Keywords:} boreal forest mortality; spatial clustering; DBSCAN; Clark--Evans index;
+morphological gradient; cluster shape metrics; clustering-scale sensitivity; Finland
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Introduction}
+\label{sec:intro}
+% ─────────────────────────────────────────────────────────────────────────────
+
+Boreal forests store roughly 30\% of terrestrial carbon and support exceptional
+biodiversity, yet they are undergoing accelerating disturbance as climate change intensifies
+drought, windstorms, and pest outbreaks \citep{bradshaw2015global, allen2010global}.
+In Finland, non-harvest tree mortality has increased substantially in recent years
+\citep{junttila2024significant}, a trajectory that demands systematic monitoring. Understanding which
+ecological processes drive this mortality---and where they concentrate across the
+landscape---is a prerequisite for adaptive management and carbon-flux modelling.
+
+The spatial arrangement of dead trees encodes information about the process that killed them.
+Bark-beetle outbreaks typically generate dense, spatially contagious patches as infestation
+spreads from tree to tree \citep{raffa2008cross, hlasny2021bark}. Wind damage, by contrast,
+tends to produce elongated, directionally oriented swaths aligned with storm tracks
+\citep{gardiner2013wind, gregow2011combined}. Drought-induced mortality can produce more
+scattered, diffuse patterns tied to soil-water gradients \citep{mcdowell2008mechanisms}.
+These morphological \textit{fingerprints} are in principle recoverable from point-cloud data
+even when individual tree species and cause-of-death records are unavailable.
+
+High-resolution aerial imagery now enables the detection and georeferencing of individual
+dead trees over large areas. The 2023 survey of southeastern Finland used here produced 698,223
+dead-tree locations in ETRS89/TM35FIN (EPSG:3067) coordinates---a dataset large enough to
+support robust statistical characterisation of cluster morphology at scales ranging from the
+individual stand to the regional landscape.
+
+This paper makes three methodological contributions:
+\begin{enumerate}
+  \item \textbf{A reproducible large-scale pipeline with the Donnelly-corrected Clark--Evans index.}
+        We apply DBSCAN to the full 698,223-point dataset and compute the Donnelly (1978)
+        edge-corrected Clark--Evans statistic for each cluster, enabling unbiased comparison
+        of internal point dispersion across clusters of varying size and shape.
+  \item \textbf{A morphological compactness--elongation gradient, tested for discreteness.}
+        K-means clustering on fractal dimension, Clark--Evans index, and aspect ratio recovers
+        a dominant one-dimensional gradient. We show this structure exceeds a
+        \emph{covariance-preserving} null (a single multivariate Gaussian matched to the observed
+        feature covariance; $p=0.001$)---a stricter test than column-shuffling, which destroys all
+        inter-feature correlation. We further show, via mixture-model BIC and a unimodal primary
+        axis, that the gradient is \emph{not} a clean two-way dichotomy; the $k=2$ split is offered
+        as an interpretive summary, not a discovered class boundary.
+  \item \textbf{Stability gates that separate a robust gradient from a fragile partition.}
+        Re-clustering from raw, we show the continuous gradient is stable but the \emph{discrete}
+        two-class reading is not: the split is not invariant to the DBSCAN radius, its prevalence is
+        an artefact of the aspect-ratio filter, it carries no directional structure beyond hull
+        shape, and it is partly predictable from detector confidence alone. A held-out Random Forest
+        reproduces the $k=2$ partition (AUC\,=\,0.976) only through geometric redundancy among shape
+        descriptors---the one shape-orthogonal feature (landscape connectivity) adds no signal. We
+        therefore present a morphological gradient, explicitly not a disturbance typology.
+\end{enumerate}
+
+Throughout, we deliberately withhold disturbance-agent labels. Morphological associations with
+wind, bark beetle, or other agents are testable hypotheses, not findings: confirmed attribution
+would require species records, mortality dates linked to known events (the available
+\texttt{alku\_aika} field records flight-strip acquisition time, not mortality date), and
+multi-temporal imagery, none of which are present in the current dataset. We return to specific
+attribution caveats---including the absence of any directional signal in the elongated type---in
+the Discussion.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Related Work}
+\label{sec:related}
+% ─────────────────────────────────────────────────────────────────────────────
+
+\mypar{European forest disturbance ecology and mapping.}
+Europe's forests have been subject to intensifying disturbance regimes over recent decades,
+driven by the interaction of climate change with biotic and abiotic agents
+\citep{seidl2011unraveling, seidl2017forest}. \citet{senf2021mapping} produced the first
+continent-wide map of forest disturbance regimes using satellite time series, revealing
+strong latitudinal gradients in the relative importance of wind, bark beetles, and fire.
+\citet{allen2010global} documented globally the accelerating role of drought and heat as
+pre-disposing stressors that increase forest vulnerability to secondary agents. These
+landscape-scale perspectives highlight the need for methods that can characterise disturbance
+not just by area affected, but by the spatial structure of affected patches.
+
+\mypar{Bark beetle ecology and spatial signatures.}
+The Eurasian spruce bark beetle (\textit{Ips typographus}) is the dominant biotic disturbance
+agent in boreal and subalpine Europe \citep{hlasny2021bark}. \citet{raffa2008cross} showed
+that bark-beetle eruptions are governed by cross-scale feedbacks: fine-scale tree-to-tree
+contagion at the stand level, mediated by pheromone plumes and resource depletion, scales up
+to landscape-level epidemics when predisposing conditions (drought, windthrow) are met.
+\citet{jonsson2012epidemics} analysed epidemic dynamics of \textit{Ips typographus} in
+Sweden, identifying that outbreaks initiated in windthrown timber and then spread as
+self-reinforcing patch growth. \citet{kautz2011simulating} demonstrated that high-resolution
+empirical host-tree distributions can be used to simulate outbreak spread, predicting the
+compact, dense patch morphology that characterises beetle kills. \citet{wichmann2001spread}
+documented how storm-felled timber from the 1999 Danish windstorm acted as a beetle
+breeding reservoir, amplifying subsequent outbreaks and leaving spatially contagious kill
+patches.
+
+\mypar{Wind damage in Fennoscandia.}
+Wind is the leading abiotic disturbance agent in northern European forests
+\citep{schelhaas2003natural}. \citet{gardiner2013wind} reviewed how silvicultural history,
+stand structure, and edge exposure interact to determine windstorm susceptibility, noting that
+clearcut edges and monoculture Norway spruce stands are particularly vulnerable.
+\citet{gregow2011combined} specifically modelled combined wind and snow-loading risks in
+Finland under current and projected future climate, finding that snow-induced stem damage
+concentrated in central and eastern Finland may increase with warming winters. The elongated,
+directional morphology of wind-felled areas has been noted in several Fennoscandian studies
+as a diagnostic feature distinguishing wind damage from beetle-induced mortality.
+
+\mypar{Spatial statistics methods.}
+The Clark--Evans statistic \citep{clarkevans1954} remains the canonical index of point
+dispersion within bounded study regions. \citet{donnelly1978} derived an analytical edge
+correction that removes the downward bias introduced by boundary effects in finite study
+areas, making the corrected statistic suitable for small clusters with irregular convex-hull
+boundaries. \citet{anselin1995local} introduced Local Indicators of Spatial Association
+(LISA), enabling the identification of statistically significant spatial clusters and outliers
+at multiple scales. \citet{wiegand2014handbook} provide a comprehensive treatment of
+spatial point-pattern analysis methods for ecological applications, including the mark
+correlation function, Ripley's $K$, and related second-order statistics that complement
+the first-order metrics used here.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Methods}
+\label{sec:methods}
+% ─────────────────────────────────────────────────────────────────────────────
+
+\subsection{Dataset}
+\label{sec:data}
+
+The dataset comprises 698,223 dead-tree locations predicted from a deep-learning model
+applied to high-resolution aerial imagery acquired in 2023 over southeastern Finland
+\citep{junttila2024significant}. Coordinates are provided in ETRS89/TM35FIN (EPSG:3067), a conformal transverse
+Mercator projection with metric units, appropriate for distance-based spatial analyses.
+The dataset covers a regional footprint, not the entire country; reported cluster
+prevalences and densities are therefore regional and should not be read as national statistics.
+
+\subsection{Clustering}
+\label{sec:clustering}
+
+Density-based spatial clustering was performed using DBSCAN \citep{ester1996density} with
+neighbourhood radius eps\,=\,20\,m and minimum neighbourhood size min\_samples\,=\,3.
+The eps\,=\,20\,m threshold was chosen to capture within-stand tree-to-tree spread typical
+of both bark-beetle and wind disturbance, while separating clusters arising from distinct
+events. The 43,539 raw clusters were post-filtered to retain only those satisfying:
+\begin{itemize}
+  \item $n \geq 5$ trees (excludes trivially small groups),
+  \item area $\geq 100$\,m$^2$ (minimum ecologically meaningful patch size),
+  \item aspect ratio $\leq 10$ (removes linear artefacts such as road corridors).
+\end{itemize}
+This yielded 14,582 clusters for analysis.
+
+\subsection{Spatial Metrics}
+\label{sec:metrics}
+
+Each cluster was characterised by the following spatial metrics.
+
+\mypar{Within-cluster nearest-neighbour distance (NND).}
+For a cluster containing $n$ points, the NND for point $i$ is
+\begin{equation}
+  d_i = \min_{j \neq i} \| \mathbf{p}_i - \mathbf{p}_j \|,
+\end{equation}
+and the cluster-level summary statistics are $\overline{\mathrm{NND}} = n^{-1}\sum_i d_i$
+and $\sigma_{\mathrm{NND}} = \sqrt{n^{-1}\sum_i (d_i - \overline{\mathrm{NND}})^2}$.
+
+\mypar{Clark--Evans index with Donnelly edge correction.}
+The Clark--Evans index compares the observed mean NND to its expectation under complete
+spatial randomness \citep{clarkevans1954}:
+\begin{equation}
+  R = \frac{\overline{\mathrm{NND}}}{E[\bar{r}]},
+\end{equation}
+where $R < 1$ indicates clustering and $R > 1$ indicates dispersion.
+For small, bounded clusters the uncorrected expectation $E[\bar{r}] = 0.5\sqrt{A/n}$
+is negatively biased by boundary effects. Following \citet{donnelly1978}, we use the
+corrected expectation
+\begin{equation}
+  E[\bar{r}] = 0.5\sqrt{\frac{A}{n}}
+              + \left(0.0514 + \frac{0.041}{\sqrt{n}}\right)\frac{P}{n},
+  \label{eq:donnelly}
+\end{equation}
+where $A$ is the convex-hull area of the cluster and $P$ is its perimeter.
+
+\mypar{Fractal dimension.}
+Boundary complexity is quantified by the box-counting fractal dimension:
+\begin{equation}
+  D = -\lim_{\epsilon \to 0}
+      \frac{\log N(\epsilon)}{\log \epsilon},
+\end{equation}
+where $N(\epsilon)$ is the number of boxes of side length $\epsilon$ that intersect the
+cluster's convex hull. In practice $D$ is estimated as the slope of
+$\log N(\epsilon)$ versus $\log(1/\epsilon)$ over a range of scales expressed as fractions of
+the hull's bounding-box diagonal. Because the metric is computed on the convex hull rather than
+the raw point set, it measures the area-filling complexity of the hull boundary; for the small
+clusters that dominate the dataset (median eight points) it is correspondingly coarse, and we
+treat it as a descriptive shape index rather than a true fractal estimate.
+
+\mypar{Compactness (form factor).}
+\begin{equation}
+  C = \frac{4\pi A}{P^2},
+\end{equation}
+where $A$ and $P$ are the convex-hull area and perimeter. $C = 1$ for a circle and
+decreases as the shape becomes more elongated or irregular.
+
+\mypar{Aspect ratio.}
+The aspect ratio is the ratio of the major to minor axis of the minimum-area bounding
+rectangle:
+\begin{equation}
+  \mathrm{AR} = \frac{\ell_{\max}}{\ell_{\min}}.
+\end{equation}
+
+\mypar{Alpha compactness.}
+\begin{equation}
+  \mathrm{AC} = \frac{\mathrm{area}(\mathcal{A}_\alpha)}{\mathrm{area}(\mathcal{H})},
+\end{equation}
+where $\mathcal{A}_\alpha$ is the alpha shape of the point set and $\mathcal{H}$ is its
+convex hull. Values near 1 indicate dense, convex clusters; lower values indicate
+concave or elongated clusters with interior voids.
+
+\mypar{Core-to-edge ratio.}
+The ratio of the convex hull's interior area to its total area, where the interior is the hull
+eroded inward by a fixed 1\,m buffer: $\mathrm{area}(\mathcal{H} \ominus 1\,\mathrm{m})/\mathrm{area}(\mathcal{H})$.
+Because the erosion width is fixed while clusters vary in size, this ratio is partly a proxy for
+absolute cluster size (small clusters lose proportionally more area), which should be borne in
+mind when interpreting it.
+
+\mypar{Orientation.}
+PCA is applied to the $xy$ coordinates of cluster points; the orientation angle is
+\begin{equation}
+  \theta = \arctan\!\left(\frac{v_y}{v_x}\right),
+\end{equation}
+where $\mathbf{v} = (v_x, v_y)$ is the first principal eigenvector. $\theta$ is folded
+into $[0^\circ, 180^\circ)$ for use as axial data in orientation analysis.
+
+\subsection{Morphological Gradient and Candidate Partition}
+\label{sec:typology}
+
+K-means clustering was applied to the standardised feature vector
+(fractal\_dim, clark\_evans, aspect\_ratio) using $k \in \{2, \ldots, 7\}$.
+The optimal $k$ was selected by jointly evaluating the silhouette coefficient,
+Calinski--Harabasz (CH) score, and Davies--Bouldin (DB) index. At $k=2$ these were
+silhouette\,=\,0.401, CH\,=\,8767, DB\,=\,1.073---the best combined performance
+across the tested range.
+
+To assess whether the observed silhouette score reflects genuine structure rather than the
+covariance of correlated marginals, we compared it against a \emph{covariance-preserving} null:
+999 surrogate datasets were drawn from a single multivariate Gaussian whose mean and full
+covariance matrix match the standardised feature matrix, and $k=2$ K-means was refitted to each.
+This is a stricter null than independent column-shuffling (which destroys all inter-feature
+correlation and is therefore beaten by any correlated data); it asks specifically whether the
+data are \emph{more clustered than a single elongated Gaussian cloud}. The observed silhouette
+(0.401) exceeded the null mean (0.321) and 95th percentile (0.324), giving $p = 0.001$.
+
+Because a significant silhouette does not by itself establish that two discrete classes exist,
+we additionally tested for discreteness. Gaussian-mixture model selection by BIC over
+$k \in \{1,\ldots,7\}$ and the modality of the first principal component (which captures 60\%
+of feature variance) jointly indicate that the morphological features form a continuous
+gradient rather than two separated modes (Section~\ref{sec:res-typology}). We therefore treat
+the $k=2$ partition as an interpretive summary of the dominant compactness--elongation axis, not
+as evidence of a natural class boundary.
+
+\subsection{Orientation Analysis}
+\label{sec:orientation}
+
+Cluster orientations $\theta \in [0^\circ, 180^\circ)$ are axial data and must be doubled before
+applying circular statistics \citep{wiegand2014handbook}. The Rayleigh test for uniformity
+was applied to the doubled angles $2\theta \in [0^\circ, 360^\circ)$ using pycircstat.
+The mean resultant length $r = \|\sum \exp(i \cdot 2\theta_j)\| / n$ and its associated
+$p$-value quantify whether orientations depart from a uniform (no preferred direction)
+distribution. Results were stratified by type.
+
+\subsection{Spatial Autocorrelation}
+\label{sec:morans}
+
+Global Moran's $I$ was computed for four cluster-level metrics
+(fractal\_dim, clark\_evans, aspect\_ratio, compactness) at five spatial thresholds
+(200, 500, 1000, 2000, 5000\,m) using a stratified random subsample of $n=2{,}000$ clusters.
+A distance-band contiguity at threshold $\delta$ ($d_{ij} \leq \delta$) was used, with the
+weights row-standardised ($\sum_j w_{ij} = 1$). With 20 simultaneous tests we applied a
+Bonferroni-corrected significance threshold $\alpha^* = 0.05/20 = 0.0025$.
+
+Local Moran's $I$ (LISA; \citealt{anselin1995local}) was computed to identify
+statistically significant spatial clusters (high--high and low--low) and spatial
+outliers in fractal dimension.
+
+\subsection{Landscape Connectivity}
+\label{sec:connectivity}
+
+A proximity graph was constructed by connecting all cluster centroids within 200\,m
+\citep{urban2001landscape}. The reach of a cluster is defined as the number of other
+clusters reachable within the connected component to which it belongs. Betweenness
+centrality was computed to identify bridge clusters whose removal would fragment the
+network. Reach distributions were compared between types using the Mann--Whitney $U$ test.
+
+\subsection{Held-Out Classifier}
+\label{sec:classifier}
+
+To test whether the $k=2$ partition is recoverable in a feature space not used to define it,
+we trained a Random Forest classifier using only features \textit{not} input to K-means:
+compactness, alpha\_compactness, core\_to\_edge\_ratio, nnd\_mean, nnd\_std,
+orientation, and reach\_200m. (We note that \texttt{orientation} is axial data on
+$[0^\circ,180^\circ)$ entered here as a linear feature, so the tree splits cannot exploit its
+circular structure; given its low importance below, this does not affect the conclusions.)
+Spatial block cross-validation (GroupKFold, 5 folds,
+$100 \times 100$\,km grid, 12 blocks, mean 1215 clusters/block) was used to prevent
+spatial leakage. We caution that the blocks are size-imbalanced---the five largest hold roughly
+four-fifths of the clusters---so the tight fold-to-fold AUC range understates true spatial
+variability. SHAP values \citep{lundberg2017unified} were computed to assess feature importance.
+
+\subsection{Stability Gates}
+\label{sec:sensitivity}
+
+To test whether the $k=2$ partition is a genuine structure or an artefact of the pipeline's
+free parameters, we re-ran the entire pipeline from the raw points under four gates.
+
+\mypar{(G1) Scale stability.}
+We re-clustered the raw points at eps $\in \{10,15,20,25,30,40\}$\,m and, at each scale, recomputed
+all shape metrics, re-applied the filters, and re-fitted $k=2$ K-means. A genuine class should be
+eps-invariant in prevalence and in its feature-space centroid; an artefact of detection chaining
+rescales with eps.
+
+\mypar{(G2) Aspect-ratio filter, from raw.}
+The AR\,$\leq 10$ filter is applied to the very axis on which K-means clusters, so it cannot be
+tested on the already-filtered table. We instead recomputed metrics on all clusters at eps\,=\,20\,m
+with \emph{no} AR cap, then applied caps $\in \{5,7,10,15,20,\infty\}$, re-fitting K-means at each and
+tracking type prevalence, the within-Type\,0 AR distribution, and the adjusted Rand index (ARI) of
+membership against the AR\,$\leq 10$ partition.
+
+\mypar{(G3) Directional second-order structure.}
+Hull aspect ratio is a first-order summary and cannot distinguish a linear (wind-swath) point
+arrangement from an elongated but space-filling patch. For each cluster we computed the point-scatter
+linearity $\ell = \lambda_1/(\lambda_1+\lambda_2)$ from the PCA eigenvalues and a pairwise-displacement
+axial resultant, and compared Type\,0 against Type\,1 \emph{within matched hull-AR bins}.
+
+\mypar{(G4) Detection confound.}
+The upstream detector provides a per-detection confidence (\texttt{max\_value}) not otherwise used.
+We tested whether per-cluster detection covariates (mean/SD confidence, $n$, density) predict type
+(5-fold logistic AUC), and whether modest false-negative perturbation (dropping 10--20\% of detections
+per cluster and re-fitting) changes type assignments.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Results}
+\label{sec:results}
+% ─────────────────────────────────────────────────────────────────────────────
+
+\subsection{Cluster Characterisation}
+\label{sec:res-char}
+
+The 14,582 filtered clusters span a broad range of sizes and morphologies
+(Figure~\ref{fig:histograms}). The median cluster contains 8 trees
+(mean\,=\,13.75, SD\,=\,44.03, max\,=\,2{,}965), reflecting a highly right-skewed
+size distribution dominated by small clusters but with a heavy tail of large events.
+Median area is 388\,m$^2$ (mean\,=\,1{,}061\,m$^2$, SD\,=\,5{,}003\,m$^2$).
+Shapes are moderately compact (mean compactness\,=\,0.595, SD\,=\,0.143,
+median\,=\,0.609) and moderately elongated (mean AR\,=\,2.548, SD\,=\,1.357,
+median\,=\,2.211). The Donnelly-corrected Clark--Evans index (mean\,=\,1.766,
+SD\,=\,0.393, median\,=\,1.753) is greater than unity, nominally indicating
+more-regular-than-Poisson spacing. We read this cautiously: at a median of eight points per
+cluster the index is high-variance, and DBSCAN's minimum-density requirement (min\_samples within
+eps) imposes a spacing floor that mechanically inflates apparent regularity, so the value should
+not be over-interpreted as an ecological property of tree placement. Mean within-cluster NND is
+7.79\,m (SD\,=\,2.43\,m), consistent with individual-tree-scale spacing. Fractal dimension
+averages 1.650 (SD\,=\,0.077).
+
+Correlation analysis (Figure~\ref{fig:correlation}) shows strong positive covariation
+among size metrics ($n$, area) and expected trade-offs between compactness and aspect
+ratio. Figure~\ref{fig:scatters} presents key pairwise scatter plots.
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=\linewidth]{fig2_histograms.png}
+  \caption{Distributions of key cluster metrics across all 14,582 clusters.
+           All metrics exhibit right-skewed or moderately skewed distributions.}
+  \label{fig:histograms}
+\end{figure}
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=\linewidth]{fig3_correlation.png}
+  \caption{Correlation matrix for cluster-level spatial metrics.}
+  \label{fig:correlation}
+\end{figure}
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=\linewidth]{fig4_scatters.png}
+  \caption{Pairwise scatter plots of selected spatial metrics, coloured by morphological type.}
+  \label{fig:scatters}
+\end{figure}
+
+The regional spatial distribution of all 14,582 cluster centroids is shown in
+Figure~\ref{fig:spatial_extent}.
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=\linewidth]{fig1_spatial_extent.png}
+  \caption{Map of dead-tree cluster centroids ($n=14{,}582$) across the southeastern Finland
+           study region (EPSG:3067).}
+  \label{fig:spatial_extent}
+\end{figure}
+
+\subsection{Morphological Gradient and Candidate Partition}
+\label{sec:res-typology}
+
+\mypar{K-sweep and selection.}
+Among $k=2,\ldots,7$, $k=2$ gave the best combined validation performance
+(silhouette\,=\,0.401, CH\,=\,8767, DB\,=\,1.073).
+
+\mypar{Significance against a covariance-preserving null.}
+The observed silhouette (0.401) exceeded the mean (0.321) and 95th percentile (0.324) of a
+999-replicate null drawn from a single multivariate Gaussian matched to the observed feature
+covariance, yielding $p = 0.001$ (Figure~\ref{fig:permtest}). Because this null preserves all
+inter-feature correlation, the result indicates that the data are more structured than one
+elongated correlated cloud---a substantially stronger statement than rejecting the
+column-shuffled null, which any correlated dataset trivially beats.
+
+\mypar{Continuum, not dichotomy.}
+Gaussian-mixture BIC decreases monotonically beyond $k=2$ (BIC: $1.163\times10^5$, $1.100\times10^5$,
+$1.095\times10^5$, $1.085\times10^5$, $1.074\times10^5$, $1.073\times10^5$ for $k=1,\ldots,6$),
+so no two-component model is privileged; and the first principal component (60\% of variance) is
+unimodal (Sarle bimodality coefficient 0.486, below the 0.555 uniform threshold). Only 2.3\% of
+clusters lie within 5\% of the $k=2$ decision boundary, but this assignment cleanliness is
+expected when partitioning an elongated unimodal cloud and does not imply two natural modes.
+We therefore interpret the $k=2$ partition as two endpoints of a continuous
+compactness--elongation gradient.
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=\linewidth]{fig_silhouette_permtest.png}
+  \caption{Significance and discreteness of the $k=2$ partition.
+           \textbf{(a)} The observed silhouette (red line, 0.401) exceeds a 999-replicate
+           \emph{covariance-preserving} null (single multivariate Gaussian matched to the feature
+           covariance; mean 0.321, 95th pct 0.324), $p = 0.001$---a far stricter test than
+           column-shuffling. \textbf{(b)} Gaussian-mixture BIC decreases monotonically past $k=2$,
+           so no two-component model is privileged. \textbf{(c)} The first principal component
+           (60\% of variance) is unimodal (Sarle coefficient 0.486). Together: real structure, but
+           a continuous gradient rather than two discrete classes.}
+  \label{fig:permtest}
+\end{figure}
+
+\mypar{Endpoint descriptions.}
+Table~\ref{tab:types} summarises per-endpoint metric means and standard deviations.
+The \textit{elongated/dispersed} endpoint (\textit{Type\,0}; 3,422 clusters, 23.5\%) is
+characterised by high aspect ratio (4.291$\pm$1.490), low compactness (0.410$\pm$0.093),
+and elevated Clark--Evans index (2.044$\pm$0.360). The \textit{compact/aggregated} endpoint
+(\textit{Type\,1}; 11,160 clusters, 76.5\%) shows rounder, denser
+shapes (compactness\,=\,0.651$\pm$0.101, AR\,=\,2.014$\pm$0.714) with higher fractal
+dimension (1.679$\pm$0.051) and larger mean area (1,269\,m$^2$ vs.\ 382\,m$^2$). We use
+\textit{Type\,0}/\textit{Type\,1} purely as labels for the two ends of the gradient and attach
+no disturbance-agent meaning to them here.
+
+\begin{table*}[htb]
+  \centering
+  \caption{Per-type means $\pm$ SD for all morphological features.
+           Clustering was performed on fractal\_dim, clark\_evans, and aspect\_ratio only;
+           the remaining features are descriptive.}
+  \label{tab:types}
+  \small
+  \begin{tabular}{lcc}
+    \toprule
+    \textbf{Feature} & \textbf{Type\,0 (elongated/dispersed)} ($n=3{,}422$)
+                     & \textbf{Type\,1 (compact/aggregated)} ($n=11{,}160$) \\
+    \midrule
+    Fractal dimension         & $1.555 \pm 0.069$ & $1.679 \pm 0.051$ \\
+    Clark--Evans index        & $2.044 \pm 0.360$ & $1.681 \pm 0.363$ \\
+    Aspect ratio              & $4.291 \pm 1.490$ & $2.014 \pm 0.714$ \\
+    Compactness               & $0.410 \pm 0.093$ & $0.651 \pm 0.101$ \\
+    Alpha compactness         & $0.713 \pm 0.250$ & $0.855 \pm 0.161$ \\
+    Core-to-edge ratio        & $0.662 \pm 0.104$ & $0.799 \pm 0.089$ \\
+    Mean NND (m)              & $8.555 \pm 2.489$ & $7.561 \pm 2.360$ \\
+    Mean area (m$^2$)         & 382               & 1{,}269           \\
+    Mean $n$ (trees)          & 7.7               & 15.6              \\
+    \bottomrule
+  \end{tabular}
+\end{table*}
+
+The spatial distribution of the two gradient endpoints within the study region is shown in
+Figure~\ref{fig:typology_map}; the inset locates the region within Finland.
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=\linewidth]{fig6_typology_map.png}
+  \caption{Spatial distribution of the two gradient endpoints within the study region.
+           Blue circles: Type\,1 (compact/aggregated);
+           brown triangles: Type\,0 (elongated/dispersed). Inset: all 14,582 clusters
+           in the survey area for geographic context.}
+  \label{fig:typology_map}
+\end{figure}
+
+\mypar{Size-frequency distributions (E1).}
+For both endpoints a lognormal cluster-size distribution is preferred over a power law
+(likelihood-ratio test $p < 0.001$; \citealt{clauset2009power}). We therefore do not interpret
+the nominal power-law exponents as process signatures---once the power law is rejected, its
+exponent is not a meaningful mechanistic parameter. Descriptively, Type\,1 has the heavier upper
+tail (Figure~\ref{fig:sizedist}), but this follows directly from its larger mean cluster area
+(1,269 vs.\ 382\,m$^2$) and does not by itself imply a contagious generating process.
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=\linewidth]{fig_size_dist.png}
+  \caption{Complementary cumulative distribution functions (CCDF) of cluster size ($n$)
+           per endpoint. Both are better described by a lognormal than a power law; Type\,1
+           has the heavier upper tail, consistent with its larger mean cluster area.}
+  \label{fig:sizedist}
+\end{figure}
+
+\mypar{Position in shape space (E5).}
+Figure~\ref{fig:shapespace} plots each cluster in (compactness, aspect\_ratio) space against a
+set of \emph{illustrative} morphological regions loosely informed by qualitative descriptions of
+wind, beetle, and fire patches in the literature \citep{seidl2011unraveling, jonsson2012epidemics,
+gardiner2013wind}. We stress that these regions are author-defined bounding boxes, not published
+(compactness, aspect\_ratio) envelopes---the cited studies do not report cluster-level shape
+coordinates by agent---and that any apparent separation is partly circular: aspect ratio is a
+clustering input and compactness is geometrically coupled to it. The descriptive overlaps
+(Table~\ref{tab:shapespace}) therefore restate the gradient definition rather than provide
+independent ecological validation, and we report them only to locate the two endpoints in a
+shape space comparable to qualitative literature accounts. Establishing genuine agent
+correspondence requires overlay with an independent disturbance-agent map (see Discussion).
+
+\begin{table}[htb]
+  \centering
+  \caption{Position of each endpoint relative to illustrative, author-defined shape regions
+           (E5). These regions are not published reference envelopes and the overlaps are
+           partly circular (see text); they are descriptive, not validating.}
+  \label{tab:shapespace}
+  \small
+  \begin{tabular}{lcc}
+    \toprule
+    \textbf{Illustrative region} & \textbf{Type\,0} & \textbf{Type\,1} \\
+    \midrule
+    ``Elongated'' (wind-like)    & 57.0\% & 1.2\%  \\
+    ``Intermediate'' (beetle-like) & 75.0\% & 66.4\% \\
+    ``Compact'' (fire-like)      & 32.3\% & 94.7\% \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=\linewidth]{fig_shape_space.png}
+  \caption{Shape-space scatter (compactness vs.\ aspect ratio) per endpoint, with
+           \emph{illustrative, author-defined} shape regions overlaid. The separation is
+           partly circular because aspect ratio defines the gradient and compactness is coupled
+           to it; the regions are not published per-agent envelopes.}
+  \label{fig:shapespace}
+\end{figure}
+
+\subsection{Orientation Analysis}
+\label{sec:res-orientation}
+
+Rayleigh tests on doubled orientation angles show no meaningful preferred direction in
+either type (Figure~\ref{fig:orientation}). For Type\,0: $r = 0.009$,
+mean direction\,=\,156.4°, $p = 0.747$. For Type\,1: $r = 0.040$,
+mean direction\,=\,147.0°, $p = 2.0 \times 10^{-8}$. Although the Type\,1 result is
+statistically significant given the large sample ($n = 11{,}160$), the mean resultant
+length $r \approx 0.04$ is ecologically trivial: orientations are effectively
+uniformly distributed in both types. The null orientation finding for Type\,0 is
+discussed in Section~\ref{sec:disc-orientation}.
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=\linewidth]{fig_orientation_rose.png}
+  \caption{Polar rose plots of cluster orientation per type (axial data, 10° bins).
+           Neither type shows a meaningful preferred direction ($r < 0.05$ in both cases).}
+  \label{fig:orientation}
+\end{figure}
+
+\subsection{Spatial Autocorrelation}
+\label{sec:res-morans}
+
+Figure~\ref{fig:morans} presents the multi-scale Moran's $I$ heatmap (E6) for four
+metrics at five distance thresholds. Significant spatial autocorrelation (Bonferroni
+$\alpha^* = 0.0025$) is present across most metric--threshold combinations, with
+values generally declining as the threshold increases from 200\,m to 5000\,m.
+The scale-dependence of autocorrelation implies that morphological similarity between
+clusters operates primarily at stand to landscape scales ($< 2$\,km) rather than at
+the regional scale. LISA maps (Figure~\ref{fig:lisa}) illustrate the spatial structure
+of fractal-dimension autocorrelation within the study-region display window; labels are computed
+on the full survey dataset to preserve correct neighbourhood weights.
+
+\begin{figure*}[htb]
+  \centering
+  \includegraphics[width=\linewidth]{fig_moran_heatmap.png}
+  \caption{Moran's $I$ heatmap (E6): four metrics (rows) $\times$ five distance
+           thresholds (columns). Bonferroni-corrected significance threshold
+           $\alpha^* = 0.0025$. Significant cells are marked with an asterisk.
+           Autocorrelation is strongest at the 200--500\,m scale and attenuates at
+           distances $\geq 2$\,km.}
+  \label{fig:morans}
+\end{figure*}
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=\linewidth]{fig8_local_morans.png}
+  \caption{LISA hotspot map for fractal dimension in the study-region display window. Labels
+           computed on the full survey dataset. Red: high--high clusters; blue: low--low
+           clusters. Inset: full-survey cluster distribution for geographic context.}
+  \label{fig:lisa}
+\end{figure}
+
+\subsection{Landscape Connectivity}
+\label{sec:res-connectivity}
+
+At the 200\,m threshold, the proximity graph over all clusters contains 13,351 edges; the largest
+connected component spans only 175 of 14,582 clusters and roughly a third of clusters are
+isolated singletons, so the graph is sparse. Figure~\ref{fig:contagion} shows connectivity
+reach and bridge clusters within the study-region display window (statistics from the full graph).
+Type\,1 clusters are nominally more connected than Type\,0 (median reach\,=\,3 vs.\ 2; mean reach
+11.03 vs.\ 8.98; Mann--Whitney $U = 17{,}752{,}378$, $p < 0.0001$), but this difference is a direct
+consequence of Type\,1's larger area and denser packing---larger, denser clusters are mechanically
+more likely to fall within 200\,m of a neighbour---and the medians differ by a single component.
+We therefore treat reach as a density correlate, not an independent line of evidence, and a
+properly size-matched comparison is left to future work. Because the graph is untimed and
+unweighted, we do not interpret high-betweenness clusters as outbreak corridors or sentinels;
+they are geometric articulation points whose ecological relevance is untested.
+
+\begin{figure}[htb]
+  \centering
+  \begin{subfigure}{\linewidth}
+    \includegraphics[width=\linewidth]{fig_contagion_a.png}
+    \caption{Connectivity reach at 200\,m (component size). Inset: full-survey
+             cluster distribution.}
+    \label{fig:contagion_a}
+  \end{subfigure}
+  \begin{subfigure}{\linewidth}
+    \includegraphics[width=\linewidth]{fig_contagion_b.png}
+    \caption{Top 1\% betweenness clusters (red) as geometric articulation points
+             (no temporal validation). All metrics computed on the full graph.}
+    \label{fig:contagion_b}
+  \end{subfigure}
+  \caption{Landscape connectivity in the study-region display window.}
+  \label{fig:contagion}
+\end{figure}
+
+\subsection{Feature-Space Coherence Check}
+\label{sec:res-validation}
+
+The held-out Random Forest classifier achieved AUC\,=\,0.976\,$\pm$\,0.002
+(range 0.973--0.978 across 5 spatial folds; Figure~\ref{fig:shap}). We caution against reading
+this as independent validation. The ``held-out'' features are geometrically coupled to the
+K-means inputs---compactness, for example, correlates with aspect ratio at $r = -0.865$ and alone
+attains a univariate AUC of about 0.96---so a high AUC is largely a restatement of the K-means
+boundary through correlated geometry rather than corroboration from new information. We report it
+only as an internal coherence check; on an imbalanced 76.5/23.5 partition, ROC-AUC should in
+future be complemented by precision--recall AUC and per-class recall.
+
+SHAP mean absolute values ranked features as follows:
+compactness (0.226) $>$ core\_to\_edge\_ratio (0.068) $>$ nnd\_mean (0.037)
+$>$ orientation (0.034) $>$ alpha\_compactness (0.019) $>$ nnd\_std (0.010)
+$>$ reach\_200m (0.005).
+Compactness dominates because it is geometrically correlated with aspect ratio
+(a K-means input). Crucially, reach\_200m---the only feature in this set that is
+independent of cluster shape---ranks last, confirming that high AUC is primarily
+driven by correlated shape dimensions rather than landscape connectivity.
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=\linewidth]{fig_shap_heldout.png}
+  \caption{SHAP beeswarm plot for the held-out Random Forest (E10). Compactness
+           is the dominant predictor; reach\_200m (shape-independent connectivity)
+           ranks last.}
+  \label{fig:shap}
+\end{figure}
+
+\subsection{Stability Gates}
+\label{sec:res-sensitivity}
+
+The four gates jointly indicate that the $k=2$ split is not a discrete typology but a
+convenience cut through a continuous gradient, and that one of its endpoint labels is
+unsupported.
+
+\mypar{(G1) The partition is not scale-stable.}
+Re-clustering from raw across eps $\in \{10,\ldots,40\}$\,m, the Type\,0 fraction slides
+monotonically (28.6\% at 10\,m, 25.8\%, 23.5\% at 20\,m, 24.0\%, 23.4\%, 22.9\% at 40\,m) and the
+Type\,0 centroid drifts continuously rather than holding position (aspect ratio 2.97\,$\to$\,4.29\,$\to$\,4.79;
+compactness 0.544\,$\to$\,0.410\,$\to$\,0.372 across eps 10/20/40\,m). A genuine class would be
+eps-invariant; this rescaling with the clustering radius is the signature of detection chaining, not
+a fixed disturbance class. BIC favours more than two components at every eps.
+
+\mypar{(G2) The headline prevalence is an artefact of the AR cap.}
+Re-clustering from raw at eps\,=\,20\,m with no AR cap (14,644 clusters) and sweeping the cap shows
+the Type\,0 fraction is conditional on where the cap falls: 33.1\% (AR\,$\leq 5$), 27.0\% ($\leq 7$),
+23.5\% ($\leq 10$, the published value), 21.8\% ($\leq 15$), down to 21.3\% (uncapped). The within-Type\,0
+AR distribution is pressed against the cap (maximum 9.94 at AR\,$\leq 10$) and, once released, extends
+as a single smooth tail to AR\,$\approx 30$ with no second mode. Membership ARI against the AR\,$\leq 10$
+partition decays monotonically as the tail is restored (1.00\,$\to$\,0.92\,$\to$\,0.89). Aspect ratio is
+therefore a continuum, and the AR\,$\leq 10$ cap manufactured the clean ``23.5\%'' figure.
+
+\mypar{(G3) No directional signal beyond hull shape.}
+Within matched hull-AR bins, Type\,0 and Type\,1 have statistically indistinguishable point-scatter
+linearity (e.g.\ AR\,$\in(2,2.5]$: 0.829 vs.\ 0.830, $p=0.86$; AR\,$\in(3,4]$: 0.916 vs.\ 0.915,
+$p=0.73$; Type\,1 marginally higher in the (2.5,\,3] bin). Once hull elongation is controlled, the
+elongated endpoint carries no extra line-like (wind-swath) structure. Together with the orientation
+null (Section~\ref{sec:res-orientation}), this empirically removes the basis for a ``wind-thrown''
+interpretation.
+
+\mypar{(G4) A measurable detector confound.}
+Per-cluster detection-confidence covariates predict type at AUC\,=\,0.727 (5-fold), and dropping
+10--20\% of detections per cluster flips the type of 5.9--7.5\% of clusters (ARI 0.76--0.70). The
+typology is thus partly entangled with detector behaviour; cleanly separating the two requires
+stratified detection precision/recall against ground truth, which the present data lack.
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=\linewidth]{fig_dbscan_sensitivity.png}
+  \caption{Stability gates. The Type\,0 fraction is not invariant to DBSCAN eps (G1) and is
+           conditional on the aspect-ratio cap (G2); the elongated endpoint's AR distribution forms a
+           single continuous tail once the cap is released, with no second mode.}
+  \label{fig:sensitivity}
+\end{figure}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Discussion}
+\label{sec:discussion}
+% ─────────────────────────────────────────────────────────────────────────────
+
+\mypar{A morphological gradient, not a disturbance-agent typology.}
+It is tempting to map the two endpoints onto dominant Finnish disturbance agents---the elongated,
+internally dispersed Type\,0 onto wind-felled strips \citep{gardiner2013wind, gregow2011combined},
+and the compact, denser Type\,1 onto radially spreading beetle kill
+\citep{raffa2008cross, jonsson2012epidemics, kautz2011simulating}. We deliberately resist this
+mapping, because the evidence that would license it is either absent or circular. The shape-space
+``reference zones'' are author-defined boxes in a space whose axes (aspect ratio, and the
+compactness coupled to it) \emph{define} the gradient, so their overlap with the endpoints is a
+restatement of the clustering, not external corroboration. Several confounders independently block
+attribution: the dataset carries no species information, so a beetle-killed spruce cannot be
+distinguished from a drought- or pathogen-killed pine, nor a compact patch from fire, snow-load,
+or small salvage/clearcut polygons; the \texttt{alku\_aika} field records flight-strip
+acquisition time, not mortality date, severing any link to specific storms or outbreak years; and
+the single 2023 snapshot cannot separate a recent event from a years-old palimpsest of snags.
+A compact morphology, in particular, is the default shape of almost any small mortality patch and
+is therefore the least diagnostic possible signal---making a 76.5\% ``compact'' prevalence
+uninformative about agent identity.
+
+\mypar{Three of our own results point the same way: this is geometry, not agent.}
+\label{sec:disc-orientation}
+The most telling evidence is internal and convergent. (i) \emph{Orientation.} The elongated
+endpoint shows no preferred orientation ($r = 0.009$, $p = 0.747$)---yet directional alignment
+with storm tracks is the single most diagnostic fingerprint of windthrow. An elongated class with
+no net direction is precisely what one would \emph{not} expect from wind, and it is the main
+reason we decline the ``wind-thrown'' label. (ii) \emph{Scale dependence.} The prevalence of the
+elongated endpoint moves with the DBSCAN radius (22.9\% at 40\,m to 28.6\% at 10\,m); a genuine
+ecological class should be eps-stable, whereas a chaining artefact rescales with eps. (iii)
+\emph{Connectivity.} The only shape-orthogonal feature, 200\,m reach, carries essentially no
+discriminative signal (SHAP 0.005, last of seven). Read together---non-directional elongation,
+eps-dependent prevalence, and no independent connectivity signal---the most parsimonious account
+is that the typology summarises a continuum of \emph{detection-and-clustering geometry} (how dead-
+tree detections chain together at a 20\,m radius, with mean within-cluster spacing of only
+7.79\,m), rather than two distinct disturbance processes. The earlier ecological reading of the
+size-frequency tails is correspondingly withdrawn: with the power law rejected in favour of a
+lognormal for both endpoints, the heavier Type\,1 tail is explained by its larger mean area, not
+by contagious spread.
+
+\mypar{Interpretation of the held-out classifier AUC.}
+The AUC\,=\,0.976 shows that the two endpoints occupy largely non-overlapping regions of the
+held-out feature space, but the SHAP decomposition shows why this is not independent validation:
+performance is driven almost entirely by compactness and core-to-edge ratio, both geometrically
+correlated with aspect ratio (a K-means input). The weakest predictor, reach\_200m
+(SHAP\,=\,0.005), is the only feature capturing landscape connectivity independently of cluster
+shape; its near-zero importance means the high AUC restates the K-means boundary through
+correlated geometry rather than confirming it from new information. The honest reading is the
+negative one: on the single axis genuinely independent of shape, the two endpoints are not
+distinguishable.
+
+\mypar{Limitations.}
+Beyond the attribution caveats above, several additional limitations merit note. The upstream
+deep-learning detection model is reported here without validation metrics (precision, recall), and
+gate G4 shows its confidence score alone predicts type at AUC\,=\,0.727---so detection error,
+likely structured by forest type, canopy density, and flight-strip geometry, is partly entangled
+with the morphology we measure. Fully separating the two requires stratified detection
+precision/recall against ground truth, which the present data lack; this is the single most
+important outstanding check, and the Clark--Evans index, computed on a median of eight points per
+cluster, is especially sensitive to it. The study area is regional (southeastern Finland), not
+national, so reported prevalences are not national statistics. Gate G1 confirms that the
+eps\,=\,20\,m clustering scale partly determines the elongation it then measures, and single-year
+data cannot distinguish a mosaic of old mortality from a single recent disturbance.
+
+\mypar{Future work.}
+The decisive next step is external validation that breaks the circularity of a shape-only study.
+Overlaying an independent disturbance-agent map (e.g.\ the attribution layer of
+\citealt{senf2021mapping}, or Metsäkeskus damage records) and a species layer from Finland's
+multi-source national forest inventory would convert the morphological endpoints from an
+unsupervised gradient into a testable, supervised agent classification, and would let us check
+whether the compact endpoint is genuinely beetle-dominated or a mix of fire, drought, snow-load,
+and salvage. Multi-temporal imagery---feasible from the same pipeline for prior years---would add
+the missing dimension: it would date mortality, permit a true wave-front and storm-track
+alignment test for the elongated endpoint, and turn the connectivity graph from a static density
+correlate into a flow model that asks whether this year's morphology predicts next year's
+mortality. The pipeline itself is computationally scalable and, once validated, could support
+comparative analysis across the Nordic countries.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Conclusion}
+\label{sec:conclusion}
+% ─────────────────────────────────────────────────────────────────────────────
+
+We have presented a regional-scale morphological analysis of 14,582 dead-tree clusters
+identified from a 2023 aerial mortality survey in southeastern Finland. Using DBSCAN clustering,
+Donnelly-corrected Clark--Evans statistics, and a suite of complementary shape metrics,
+we show that the morphology of detected mortality clusters is organised by a dominant
+compactness--elongation gradient. This gradient is not a statistical artefact of correlated
+features: the $k=2$ silhouette (0.401) exceeds a covariance-preserving null at $p = 0.001$. The
+\emph{discrete} two-class reading of that gradient, however, does not survive scrutiny. Mixture-model
+selection and the unimodality of the dominant axis already indicate a continuum rather than two
+modes; four stability gates confirm it. Re-clustering from raw, the partition is not invariant to
+the DBSCAN radius (G1), its 23.5\%/76.5\% split is an artefact of the aspect-ratio filter and
+dissolves into a single continuous tail once that filter is released (G2), the elongated class
+carries no directional structure beyond hull shape (G3, consistent with the orientation null), and
+it is partly predictable from detector confidence alone (G4). The held-out Random Forest
+(AUC\,=\,0.976) reproduces the split only through geometric redundancy among shape descriptors---the
+one shape-orthogonal feature, landscape connectivity, adds no signal.
+
+The framework demonstrates that remote-sensing-derived point clouds of tree mortality contain a
+recoverable and reproducible morphological gradient---but that the temptation to discretise it into
+disturbance types must be resisted on the present evidence. The discrete partition is an artefact of
+clustering scale and a filter applied to its own defining axis, with no second-order content and a
+measurable detector confound; the gradient is what is real. Rather than a ready ``first filter'' for
+the field, the pipeline is best positioned as a hypothesis-generating characterisation whose
+ecological meaning must be established by overlay with independent disturbance-agent maps, species
+layers, and multi-temporal imagery---a programme we outline as the natural next step.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\bibliographystyle{unsrtnat}
+\bibliography{sample-base}
+
+\end{document}

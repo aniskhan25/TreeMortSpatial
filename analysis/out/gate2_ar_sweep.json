@@ -1,0 +1,168 @@
+{
+  "5": {
+    "n": 13724,
+    "type0_pct": 33.12,
+    "silhouette": 0.332,
+    "ch": 7298.7,
+    "db": 1.2301,
+    "bic1": 113258.5,
+    "bic2": 110038.8,
+    "bic3": 109873.0,
+    "type0_ar_p50": 3.21,
+    "type0_ar_p95": 4.66,
+    "type0_ar_max": 5.0,
+    "centroids": {
+      "Type0": {
+        "aspect_ratio": 3.2685,
+        "compactness": 0.4862,
+        "fractal_dim": 1.6003,
+        "clark_evans": 1.9626
+      },
+      "Type1": {
+        "aspect_ratio": 1.8352,
+        "compactness": 0.6759,
+        "fractal_dim": 1.6882,
+        "clark_evans": 1.6407
+      }
+    }
+  },
+  "7": {
+    "n": 14364,
+    "type0_pct": 26.98,
+    "silhouette": 0.3739,
+    "ch": 8434.6,
+    "db": 1.1242,
+    "bic1": 116140.0,
+    "bic2": 111338.0,
+    "bic3": 110973.0,
+    "type0_ar_p50": 3.72,
+    "type0_ar_p95": 6.1,
+    "type0_ar_max": 6.99,
+    "centroids": {
+      "Type0": {
+        "aspect_ratio": 3.8588,
+        "compactness": 0.4376,
+        "fractal_dim": 1.5737,
+        "clark_evans": 2.0132
+      },
+      "Type1": {
+        "aspect_ratio": 1.9497,
+        "compactness": 0.6598,
+        "fractal_dim": 1.6824,
+        "clark_evans": 1.6664
+      }
+    }
+  },
+  "10": {
+    "n": 14582,
+    "type0_pct": 23.49,
+    "silhouette": 0.4006,
+    "ch": 8767.5,
+    "db": 1.0737,
+    "bic1": 116251.6,
+    "bic2": 109977.0,
+    "bic3": 109480.7,
+    "type0_ar_p50": 3.98,
+    "type0_ar_p95": 7.3,
+    "type0_ar_max": 9.94,
+    "ARI_vs_cap10": 1.0,
+    "centroids": {
+      "Type0": {
+        "aspect_ratio": 4.2891,
+        "compactness": 0.4101,
+        "fractal_dim": 1.5554,
+        "clark_evans": 2.044
+      },
+      "Type1": {
+        "aspect_ratio": 2.0139,
+        "compactness": 0.6512,
+        "fractal_dim": 1.6793,
+        "clark_evans": 1.6807
+      }
+    }
+  },
+  "15": {
+    "n": 14636,
+    "type0_pct": 21.81,
+    "silhouette": 0.4125,
+    "ch": 8651.0,
+    "db": 1.0555,
+    "bic1": 115842.1,
+    "bic2": 108616.8,
+    "bic3": 107980.0,
+    "type0_ar_p50": 4.1,
+    "type0_ar_p95": 7.86,
+    "type0_ar_max": 14.96,
+    "ARI_vs_cap10": 0.9148,
+    "centroids": {
+      "Type0": {
+        "aspect_ratio": 4.5039,
+        "compactness": 0.3985,
+        "fractal_dim": 1.5467,
+        "clark_evans": 2.0672
+      },
+      "Type1": {
+        "aspect_ratio": 2.0452,
+        "compactness": 0.6472,
+        "fractal_dim": 1.6777,
+        "clark_evans": 1.685
+      }
+    }
+  },
+  "20": {
+    "n": 14642,
+    "type0_pct": 21.54,
+    "silhouette": 0.4142,
+    "ch": 8557.1,
+    "db": 1.0539,
+    "bic1": 115721.2,
+    "bic2": 108220.4,
+    "bic3": 107497.2,
+    "type0_ar_p50": 4.12,
+    "type0_ar_p95": 7.97,
+    "type0_ar_max": 18.48,
+    "ARI_vs_cap10": 0.9019,
+    "centroids": {
+      "Type0": {
+        "aspect_ratio": 4.5393,
+        "compactness": 0.3971,
+        "fractal_dim": 1.5451,
+        "clark_evans": 2.0724
+      },
+      "Type1": {
+        "aspect_ratio": 2.0514,
+        "compactness": 0.6465,
+        "fractal_dim": 1.6775,
+        "clark_evans": 1.6855
+      }
+    }
+  },
+  "inf": {
+    "n": 14644,
+    "type0_pct": 21.33,
+    "silhouette": 0.4149,
+    "ch": 8419.0,
+    "db": 1.054,
+    "bic1": 115768.2,
+    "bic2": 107970.0,
+    "bic3": 105928.5,
+    "type0_ar_p50": 4.13,
+    "type0_ar_p95": 8.06,
+    "type0_ar_max": 29.69,
+    "ARI_vs_cap10": 0.8925,
+    "centroids": {
+      "Type0": {
+        "aspect_ratio": 4.5655,
+        "compactness": 0.3959,
+        "fractal_dim": 1.5443,
+        "clark_evans": 2.076
+      },
+      "Type1": {
+        "aspect_ratio": 2.0551,
+        "compactness": 0.6461,
+        "fractal_dim": 1.6772,
+        "clark_evans": 1.6857
+      }
+    }
+  }
+}

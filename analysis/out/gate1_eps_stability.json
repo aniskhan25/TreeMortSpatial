@@ -1,0 +1,146 @@
+{
+  "10": {
+    "n": 5741,
+    "type0_pct": 28.62,
+    "silhouette": 0.3167,
+    "ch": 2354.0,
+    "db": 1.3447,
+    "bic1": 47875.4,
+    "bic2": 45880.6,
+    "bic3": 45915.7,
+    "centroids": {
+      "Type0": {
+        "aspect_ratio": 2.9705,
+        "compactness": 0.544,
+        "fractal_dim": 1.6165,
+        "clark_evans": 1.9127
+      },
+      "Type1": {
+        "aspect_ratio": 1.7225,
+        "compactness": 0.7162,
+        "fractal_dim": 1.7,
+        "clark_evans": 1.6962
+      }
+    }
+  },
+  "15": {
+    "n": 10581,
+    "type0_pct": 25.83,
+    "silhouette": 0.3648,
+    "ch": 5469.0,
+    "db": 1.1788,
+    "bic1": 85676.6,
+    "bic2": 81313.8,
+    "bic3": 80949.1,
+    "centroids": {
+      "Type0": {
+        "aspect_ratio": 3.7238,
+        "compactness": 0.4603,
+        "fractal_dim": 1.5795,
+        "clark_evans": 2.0269
+      },
+      "Type1": {
+        "aspect_ratio": 1.8992,
+        "compactness": 0.6731,
+        "fractal_dim": 1.6867,
+        "clark_evans": 1.7031
+      }
+    }
+  },
+  "20": {
+    "n": 14582,
+    "type0_pct": 23.49,
+    "silhouette": 0.4006,
+    "ch": 8767.5,
+    "db": 1.0737,
+    "bic1": 116251.6,
+    "bic2": 109977.0,
+    "bic3": 109480.7,
+    "centroids": {
+      "Type0": {
+        "aspect_ratio": 4.2891,
+        "compactness": 0.4101,
+        "fractal_dim": 1.5554,
+        "clark_evans": 2.044
+      },
+      "Type1": {
+        "aspect_ratio": 2.0139,
+        "compactness": 0.6512,
+        "fractal_dim": 1.6793,
+        "clark_evans": 1.6807
+      }
+    }
+  },
+  "25": {
+    "n": 17902,
+    "type0_pct": 23.99,
+    "silhouette": 0.4088,
+    "ch": 11464.0,
+    "db": 1.0489,
+    "bic1": 141252.5,
+    "bic2": 133098.0,
+    "bic3": 132336.7,
+    "centroids": {
+      "Type0": {
+        "aspect_ratio": 4.4898,
+        "compactness": 0.3939,
+        "fractal_dim": 1.5468,
+        "clark_evans": 2.0453
+      },
+      "Type1": {
+        "aspect_ratio": 2.054,
+        "compactness": 0.6426,
+        "fractal_dim": 1.6767,
+        "clark_evans": 1.6388
+      }
+    }
+  },
+  "30": {
+    "n": 20287,
+    "type0_pct": 23.43,
+    "silhouette": 0.4165,
+    "ch": 13373.4,
+    "db": 1.0308,
+    "bic1": 159566.6,
+    "bic2": 150334.8,
+    "bic3": 149408.8,
+    "centroids": {
+      "Type0": {
+        "aspect_ratio": 4.6252,
+        "compactness": 0.3825,
+        "fractal_dim": 1.5409,
+        "clark_evans": 2.0211
+      },
+      "Type1": {
+        "aspect_ratio": 2.0743,
+        "compactness": 0.6387,
+        "fractal_dim": 1.6748,
+        "clark_evans": 1.6035
+      }
+    }
+  },
+  "40": {
+    "n": 22648,
+    "type0_pct": 22.92,
+    "silhouette": 0.4277,
+    "ch": 15515.0,
+    "db": 1.0109,
+    "bic1": 176653.7,
+    "bic2": 165810.9,
+    "bic3": 164712.6,
+    "centroids": {
+      "Type0": {
+        "aspect_ratio": 4.7871,
+        "compactness": 0.3723,
+        "fractal_dim": 1.534,
+        "clark_evans": 1.9851
+      },
+      "Type1": {
+        "aspect_ratio": 2.0972,
+        "compactness": 0.6378,
+        "fractal_dim": 1.6738,
+        "clark_evans": 1.5386
+      }
+    }
+  }
+}

@@ -1,0 +1,22 @@
+# macOS
+.DS_Store
+
+# Large data artifacts (regenerate via the pipeline; too large for git/GitHub)
+data/*.gpkg
+data/*.csv
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# LaTeX build intermediates (main.pdf is kept as the deliverable)
+report/*.aux
+report/*.log
+report/*.out
+report/*.blg
+report/*.bbl
+report/*.synctex.gz
+
+# Regenerable re-cluster caches from the gate scripts
+analysis/out/clusters_eps*.csv
