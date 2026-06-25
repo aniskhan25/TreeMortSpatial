@@ -677,13 +677,20 @@ connected component spans only 175 of 14,582 clusters and roughly a third of clu
 isolated singletons, so the graph is sparse. Figure~\ref{fig:contagion} shows connectivity
 reach and bridge clusters within the study-region display window (statistics from the full graph).
 Type\,1 clusters are nominally more connected than Type\,0 (median reach\,=\,3 vs.\ 2; mean reach
-11.03 vs.\ 8.98; Mann--Whitney $U = 17{,}752{,}378$, $p < 0.0001$), but this difference is a direct
-consequence of Type\,1's larger area and denser packing---larger, denser clusters are mechanically
-more likely to fall within 200\,m of a neighbour---and the medians differ by a single component.
-We therefore treat reach as a density correlate, not an independent line of evidence, and a
-properly size-matched comparison is left to future work. Because the graph is untimed and
-unweighted, we do not interpret high-betweenness clusters as outbreak corridors or sentinels;
-they are geometric articulation points whose ecological relevance is untested.
+11.03 vs.\ 8.98; Mann--Whitney $U = 17{,}752{,}378$, $p = 1.7\times10^{-10}$), but the
+\emph{effect size is negligible}: the rank-biserial correlation is only $r = 0.07$, the medians
+differ by a single component, and 34.9\% of clusters are isolated singletons. The vanishingly small
+$p$ reflects the large $n$, not a meaningful separation, and the difference is in any case a direct
+consequence of Type\,1's larger area and denser packing (larger, denser clusters are mechanically
+more likely to fall within 200\,m of a neighbour). We therefore treat reach as a density correlate,
+not an independent line of evidence. Because the graph is untimed and unweighted, we do not
+interpret high-betweenness clusters as outbreak corridors or sentinels; they are geometric
+articulation points whose ecological relevance is untested. A meaningful connectivity analysis
+would require a graph whose length scale is matched to a dispersal process---for a bark-beetle
+hypothesis, a host-conditioned, dispersal-weighted graph at the $\sim$250\,m--1\,km scale of
+\textit{Ips typographus} flight; for wind, storm-front co-occurrence at the tens-of-kilometre
+scale of a storm footprint---and these are mutually incompatible graphs, which is itself why a
+single undirected 200\,m graph cannot adjudicate either process.
 
 \begin{figure}[htb]
   \centering
@@ -724,6 +731,15 @@ Compactness dominates because it is geometrically correlated with aspect ratio
 independent of cluster shape---ranks last, confirming that high AUC is primarily
 driven by correlated shape dimensions rather than landscape connectivity.
 
+This same asymmetry is what licenses reporting the gradient while withholding the discrete
+typology. The detector confound (G4) predicts the \emph{discrete} type at AUC\,=\,0.727, yet a
+cluster's position along the \emph{continuous} gradient (first principal component of the three
+features) correlates with detection confidence at only $\rho = 0.07$. The discrete labels sit
+close to the detector's decision surface; the continuous morphospace coordinate does not. The
+gradient is therefore the level at which the signal is least entangled with the instrument, and
+the typology is the level at which it is most entangled---hence the former is reported and the
+latter withheld.
+
 \begin{figure}[htb]
   \centering
   \includegraphics[width=\linewidth]{fig_shap_heldout.png}
@@ -760,11 +776,24 @@ therefore a continuum, and the AR\,$\leq 10$ cap manufactured the clean ``23.5\%
 
 \mypar{(G3) No directional signal beyond hull shape.}
 Within matched hull-AR bins, Type\,0 and Type\,1 have statistically indistinguishable point-scatter
-linearity (e.g.\ AR\,$\in(2,2.5]$: 0.829 vs.\ 0.830, $p=0.86$; AR\,$\in(3,4]$: 0.916 vs.\ 0.915,
-$p=0.73$; Type\,1 marginally higher in the (2.5,\,3] bin). Once hull elongation is controlled, the
-elongated endpoint carries no extra line-like (wind-swath) structure. Together with the orientation
-null (Section~\ref{sec:res-orientation}), this empirically removes the basis for a ``wind-thrown''
+linearity (Figure~\ref{fig:anisotropy}; e.g.\ AR\,$\in(2,2.5]$: 0.829 vs.\ 0.830, $p=0.86$;
+AR\,$\in(3,4]$: 0.916 vs.\ 0.915, $p=0.73$; Type\,1 marginally higher in the (2.5,\,3] bin). The
+overall impression that Type\,0 is ``more linear'' (Figure~\ref{fig:anisotropy}a) is entirely a
+hull-AR effect; once hull elongation is controlled (Figure~\ref{fig:anisotropy}b) the elongated
+endpoint carries no extra line-like (wind-swath) structure. Together with the orientation null
+(Section~\ref{sec:res-orientation}), this empirically removes the basis for a ``wind-thrown''
 interpretation.
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=\linewidth]{fig_anisotropy.png}
+  \caption{Second-order anisotropy gate (G3). \textbf{(a)} Overall, the elongated endpoint
+           appears more linear---but this is confounded by hull aspect ratio. \textbf{(b)}
+           Matched on hull aspect ratio, the two endpoints' median point-scatter linearity is
+           indistinguishable (n.s.\ where shown), so the elongated endpoint carries no directional
+           point-process signal beyond hull shape.}
+  \label{fig:anisotropy}
+\end{figure}
 
 \mypar{(G4) A measurable detector confound.}
 Per-cluster detection-confidence covariates predict type at AUC\,=\,0.727 (5-fold), and dropping
@@ -844,17 +873,23 @@ precision/recall against ground truth, which the present data lack; this is the 
 important outstanding check, and the Clark--Evans index, computed on a median of eight points per
 cluster, is especially sensitive to it. The study area is regional (southeastern Finland), not
 national, so reported prevalences are not national statistics. Gate G1 confirms that the
-eps\,=\,20\,m clustering scale partly determines the elongation it then measures, and single-year
-data cannot distinguish a mosaic of old mortality from a single recent disturbance.
+eps\,=\,20\,m clustering scale partly determines the elongation it then measures. Finally,
+because standing dead trees persist for years in boreal stands, a single-year snapshot cannot
+date mortality: what we treat as one ``cluster'' may aggregate trees killed by different agents in
+different years that happen to be co-located, so the unit of analysis is itself only loosely
+defined---a fundamental limit on any morphology-to-process inference from one acquisition.
 
 \mypar{Future work.}
 The decisive next step is external validation that breaks the circularity of a shape-only study.
-Overlaying an independent disturbance-agent map (e.g.\ the attribution layer of
-\citealt{senf2021mapping}, or Metsäkeskus damage records) and a species layer from Finland's
-multi-source national forest inventory would convert the morphological endpoints from an
-unsupervised gradient into a testable, supervised agent classification, and would let us check
-whether the compact endpoint is genuinely beetle-dominated or a mix of fire, drought, snow-load,
-and salvage. Multi-temporal imagery---feasible from the same pipeline for prior years---would add
+Overlaying a species layer from Finland's multi-source national forest inventory and an independent
+disturbance-agent map would convert the morphological endpoints from an unsupervised gradient into
+a testable, supervised agent classification, and would let us check whether the compact endpoint is
+genuinely beetle-dominated or a mix of fire, drought, snow-load, and salvage. We note one concrete
+obstacle for the wind-versus-beetle question specifically: the publicly available pan-European
+attribution products \citep{senf2021mapping} group wind and bark beetle into a single
+combined class, so they cannot by themselves separate the two agents our endpoints might be
+hypothesised to represent---a dedicated regional agent layer (e.g.\ Metsäkeskus damage records)
+would be required. Multi-temporal imagery---feasible from the same pipeline for prior years---would add
 the missing dimension: it would date mortality, permit a true wave-front and storm-track
 alignment test for the elongated endpoint, and turn the connectivity graph from a static density
 correlate into a flow model that asks whether this year's morphology predicts next year's
