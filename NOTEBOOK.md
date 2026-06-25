@@ -221,7 +221,7 @@ were pre-rerun and are retained only in the dated historical log entries above.*
 | Item | Value |
 |---|---|
 | Raw trees | 698,223 dead trees, EPSG:3067 |
-| Survey footprint | Southeastern Finland (regional, NOT national) |
+| Survey footprint | National-scale sample: 312 aerial tiles across Finland, ~60.4–67.8°N, 21.6–29.6°E (south boreal to Lapland), discrete latitudinal bands — NOT contiguous coverage, NOT southeastern-only |
 | Raw clusters (DBSCAN eps=20m, min_samples=3) | 43,539 |
 | Filtered clusters (≥5 trees, area ≥100m², AR ≤10) | **14,582** |
 | Type0 — elongated/dispersed endpoint (AR≈4.29, compactness≈0.41, CE≈2.04) | 3,422 (23.5%) |

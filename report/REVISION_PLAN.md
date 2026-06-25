@@ -66,6 +66,19 @@ failures enumerated incl. the anisotropy null and AUC=0.727 confound) and to clo
 transferable-caution framing all three other reviewers requested. (Abstract, §4.5, methods, and
 the Moran figure now mutually consistent.)
 
+## CORRECTION (2026-06-25): scope is NATIONAL, not "southeastern Finland"
+
+An earlier edit relabelled the study national→"southeastern Finland", trusting Lindqvist's
+web-search claim that the *cited* paper (Junttila et al. 2024) covers SE Finland. That conflated
+the cited motivation paper's region with THIS dataset's extent. Checking the actual coordinates:
+the 698,223 detections come from **312 aerial tiles spanning ~60.4–67.8°N and 21.6–29.6°E**
+(south boreal zone to Lapland, full national width), in discrete latitudinal bands. So it is a
+**national-scale but spatially discontinuous sample** — not southeastern, and not the original
+"entire Finnish land area" wall-to-wall claim either. Title/abstract/§3.1/captions/limitations/
+conclusion corrected accordingly; Junttila-as-data-source attribution removed (kept as motivation).
+The Path-A data-availability reasoning below is unaffected (the fused-agent-map / no-ground-truth
+blockers hold Finland-wide, not just in any one region).
+
 ## DECISION (2026-06-23): PATH A — data-availability check resolved it
 
 Checked public availability of the Path B datasets for the SE-Finland sites:

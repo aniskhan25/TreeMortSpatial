@@ -5,7 +5,7 @@
 \graphicspath{{../figures/}}
 
 \title{\textbf{A Morphological-Gradient Characterisation of Dead-Tree Clusters\\
-       in Southeastern Finland's Boreal Forests}}
+       in Finland's Boreal Forests}}
 
 \author[1]{\textbf{Anis Ur Rahman}}
 \author[2,3]{\textbf{Samuli Junttila}}
@@ -25,8 +25,9 @@
     Finland's boreal forests are experiencing a significant and documented increase in
     non-harvest tree mortality \citep{junttila2024significant}. Characterising the spatial
     morphology of mortality clusters is a prerequisite for hypothesising the disturbance
-    processes that generate them. We present a regional-scale analysis of 698,223 dead-tree
-    locations identified from aerial imagery in southeastern Finland in 2023. Using DBSCAN
+    processes that generate them. We present a national-scale analysis of 698,223 dead-tree
+    locations identified from a 2023 aerial-imagery sample distributed across Finland (312 tiles,
+    $\sim$60.4--67.8\textdegree{}N). Using DBSCAN
     (eps\,=\,20\,m, min\_samples\,=\,3) we derived 14,582 quality-filtered clusters and characterised
     each with a suite of spatial metrics including the Donnelly-corrected Clark--Evans index,
     fractal dimension, compactness, aspect ratio, alpha compactness, core-to-edge ratio, and
@@ -82,10 +83,11 @@ These morphological \textit{fingerprints} are in principle recoverable from poin
 even when individual tree species and cause-of-death records are unavailable.
 
 High-resolution aerial imagery now enables the detection and georeferencing of individual
-dead trees over large areas. The 2023 survey of southeastern Finland used here produced 698,223
-dead-tree locations in ETRS89/TM35FIN (EPSG:3067) coordinates---a dataset large enough to
-support robust statistical characterisation of cluster morphology at scales ranging from the
-individual stand to the regional landscape.
+dead trees over large areas. The 2023 aerial sample used here produced 698,223
+dead-tree locations in ETRS89/TM35FIN (EPSG:3067) coordinates, distributed across Finland from the
+southern boreal zone to Lapland---a dataset large enough to support robust statistical
+characterisation of cluster morphology at scales ranging from the individual stand to the
+national sample.
 
 This paper makes three methodological contributions:
 \begin{enumerate}
@@ -182,11 +184,14 @@ the first-order metrics used here.
 \label{sec:data}
 
 The dataset comprises 698,223 dead-tree locations predicted from a deep-learning model
-applied to high-resolution aerial imagery acquired in 2023 over southeastern Finland
-\citep{junttila2024significant}. Coordinates are provided in ETRS89/TM35FIN (EPSG:3067), a conformal transverse
-Mercator projection with metric units, appropriate for distance-based spatial analyses.
-The dataset covers a regional footprint, not the entire country; reported cluster
-prevalences and densities are therefore regional and should not be read as national statistics.
+applied to high-resolution aerial imagery acquired in 2023. The detections come from 312 aerial
+image tiles distributed across Finland, spanning roughly 60.4--67.8\textdegree{}N and
+21.6--29.6\textdegree{}E---from the southern boreal zone to Lapland---in discrete latitudinal
+bands rather than continuous wall-to-wall coverage. Coordinates are provided in ETRS89/TM35FIN
+(EPSG:3067), a conformal transverse Mercator projection with metric units, appropriate for
+distance-based spatial analyses. The dataset is therefore a \emph{national-scale but spatially
+discontinuous sample}: reported cluster prevalences and densities are sample statistics across the
+surveyed tiles and should not be read as an exhaustive national census.
 
 \subsection{Clustering}
 \label{sec:clustering}
@@ -450,14 +455,14 @@ ratio. Figure~\ref{fig:scatters} presents key pairwise scatter plots.
   \label{fig:scatters}
 \end{figure}
 
-The regional spatial distribution of all 14,582 cluster centroids is shown in
+The spatial distribution of all 14,582 cluster centroids across the sampled tiles is shown in
 Figure~\ref{fig:spatial_extent}.
 
 \begin{figure}[htb]
   \centering
   \includegraphics[width=\linewidth]{fig1_spatial_extent.png}
-  \caption{Map of dead-tree cluster centroids ($n=14{,}582$) across the southeastern Finland
-           study region (EPSG:3067).}
+  \caption{Map of dead-tree cluster centroids ($n=14{,}582$) sampled across Finland
+           ($\sim$60.4--67.8\textdegree{}N; EPSG:3067), in discrete latitudinal bands.}
   \label{fig:spatial_extent}
 \end{figure}
 
@@ -536,16 +541,18 @@ no disturbance-agent meaning to them here.
   \end{tabular}
 \end{table*}
 
-The spatial distribution of the two gradient endpoints within the study region is shown in
-Figure~\ref{fig:typology_map}; the inset locates the region within Finland.
+The spatial distribution of the two gradient endpoints within a southern display window
+(one tile, 10.9\% of clusters, shown for legibility) is given in
+Figure~\ref{fig:typology_map}; the inset locates this window within the national sample.
 
 \begin{figure}[htb]
   \centering
   \includegraphics[width=\linewidth]{fig6_typology_map.png}
-  \caption{Spatial distribution of the two gradient endpoints within the study region.
+  \caption{Spatial distribution of the two gradient endpoints within a southern display window
+           (one tile, 10.9\% of clusters, shown for legibility).
            Blue circles: Type\,1 (compact/aggregated);
            brown triangles: Type\,0 (elongated/dispersed). Inset: all 14,582 clusters
-           in the survey area for geographic context.}
+           sampled across Finland for geographic context.}
   \label{fig:typology_map}
 \end{figure}
 
@@ -644,7 +651,7 @@ autocorrelation is indistinguishable from noise once detection error is propagat
 statement is therefore narrow: within-cluster dispersion (Clark--Evans) shows weak but robust
 positive spatial autocorrelation at the 0.5--5\,km scale, while the shape metrics show at most
 marginal, detection-sensitive structure. LISA maps (Figure~\ref{fig:lisa}) illustrate the spatial
-structure of fractal-dimension autocorrelation within the study-region display window; labels are
+structure of fractal-dimension autocorrelation within the southern display window; labels are
 computed on the full survey dataset to preserve correct neighbourhood weights, and given the
 weak global signal for this metric they are best read qualitatively.
 
@@ -663,7 +670,7 @@ weak global signal for this metric they are best read qualitatively.
 \begin{figure}[htb]
   \centering
   \includegraphics[width=\linewidth]{fig8_local_morans.png}
-  \caption{LISA hotspot map for fractal dimension in the study-region display window. Labels
+  \caption{LISA hotspot map for fractal dimension in the southern display window. Labels
            computed on the full survey dataset. Red: high--high clusters; blue: low--low
            clusters. Inset: full-survey cluster distribution for geographic context.}
   \label{fig:lisa}
@@ -675,7 +682,7 @@ weak global signal for this metric they are best read qualitatively.
 At the 200\,m threshold, the proximity graph over all clusters contains 13,351 edges; the largest
 connected component spans only 175 of 14,582 clusters and roughly a third of clusters are
 isolated singletons, so the graph is sparse. Figure~\ref{fig:contagion} shows connectivity
-reach and bridge clusters within the study-region display window (statistics from the full graph).
+reach and bridge clusters within the southern display window (statistics from the full graph).
 Type\,1 clusters are nominally more connected than Type\,0 (median reach\,=\,3 vs.\ 2; mean reach
 11.03 vs.\ 8.98; Mann--Whitney $U = 17{,}752{,}378$, $p = 1.7\times10^{-10}$), but the
 \emph{effect size is negligible}: the rank-biserial correlation is only $r = 0.07$, the medians
@@ -706,7 +713,7 @@ single undirected 200\,m graph cannot adjudicate either process.
              (no temporal validation). All metrics computed on the full graph.}
     \label{fig:contagion_b}
   \end{subfigure}
-  \caption{Landscape connectivity in the study-region display window.}
+  \caption{Landscape connectivity in the southern display window.}
   \label{fig:contagion}
 \end{figure}
 
@@ -871,8 +878,9 @@ likely structured by forest type, canopy density, and flight-strip geometry, is 
 with the morphology we measure. Fully separating the two requires stratified detection
 precision/recall against ground truth, which the present data lack; this is the single most
 important outstanding check, and the Clark--Evans index, computed on a median of eight points per
-cluster, is especially sensitive to it. The study area is regional (southeastern Finland), not
-national, so reported prevalences are not national statistics. Gate G1 confirms that the
+cluster, is especially sensitive to it. The dataset is a national-scale but spatially
+discontinuous sample (312 aerial tiles across Finland, in discrete latitudinal bands), so reported
+prevalences are sample statistics rather than an exhaustive national census. Gate G1 confirms that the
 eps\,=\,20\,m clustering scale partly determines the elongation it then measures. Finally,
 because standing dead trees persist for years in boreal stands, a single-year snapshot cannot
 date mortality: what we treat as one ``cluster'' may aggregate trees killed by different agents in
@@ -901,8 +909,9 @@ comparative analysis across the Nordic countries.
 \label{sec:conclusion}
 % ─────────────────────────────────────────────────────────────────────────────
 
-We have presented a regional-scale morphological analysis of 14,582 dead-tree clusters
-identified from a 2023 aerial mortality survey in southeastern Finland. Using DBSCAN clustering,
+We have presented a national-scale morphological analysis of 14,582 dead-tree clusters
+identified from a 2023 aerial-imagery sample distributed across Finland (312 tiles, southern
+boreal zone to Lapland). Using DBSCAN clustering,
 Donnelly-corrected Clark--Evans statistics, and a suite of complementary shape metrics,
 we show that the morphology of detected mortality clusters is organised by a dominant
 compactness--elongation gradient. This gradient is not a statistical artefact of correlated
