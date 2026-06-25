@@ -187,10 +187,13 @@ def fig_moran():
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         for j, th in enumerate(THR):
-            w = DistanceBand.from_array(coords, threshold=th); w.transform = "r"
+            w = DistanceBand.from_array(coords, threshold=th, silence_warnings=True)
+            w.transform = "r"
             for i, col in enumerate(MET):
-                m = Moran(dm[col].fillna(dm[col].median()).values, w, permutations=199)
-                I[i, j], pv[i, j] = m.I, m.p_sim
+                # analytical p (normal approx): a permutation p_sim floor (>=1e-3)
+                # cannot resolve the Bonferroni alpha* = 0.0025, so use p_norm.
+                m = Moran(dm[col].fillna(dm[col].median()).values, w, permutations=0)
+                I[i, j], pv[i, j] = m.I, m.p_norm
     fig, ax = plt.subplots(figsize=(8.5, 3.8), dpi=150)
     im = ax.imshow(I, aspect="auto", cmap="RdBu_r", vmin=-0.3, vmax=0.3)
     cb = fig.colorbar(im, ax=ax, shrink=0.85, pad=0.02); cb.set_label("Moran's $I$")

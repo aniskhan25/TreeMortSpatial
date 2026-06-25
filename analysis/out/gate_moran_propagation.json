@@ -1,0 +1,122 @@
+{
+  "fractal_dim@200": {
+    "I_base": -0.0289,
+    "I_mean": -0.0208,
+    "sign_pct": 72.0,
+    "sig_pct": 0.0
+  },
+  "fractal_dim@500": {
+    "I_base": -0.0053,
+    "I_mean": -0.0043,
+    "sign_pct": 60.0,
+    "sig_pct": 0.0
+  },
+  "fractal_dim@1000": {
+    "I_base": -0.0099,
+    "I_mean": -0.0103,
+    "sign_pct": 73.0,
+    "sig_pct": 0.0
+  },
+  "fractal_dim@2000": {
+    "I_base": -0.0078,
+    "I_mean": -0.0078,
+    "sign_pct": 79.0,
+    "sig_pct": 0.0
+  },
+  "fractal_dim@5000": {
+    "I_base": 0.0016,
+    "I_mean": 0.0039,
+    "sign_pct": 77.0,
+    "sig_pct": 0.0
+  },
+  "clark_evans@200": {
+    "I_base": 0.0809,
+    "I_mean": 0.0865,
+    "sign_pct": 99.0,
+    "sig_pct": 0.0
+  },
+  "clark_evans@500": {
+    "I_base": 0.114,
+    "I_mean": 0.1226,
+    "sign_pct": 100.0,
+    "sig_pct": 72.0
+  },
+  "clark_evans@1000": {
+    "I_base": 0.1044,
+    "I_mean": 0.1023,
+    "sign_pct": 100.0,
+    "sig_pct": 98.0
+  },
+  "clark_evans@2000": {
+    "I_base": 0.0721,
+    "I_mean": 0.0763,
+    "sign_pct": 100.0,
+    "sig_pct": 100.0
+  },
+  "clark_evans@5000": {
+    "I_base": 0.0484,
+    "I_mean": 0.0523,
+    "sign_pct": 100.0,
+    "sig_pct": 100.0
+  },
+  "aspect_ratio@200": {
+    "I_base": 0.0944,
+    "I_mean": 0.0853,
+    "sign_pct": 96.0,
+    "sig_pct": 2.0
+  },
+  "aspect_ratio@500": {
+    "I_base": 0.0633,
+    "I_mean": 0.0602,
+    "sign_pct": 100.0,
+    "sig_pct": 1.0
+  },
+  "aspect_ratio@1000": {
+    "I_base": 0.0152,
+    "I_mean": 0.0145,
+    "sign_pct": 84.0,
+    "sig_pct": 0.0
+  },
+  "aspect_ratio@2000": {
+    "I_base": 0.0131,
+    "I_mean": 0.0119,
+    "sign_pct": 92.0,
+    "sig_pct": 0.0
+  },
+  "aspect_ratio@5000": {
+    "I_base": 0.0046,
+    "I_mean": 0.0044,
+    "sign_pct": 82.0,
+    "sig_pct": 0.0
+  },
+  "compactness@200": {
+    "I_base": 0.0847,
+    "I_mean": 0.0761,
+    "sign_pct": 99.0,
+    "sig_pct": 0.0
+  },
+  "compactness@500": {
+    "I_base": 0.0684,
+    "I_mean": 0.0629,
+    "sign_pct": 100.0,
+    "sig_pct": 0.0
+  },
+  "compactness@1000": {
+    "I_base": 0.0265,
+    "I_mean": 0.0265,
+    "sign_pct": 98.0,
+    "sig_pct": 0.0
+  },
+  "compactness@2000": {
+    "I_base": 0.0058,
+    "I_mean": 0.006,
+    "sign_pct": 75.0,
+    "sig_pct": 0.0
+  },
+  "compactness@5000": {
+    "I_base": 0.0071,
+    "I_mean": 0.0072,
+    "sign_pct": 96.0,
+    "sig_pct": 0.0
+  }
+}

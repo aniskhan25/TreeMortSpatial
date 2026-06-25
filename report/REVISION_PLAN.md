@@ -6,6 +6,66 @@ This plan addresses every Tier-1/2/3 issue and specifies the pipeline re-runs ne
 
 ---
 
+## FINAL PANEL VERDICT (2026-06-24): unanimous Accept / Minor Revision
+
+After re-consulting all four reviewers on the completed revision:
+
+| Reviewer | Original | Final | Outstanding |
+|---|---|---|---|
+| Vasquez (spatial stats) | Major | **Accept (Minor)** | 5 presentational conditions |
+| Lindqvist (ecology) | **Reject** | **Accept (Minor)** | 4 presentational |
+| Anand (landscape) | Major | **Accept (Minor)** | 4 presentational |
+| Tanaka (RS/ML) | Major | **Minor Revision** | **1 computational gate (Moran's I)** |
+
+All four credited the authors for running the falsification gates and letting the negative
+results (eps-instability, AR-cap artefact, anisotropy null, AUC-0.727 confound) rewrite the
+paper. The discrete typology is correctly retired; the gradient + negative-result spine stands.
+
+**Convergent conditions (≥3 reviewers):**
+- **Lead with the negatives in the ABSTRACT**: state plainly that no discrete types were
+  recoverable (eps-unstable, BIC favours k>2) and that elongation carries no anisotropic/
+  directional signal — these are the paper's most transferable findings. (Vasquez #1, Lindqvist #2, Anand #1)
+- Promote the gate failures + anisotropy refutation into main-text Results with figures.
+- Purge any residual "two types / Type-0 vs Type-1 as a real partition" language.
+- Report prevalence as cap- and eps-conditional (retire standalone 23.5/76.5%).
+- Reconcile the stale NOTEBOOK.md provenance (Vasquez #5 — already done this session).
+
+**Tanaka's one non-negotiable computational gate (blocks her full Accept):**
+Propagate detection error into the **Moran's I** statistics (not just type assignments): re-run
+the ~100-realization perturbation, recompute multi-scale Moran's I each time, report the
+distribution and the fraction preserving sign + Bonferroni significance. PASS if preserved in
+≥95% of realizations at the 200–500 m scales; else caveat/withdraw the autocorrelation claim.
+Smaller: report connectivity-reach effect size (not just p); state the ρ=0.07 (gradient) vs
+AUC=0.727 (discrete) contrast explicitly as the reason the gradient survives while types don't.
+
+## Tanaka's Moran's-I propagation gate — RUN (2026-06-24), claim narrowed
+
+`analysis/gate_moran_propagation.py` (+ `analysis/out/gate_moran_propagation.json`): 100
+realizations, 15% random false-negative detection perturbation, multi-scale Moran's I recomputed
+each time on the same 2,000-cluster stratified subsample; analytical p (the permutations=199
+p_sim floor of 0.005 cannot reach Bonferroni α*=0.0025 — a latent flaw in the original).
+
+Result — the gate did NOT cleanly pass, and that is informative:
+- Magnitudes are weak everywhere (I ≤ 0.11).
+- SIGN of I is robust to detection perturbation for clark_evans / aspect_ratio / compactness
+  (≥96% at 200–500 m) but NOT for fractal_dim (60–72% — near-zero, noise-indistinguishable).
+- SIGNIFICANCE: under analytical p, ONLY Clark–Evans clears Bonferroni, and only at 500 m–5 km
+  (sig 72–100%); fractal_dim/aspect_ratio/compactness do not. The 200 m cells fail because most
+  clusters have no neighbour at 200 m (islands → inflated variance).
+
+Action taken (per Tanaka's "Fail → caveat or withdraw"): the §4.5 "significant across most
+combinations" claim was withdrawn and narrowed to "within-cluster dispersion (Clark–Evans) shows
+weak but robust positive autocorrelation at 0.5–5 km; shape metrics show at most marginal,
+detection-sensitive structure." Methods now specify analytical p + the detection-robustness gate;
+the heatmap was regenerated with analytical p (only Clark–Evans marked Bonferroni-significant) and
+its caption updated. This satisfies Tanaka's outstanding condition → her Minor becomes clear.
+
+## Presentational pass (2026-06-24)
+Abstract recast to LEAD with the negative results (gradient real but not discrete; the four gate
+failures enumerated incl. the anisotropy null and AUC=0.727 confound) and to close on the
+transferable-caution framing all three other reviewers requested. (Abstract, §4.5, methods, and
+the Moran figure now mutually consistent.)
+
 ## DECISION (2026-06-23): PATH A — data-availability check resolved it
 
 Checked public availability of the Path B datasets for the SE-Finland sites:

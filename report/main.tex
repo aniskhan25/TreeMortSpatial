@@ -31,25 +31,26 @@
     each with a suite of spatial metrics including the Donnelly-corrected Clark--Evans index,
     fractal dimension, compactness, aspect ratio, alpha compactness, core-to-edge ratio, and
     within-cluster nearest-neighbour distance. K-means clustering on three morphological features
-    ($k=2$; silhouette\,=\,0.401) recovers a dominant \emph{compactness--elongation gradient},
-    which we summarise---as an interpretive simplification rather than a discovered boundary---by
-    two endpoint classes: an \textit{elongated/dispersed} type (23.5\% of clusters) and a
-    \textit{compact/aggregated} type (76.5\%). This structure exceeds a covariance-preserving
-    null distribution (single multivariate Gaussian matched to the observed feature covariance;
-    $p=0.001$), confirming it is not an artefact of correlated marginals; however, mixture-model
-    selection (BIC) favours more than two components and the primary morphological axis is
-    unimodal, indicating a continuum rather than a clean dichotomy. A held-out Random Forest
-    with spatial block cross-validation reproduces the partition (AUC\,=\,0.976\,$\pm$\,0.002),
-    but we show this reflects geometric redundancy among shape features rather than independent
-    corroboration: the only shape-orthogonal feature (landscape connectivity) adds no
-    discriminative information. Four stability gates, run by re-clustering from raw, show that the
-    \emph{discrete} two-class reading is not robust---the split is not invariant to the clustering
-    radius, its prevalence is an artefact of the aspect-ratio filter, it carries no directional
-    signal beyond hull shape, and it is partly entangled with detector behaviour---whereas the
-    underlying compactness--elongation \emph{gradient} is stable. We therefore report the gradient,
-    not a typology, and deliberately avoid disturbance-agent labels: associations with wind, bark
-    beetle, or other agents are not supported by these data, which lack the species, dating, and
-    ground-truth layers required for attribution.
+    ($k=2$; silhouette\,=\,0.401) recovers a dominant \emph{compactness--elongation gradient}
+    that exceeds a covariance-preserving null (single multivariate Gaussian matched to the observed
+    feature covariance; $p=0.001$): the gradient itself is real. Its \emph{discrete} two-type
+    reading, however, is not. We subject the partition to four stability gates, re-clustering from
+    the raw points: (i) it is not invariant to the DBSCAN radius (endpoint prevalence drifts
+    22.9--28.6\% across eps 10--40\,m, with continuously migrating centroids); (ii) its
+    23.5\,/\,76.5\% split is an artefact of the aspect-ratio filter, dissolving into a single
+    continuous tail once the cap is released; (iii) the elongated endpoint carries \emph{no}
+    directional (anisotropic) signal beyond hull shape---and therefore no wind-throw
+    fingerprint---when matched on aspect ratio; and (iv) type identity is partly predictable from
+    detector confidence alone (AUC\,=\,0.727). Mixture-model BIC and a unimodal principal axis
+    independently favour a continuum over two modes, and a held-out Random Forest that appears to
+    recover the split (AUC\,=\,0.976\,$\pm$\,0.002) does so only through geometric redundancy among
+    shape features---the one shape-orthogonal feature, landscape connectivity, adds nothing. We
+    therefore report a morphological gradient, not a typology, and withhold disturbance-agent
+    labels: with no species, dating, or ground-truth layers---and the only public agent maps
+    fusing wind and beetle into a single class---attribution is not supportable. The central
+    contribution is thus partly cautionary: discrete, agent-labelled typologies derived from
+    DBSCAN-then-shape pipelines can be artefacts of clustering scale, filter thresholds, and
+    detector behaviour, and should be tested against these gates before being read as ecology.
     \end{abstract}
     \vspace{0.3in}
   \end{center}
@@ -328,7 +329,14 @@ Global Moran's $I$ was computed for four cluster-level metrics
 (200, 500, 1000, 2000, 5000\,m) using a stratified random subsample of $n=2{,}000$ clusters.
 A distance-band contiguity at threshold $\delta$ ($d_{ij} \leq \delta$) was used, with the
 weights row-standardised ($\sum_j w_{ij} = 1$). With 20 simultaneous tests we applied a
-Bonferroni-corrected significance threshold $\alpha^* = 0.05/20 = 0.0025$.
+Bonferroni-corrected significance threshold $\alpha^* = 0.05/20 = 0.0025$; significance is
+assessed with the analytical (normal-approximation) $p$-value, since a 999-permutation $p_{\rm sim}$
+floor of $10^{-3}$ is the coarsest resolution that can reach $\alpha^*$ and a 199-permutation
+test (floor $5\times10^{-3}$) cannot. To test whether any autocorrelation is an artefact of
+upstream detection error rather than ecology, we additionally propagated a 15\% random
+false-negative detection perturbation through the metric computation over 100 realizations and
+recorded the fraction preserving the sign and Bonferroni significance of $I$ at each
+metric$\,\times\,$threshold (a detection-robustness gate).
 
 Local Moran's $I$ (LISA; \citealt{anselin1995local}) was computed to identify
 statistically significant spatial clusters (high--high and low--low) and spatial
@@ -623,23 +631,32 @@ discussed in Section~\ref{sec:disc-orientation}.
 \label{sec:res-morans}
 
 Figure~\ref{fig:morans} presents the multi-scale Moran's $I$ heatmap (E6) for four
-metrics at five distance thresholds. Significant spatial autocorrelation (Bonferroni
-$\alpha^* = 0.0025$) is present across most metric--threshold combinations, with
-values generally declining as the threshold increases from 200\,m to 5000\,m.
-The scale-dependence of autocorrelation implies that morphological similarity between
-clusters operates primarily at stand to landscape scales ($< 2$\,km) rather than at
-the regional scale. LISA maps (Figure~\ref{fig:lisa}) illustrate the spatial structure
-of fractal-dimension autocorrelation within the study-region display window; labels are computed
-on the full survey dataset to preserve correct neighbourhood weights.
+metrics at five distance thresholds. The autocorrelation that is present is weak in magnitude
+($I \leq 0.11$ throughout) and, where positive, strongest at the 200--500\,m scale and
+attenuating beyond 2\,km. We are deliberately conservative about its significance and its
+robustness, for two reasons. First, under the analytical $p$-value only Clark--Evans clears the
+Bonferroni threshold, and only at the 500\,m--5\,km scales; the fractal-dimension, aspect-ratio,
+and compactness autocorrelations are not Bonferroni-significant. Second, the detection-robustness
+gate shows that the \emph{sign} of $I$ survives a 15\% false-negative detection perturbation for
+Clark--Evans, aspect ratio, and compactness ($\geq 96\%$ of realizations at 200--500\,m) but
+\emph{not} for fractal dimension (sign preserved in only 60--72\%), whose near-zero
+autocorrelation is indistinguishable from noise once detection error is propagated. The defensible
+statement is therefore narrow: within-cluster dispersion (Clark--Evans) shows weak but robust
+positive spatial autocorrelation at the 0.5--5\,km scale, while the shape metrics show at most
+marginal, detection-sensitive structure. LISA maps (Figure~\ref{fig:lisa}) illustrate the spatial
+structure of fractal-dimension autocorrelation within the study-region display window; labels are
+computed on the full survey dataset to preserve correct neighbourhood weights, and given the
+weak global signal for this metric they are best read qualitatively.
 
 \begin{figure*}[htb]
   \centering
   \includegraphics[width=\linewidth]{fig_moran_heatmap.png}
   \caption{Moran's $I$ heatmap (E6): four metrics (rows) $\times$ five distance
-           thresholds (columns). Bonferroni-corrected significance threshold
-           $\alpha^* = 0.0025$. Significant cells are marked with an asterisk.
-           Autocorrelation is strongest at the 200--500\,m scale and attenuates at
-           distances $\geq 2$\,km.}
+           thresholds (columns), analytical $p$. Cells marked $*$ clear the Bonferroni
+           threshold $\alpha^* = 0.0025$, $\dagger$ are nominally significant ($p<0.05$).
+           Autocorrelation is weak throughout ($I \leq 0.11$) and strongest at 200--500\,m;
+           only Clark--Evans is Bonferroni-significant, and a 15\% false-negative detection
+           perturbation leaves the sign of $I$ stable for all metrics except fractal dimension.}
   \label{fig:morans}
 \end{figure*}
 
