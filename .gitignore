@@ -20,3 +20,12 @@ report/*.synctex.gz
 
 # Regenerable re-cluster caches from the gate scripts
 analysis/out/clusters_eps*.csv
+
+# host rasters (MS-NFI etc.)
+data/*.tif
+data/*.tiff
+
+# exploratory/superseded analysis outputs
+analysis/out/host_pcf.json
+analysis/out/host_pcf_pooled.json
+analysis/out/permtest_null.npy

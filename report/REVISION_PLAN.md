@@ -38,6 +38,61 @@ distribution and the fraction preserving sign + Bonferroni significance. PASS if
 Smaller: report connectivity-reach effect size (not just p); state the ρ=0.07 (gradient) vs
 AUC=0.727 (discrete) contrast explicitly as the reason the gradient survives while types don't.
 
+## ECOLOGY-FLAGSHIP REFRAME — EXECUTED (2026-06-25)
+
+Ran the host-conditioned analysis in Python (no spatstat in env) and reframed the manuscript.
+- Data: downloaded MS-NFI 2021 (pre-mortality) spruce, total volume, land class via rsync (Paituli).
+- Engine `analysis/host_pointprocess.py`: forest-masked tile windows, pre-mortality spruce host,
+  inhomogeneous K/L with host-conditioned simulation envelopes; validated on simulation.
+- FINDINGS (the new empirical core): mortality tracks host (pixel-Poisson λ ~ spruce +0.23, total
+  volume +0.21, edge −0.02) AND retains a modest residual aggregation at ≤~1 km that SURVIVES the
+  richer spruce+total+edge null (much smaller than vs spruce-only) — local contagion on top of
+  host-tracking. Detector confound AUC 0.727 but gradient ρ=0.07. Valid to r≲1 km (6 km windows);
+  >1 km + tree-level + ppm envelopes = spatstat next steps (R script handed over:
+  `analysis/host_pointprocess_spatstat.R`).
+- Manuscript: title → "Host-Conditioned Spatial Structure of Canopy Mortality…"; abstract,
+  3 rebuilt contributions (host-conditioned characterisation / falsification harness / shape≠agent),
+  new Methods §"Host-Conditioned Point-Process Analysis", new Results §"Host-Conditioned Aggregation"
+  + `fig_host_conditioned`, Discussion lead paragraph, Future work (spatstat/marked/multi-temporal),
+  Conclusion lead. amssymb added to preamble. 18 pp, compiles clean.
+
+## Host-conditioned point-process analysis — LOCKED DESIGN (2026-06-25, Vasquez + Lindqvist)
+
+The ecology-flagship core analysis, fully specified by the two spatial/ecology PIs after a first
+real run on the 2023 MS-NFI spruce raster exposed window/unit/endogeneity issues. This is the spec
+for the next paper; proper execution is an R/**spatstat** job (Kinhom/pcfinhom/envelope/ppm/owin).
+
+**Validated so far:** `analysis/host_pointprocess.py` — pooled inhomogeneous K/PCF over tile
+windows, simulation-validated (pooled g_inhom≈1.00, g_csr≈1.14). First real run (2023 spruce,
+centroids, bbox windows) gave g_inhom≫g_csr but is NOT defensible (see fixes).
+
+**Locked decisions:**
+1. **Host covariate = PRE-mortality MS-NFI spruce (2021, or 2019)** — NOT 2023. (Lindqvist: 2023
+   growing-stock volume is endogenous — dead spruce drops out of the estimate, inducing
+   reverse-causation.) Mask/flag harvested-clearcut pixels in the gap years; treat volume as a
+   host-availability index (it saturates).
+2. **Point unit = individual trees (698k, ~2,200/tile)** as the process; cluster centroids only as
+   a sensitivity line (expect short-r divergence = the DBSCAN-eps artefact, itself a diagnostic).
+3. **Observation window = total-forest mask** (MS-NFI total growing-stock volume > 0, or a
+   land-cover forest mask) — NOT "spruce>0" (that conflates covariate with window and drops the
+   5.9% of mortality on non-spruce forest). Integrate intensity over the masked window; edge-correct
+   on masked geometry. This is the main fix for the inflated magnitudes.
+4. **Estimator:** primary inferential object = **K_inhom / L_inhom with simulation envelopes drawn
+   from the FITTED INHOMOGENEOUS (host-conditioned) null** — not the CSR contrast. Display g via an
+   **Epanechnikov kernel PCF** (Stoyan bandwidth), not ring differences. Fit a richer intensity
+   model λ ∝ f(spruce, total volume, stand-edge) as a **discriminator**: if residual aggregation
+   survives the richer covariates it is real foci; if it vanishes it was host structure.
+5. **Interpretation:** hold the quantitative "≈20×" until #2/#3 resolved; the qualitative hypothesis
+   ("foci beyond host-tracking at 0.25–1.5 km") is sound. After fixes: if L_inhom exceeds the
+   host-conditioned envelope → genuine residual foci (the finding); if it collapses into the
+   envelope → clean host-tracking null (equally publishable). Clusters on spruce-rich pixels
+   (median 60 vs regional 18 m³/ha) already show strong first-order host-tracking.
+6. **Latitudinal/leading-edge trend: DO NOT report** — ρ=+0.21/+0.25, p≈0.6 on n=7 PSUs is
+   uninterpretable; present per-block K as descriptive replicates and decline a gradient claim.
+
+**Tooling reality:** no R/spatstat/rpy2 in the working environment; needs MS-NFI 2021 spruce +
+total-volume rasters (rsync, ~1.4 GB each). Recommended execution path: R/spatstat (field standard).
+
 ## Tanaka's Moran's-I propagation gate — RUN (2026-06-24), claim narrowed
 
 `analysis/gate_moran_propagation.py` (+ `analysis/out/gate_moran_propagation.json`): 100
