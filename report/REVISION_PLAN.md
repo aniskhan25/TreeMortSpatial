@@ -66,6 +66,32 @@ failures enumerated incl. the anisotropy null and AUC=0.727 confound) and to clo
 transferable-caution framing all three other reviewers requested. (Abstract, §4.5, methods, and
 the Moran figure now mutually consistent.)
 
+## Sampling-design formalization (2026-06-25): experts + applied
+
+Data provenance (from author): internal compilation via the individual-tree mortality
+segmentation model of Junttila et al. 2024; not yet public. Author unfamiliar with the
+tile-selection design → reverse-engineered from coordinates and formalized with Vasquez + Anand.
+
+DESIGN (from `data/trees_clustered.csv`): 312 tiles = 6×6 km NLS TM35FIN map-sheet cells →
+7 contiguous super-site BLOCKS (DBSCAN eps=15km), 25–54 km across, 84–348 km apart (median 149);
+within-tile near-census of detections. 5/7 blocks southern (60–62°N), 1 central (65°N), 1 Lapland
+(67.6°N). Both experts: **purposive two-stage cluster sample** (non-probability PSU blocks →
+map-sheet tiles → within-tile census); model-based inference only; effective n = 7 blocks, not
+14,582 clusters (pseudoreplication); "national" = extent, not coverage/population.
+
+Follow-up experiments (`analysis/gate_block_cv.py`):
+- **Block-grouped CV** (Vasquez's required re-run): leave-one-block-out RF AUC = 0.975±0.003 ≈
+  the 100km-grid 0.976 → coherence check stable under the correct grouping.
+- **Per-block coverage:** gradient axis r ∈ [−0.869,−0.855] in all 7 blocks → within-block robust.
+- **Reach sign test (pseudoreplication-honest):** only 2/7 blocks show Type1>Type0 reach, sign
+  test p=0.45 → the connectivity difference does NOT survive block-level testing (the pooled
+  Mann–Whitney p=1.7e-10 was a large-n artefact).
+
+Applied: §3.1 provenance + "Sampling design" paragraph (cluster-sample formalization, effective
+n=7); §4.2 per-block coverage Table + form-vs-position caveat; §4.6 connectivity rewritten to the
+block-level sign test; §4.7 block-grouped CV (0.975); Limitations latitudinal-imbalance /
+bounded-generalization paragraph. Panel sustains Accept (Minor).
+
 ## Scale re-consult + two experiments (2026-06-25): panel sustains Accept (Minor)
 
 Re-consulted all four on the corrected national scale. All sustain Accept (Minor); all call the
