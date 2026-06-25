@@ -66,6 +66,33 @@ failures enumerated incl. the anisotropy null and AUC=0.727 confound) and to clo
 transferable-caution framing all three other reviewers requested. (Abstract, §4.5, methods, and
 the Moran figure now mutually consistent.)
 
+## Scale re-consult + two experiments (2026-06-25): panel sustains Accept (Minor)
+
+Re-consulted all four on the corrected national scale. All sustain Accept (Minor); all call the
+correction a strengthening. New convergent conditions, all addressed below:
+- **Within-band spatial-support caveat** (Vasquez/Anand/Tanaka) — distance stats connect only
+  within-band neighbours; report per-threshold neighbour counts.
+- **Latitude-conditioned R4** (Tanaka, weighted highest) and **latitude-stratified gradient**
+  (Lindqvist) — run; **Moran neighbour/island counts** (Vasquez) — run.
+- Sampling-design / representativeness note (Lindqvist/Anand).
+
+Experiment results (`analysis/scope_experiments.py`):
+- **Sampling extent CONFIRMED across Finland** (`figures/fig_sampling_extent.png`): 312 tiles in
+  discrete blocks, Lapland (~67–68°N) → central (~64°N) → south (~60–61°N), full width.
+- **Latitude-conditioned R4:** location alone predicts type at AUC 0.519 (≈chance; Type-0% flat
+  22.9/22.8/29.3 S→N); the detector confound is unchanged by partialling location (0.727→0.720).
+  → the confound is detection-driven, NOT latitudinal; the gradient is not a climate proxy.
+- **Latitude-stratified gradient:** compactness–AR correlation r = −0.864/−0.867/−0.868 in S/C/N
+  bands → the gradient is within-band robust, not a between-band regime mixture.
+- **Moran support:** islands 80.2% @200m → 0.8% @5km. The 200m cells rest on ~20% of points;
+  km-scale cells are well-supported (the inverse of the usual worry). Reinforces narrowing the
+  robust signal to Clark–Evans at 1–5km.
+
+Manuscript updated: §3.1 sampling map + per-band framing; §4.2 latitude-stratified gradient
+paragraph; §4.5 spatial-support + within-band caveat + neighbour counts; §4.7 latitude-conditioned
+R4; §4.6 within-block reach note; Limitations representativeness/sampling-design note; Moran
+methods + heatmap caption updated.
+
 ## CORRECTION (2026-06-25): scope is NATIONAL, not "southeastern Finland"
 
 An earlier edit relabelled the study national→"southeastern Finland", trusting Lindqvist's

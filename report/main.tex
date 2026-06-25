@@ -191,7 +191,18 @@ bands rather than continuous wall-to-wall coverage. Coordinates are provided in 
 (EPSG:3067), a conformal transverse Mercator projection with metric units, appropriate for
 distance-based spatial analyses. The dataset is therefore a \emph{national-scale but spatially
 discontinuous sample}: reported cluster prevalences and densities are sample statistics across the
-surveyed tiles and should not be read as an exhaustive national census.
+surveyed tiles and should not be read as an exhaustive national census. Figure~\ref{fig:sampling}
+shows the sampling footprint---discrete study blocks from the southern coast to Lapland.
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=0.7\linewidth]{fig_sampling_extent.png}
+  \caption{Sampling footprint: all 14,582 cluster centroids (from 312 aerial tiles) on a national
+           basemap. The tiles form discrete study blocks spanning $\sim$60.4--67.8\textdegree{}N
+           (southern boreal zone to Lapland) and the full longitudinal width, rather than
+           contiguous national coverage.}
+  \label{fig:sampling}
+\end{figure}
 
 \subsection{Clustering}
 \label{sec:clustering}
@@ -341,7 +352,11 @@ test (floor $5\times10^{-3}$) cannot. To test whether any autocorrelation is an 
 upstream detection error rather than ecology, we additionally propagated a 15\% random
 false-negative detection perturbation through the metric computation over 100 realizations and
 recorded the fraction preserving the sign and Bonferroni significance of $I$ at each
-metric$\,\times\,$threshold (a detection-robustness gate).
+metric$\,\times\,$threshold (a detection-robustness gate). Because the sample comprises discrete
+latitudinal bands separated by large gaps, the distance-band weights connect only within-band
+neighbours at all thresholds tested; the resulting statistic is therefore an estimate of
+\emph{within-band} autocorrelation, and we report per-threshold neighbour counts to expose how
+thin the short-distance support is.
 
 Local Moran's $I$ (LISA; \citealt{anselin1995local}) was computed to identify
 statistically significant spatial clusters (high--high and low--low) and spatial
@@ -491,6 +506,18 @@ expected when partitioning an elongated unimodal cloud and does not imply two na
 We therefore interpret the $k=2$ partition as two endpoints of a continuous
 compactness--elongation gradient.
 
+\mypar{The gradient is within-band, not a latitudinal mixture.}
+Because the sample spans 60--68\textdegree{}N---across which disturbance regimes differ (beetle is
+host- and temperature-limited toward the south; snow-load and wind rise in the centre; spruce
+thins toward Lapland)---a pooled gradient could in principle be an artefact of mixing
+latitudinally-distinct regimes. It is not. Stratified into southern ($\sim$60--62\textdegree{}N,
+$n=8{,}988$), central ($\sim$64--65\textdegree{}N, $n=4{,}217$), and northern
+($\sim$67--68\textdegree{}N, $n=1{,}377$) bands, the defining gradient axis is essentially
+identical within each band (compactness--aspect-ratio correlation $r = -0.864$, $-0.867$, $-0.868$
+respectively), as are the endpoint medians. The compactness--elongation gradient is thus a
+within-regime morphological phenomenon reproduced at every latitude, not a between-band regime
+mixture.
+
 \begin{figure}[htb]
   \centering
   \includegraphics[width=\linewidth]{fig_silhouette_permtest.png}
@@ -639,18 +666,25 @@ discussed in Section~\ref{sec:disc-orientation}.
 
 Figure~\ref{fig:morans} presents the multi-scale Moran's $I$ heatmap (E6) for four
 metrics at five distance thresholds. The autocorrelation that is present is weak in magnitude
-($I \leq 0.11$ throughout) and, where positive, strongest at the 200--500\,m scale and
-attenuating beyond 2\,km. We are deliberately conservative about its significance and its
-robustness, for two reasons. First, under the analytical $p$-value only Clark--Evans clears the
-Bonferroni threshold, and only at the 500\,m--5\,km scales; the fractal-dimension, aspect-ratio,
-and compactness autocorrelations are not Bonferroni-significant. Second, the detection-robustness
-gate shows that the \emph{sign} of $I$ survives a 15\% false-negative detection perturbation for
-Clark--Evans, aspect ratio, and compactness ($\geq 96\%$ of realizations at 200--500\,m) but
-\emph{not} for fractal dimension (sign preserved in only 60--72\%), whose near-zero
-autocorrelation is indistinguishable from noise once detection error is propagated. The defensible
-statement is therefore narrow: within-cluster dispersion (Clark--Evans) shows weak but robust
-positive spatial autocorrelation at the 0.5--5\,km scale, while the shape metrics show at most
-marginal, detection-sensitive structure. LISA maps (Figure~\ref{fig:lisa}) illustrate the spatial
+($I \leq 0.11$ throughout). We are deliberately conservative about its significance, its
+robustness, and its spatial support, for three reasons. First, under the analytical $p$-value only
+Clark--Evans clears the Bonferroni threshold, and only at the 500\,m--5\,km scales; the
+fractal-dimension, aspect-ratio, and compactness autocorrelations are not Bonferroni-significant.
+Second, the detection-robustness gate shows that the \emph{sign} of $I$ survives a 15\%
+false-negative detection perturbation for Clark--Evans, aspect ratio, and compactness ($\geq 96\%$
+of realizations) but \emph{not} for fractal dimension (sign preserved in only 60--72\%), whose
+near-zero autocorrelation is indistinguishable from noise once detection error is propagated.
+Third---and importantly given the banded sample---the short-distance thresholds rest on very thin
+support: at 200\,m, 80\% of the subsample clusters are islands (no neighbour within threshold,
+mean degree 0.3), falling to 52\% at 500\,m and 0.8\% at 5\,km (mean degree 29). The nominal
+``strongest at 200\,m'' cells are therefore computed on $\sim$20\% of points, whereas the
+km-scale cells are well supported; this is the opposite of the usual concern that the largest
+threshold is the sparsest. The defensible statement is therefore narrow: within-cluster dispersion
+(Clark--Evans) shows weak but robust positive spatial autocorrelation at the well-supported
+1--5\,km scale, while the shape metrics show at most marginal, detection-sensitive structure.
+Because the sample is in discrete latitudinal bands separated by large gaps, all distance-band
+weights connect only within-band neighbours: the reported autocorrelation is a \emph{within-band}
+quantity, and between-band (latitudinal) structure is unsampled rather than absent. LISA maps (Figure~\ref{fig:lisa}) illustrate the spatial
 structure of fractal-dimension autocorrelation within the southern display window; labels are
 computed on the full survey dataset to preserve correct neighbourhood weights, and given the
 weak global signal for this metric they are best read qualitatively.
@@ -661,9 +695,11 @@ weak global signal for this metric they are best read qualitatively.
   \caption{Moran's $I$ heatmap (E6): four metrics (rows) $\times$ five distance
            thresholds (columns), analytical $p$. Cells marked $*$ clear the Bonferroni
            threshold $\alpha^* = 0.0025$, $\dagger$ are nominally significant ($p<0.05$).
-           Autocorrelation is weak throughout ($I \leq 0.11$) and strongest at 200--500\,m;
-           only Clark--Evans is Bonferroni-significant, and a 15\% false-negative detection
-           perturbation leaves the sign of $I$ stable for all metrics except fractal dimension.}
+           Autocorrelation is weak throughout ($I \leq 0.11$); only Clark--Evans is
+           Bonferroni-significant (1--5\,km), and a 15\% false-negative detection perturbation
+           leaves the sign of $I$ stable for all metrics except fractal dimension. The 200\,m
+           column rests on $\sim$20\% of points (80\% islands); km-scale columns are well
+           supported. Weights connect within-band neighbours only.}
   \label{fig:morans}
 \end{figure*}
 
@@ -692,7 +728,10 @@ consequence of Type\,1's larger area and denser packing (larger, denser clusters
 more likely to fall within 200\,m of a neighbour). We therefore treat reach as a density correlate,
 not an independent line of evidence. Because the graph is untimed and unweighted, we do not
 interpret high-betweenness clusters as outbreak corridors or sentinels; they are geometric
-articulation points whose ecological relevance is untested. A meaningful connectivity analysis
+articulation points whose ecological relevance is untested. We also note that, because the sample
+is in discrete blocks separated by far more than 200\,m, no connected component can bridge blocks:
+reach is a strictly within-block measure of local packing density and carries no between-region
+connectivity meaning by construction. A meaningful connectivity analysis
 would require a graph whose length scale is matched to a dispersal process---for a bark-beetle
 hypothesis, a host-conditioned, dispersal-weighted graph at the $\sim$250\,m--1\,km scale of
 \textit{Ips typographus} flight; for wind, storm-front co-occurrence at the tens-of-kilometre
@@ -746,6 +785,15 @@ close to the detector's decision surface; the continuous morphospace coordinate 
 gradient is therefore the level at which the signal is least entangled with the instrument, and
 the typology is the level at which it is most entangled---hence the former is reported and the
 latter withheld.
+
+Because the sample spans 60--68\textdegree{}N, we further checked whether this detector confound is
+merely a latitudinal gradient (canopy composition, solar geometry, and snow/phenology all vary with
+latitude and could structure detector recall). It is not: cluster location alone (easting, northing)
+predicts type at AUC\,=\,0.519---essentially chance, consistent with the near-constant Type\,0
+prevalence across latitude bands (22.9\%, 22.8\%, 29.3\% from south to north)---and the detector
+confound is unchanged when location is partialled out (AUC 0.727\,$\to$\,0.720). The confound is thus
+driven by detection covariates (confidence, density), not by geography, and the morphological
+gradient is not a latitudinal climate proxy.
 
 \begin{figure}[htb]
   \centering
@@ -885,7 +933,12 @@ eps\,=\,20\,m clustering scale partly determines the elongation it then measures
 because standing dead trees persist for years in boreal stands, a single-year snapshot cannot
 date mortality: what we treat as one ``cluster'' may aggregate trees killed by different agents in
 different years that happen to be co-located, so the unit of analysis is itself only loosely
-defined---a fundamental limit on any morphology-to-process inference from one acquisition.
+defined---a fundamental limit on any morphology-to-process inference from one acquisition. Finally,
+the 312 tiles form a discontinuous set of study blocks spanning the latitudinal gradient rather
+than a probability sample of the boreal zone; reported distributions are conditional on tile
+placement, and the tile-selection design should be documented in any operational use. We did,
+however, verify that the central gradient finding is reproduced within each latitude band (above),
+so the principal result does not depend on the relative weighting of regions in the sample.
 
 \mypar{Future work.}
 The decisive next step is external validation that breaks the circularity of a shape-only study.
