@@ -4,8 +4,7 @@
 
 \graphicspath{{../figures/}}
 
-\title{\textbf{A Morphological-Gradient Characterisation of Dead-Tree Clusters\\
-       in Finland's Boreal Forests}}
+\title{\textbf{A Morphological-Gradient Characterisation of Dead-Tree Clusters in Finland's Boreal Forests}}
 
 \author[1]{\textbf{Anis Ur Rahman}}
 \author[2,3]{\textbf{Samuli Junttila}}
@@ -40,15 +39,15 @@
     22.9--28.6\% across eps 10--40\,m, with continuously migrating centroids); (ii) its
     23.5\,/\,76.5\% split is an artefact of the aspect-ratio filter, dissolving into a single
     continuous tail once the cap is released; (iii) the elongated endpoint carries \emph{no}
-    directional (anisotropic) signal beyond hull shape---and therefore no wind-throw
-    fingerprint---when matched on aspect ratio; and (iv) type identity is partly predictable from
+    directional (anisotropic) signal beyond hull shape, and therefore no wind-throw
+    fingerprint, when matched on aspect ratio; and (iv) type identity is partly predictable from
     detector confidence alone (AUC\,=\,0.727). Mixture-model BIC and a unimodal principal axis
     independently favour a continuum over two modes, and a held-out Random Forest that appears to
     recover the split (AUC\,=\,0.976\,$\pm$\,0.002) does so only through geometric redundancy among
-    shape features---the one shape-orthogonal feature, landscape connectivity, adds nothing. We
+    shape features; the one shape-orthogonal feature, landscape connectivity, adds nothing. We
     therefore report a morphological gradient, not a typology, and withhold disturbance-agent
-    labels: with no species, dating, or ground-truth layers---and the only public agent maps
-    fusing wind and beetle into a single class---attribution is not supportable. The central
+    labels: with no species, dating, or ground-truth layers (and the only public agent maps
+    fuse wind and beetle into a single class), attribution is not supportable. The central
     contribution is thus partly cautionary: discrete, agent-labelled typologies derived from
     DBSCAN-then-shape pipelines can be artefacts of clustering scale, filter thresholds, and
     detector behaviour, and should be tested against these gates before being read as ecology.
@@ -70,8 +69,8 @@ biodiversity, yet they are undergoing accelerating disturbance as climate change
 drought, windstorms, and pest outbreaks \citep{bradshaw2015global, allen2010global}.
 In Finland, non-harvest tree mortality has increased substantially in recent years
 \citep{junttila2024significant}, a trajectory that demands systematic monitoring. Understanding which
-ecological processes drive this mortality---and where they concentrate across the
-landscape---is a prerequisite for adaptive management and carbon-flux modelling.
+ecological processes drive this mortality, and where they concentrate across the
+landscape, is a prerequisite for adaptive management and carbon-flux modelling.
 
 The spatial arrangement of dead trees encodes information about the process that killed them.
 Bark-beetle outbreaks typically generate dense, spatially contagious patches as infestation
@@ -79,13 +78,13 @@ spreads from tree to tree \citep{raffa2008cross, hlasny2021bark}. Wind damage, b
 tends to produce elongated, directionally oriented swaths aligned with storm tracks
 \citep{gardiner2013wind, gregow2011combined}. Drought-induced mortality can produce more
 scattered, diffuse patterns tied to soil-water gradients \citep{mcdowell2008mechanisms}.
-These morphological \textit{fingerprints} are in principle recoverable from point-cloud data
-even when individual tree species and cause-of-death records are unavailable.
+These morphological \textit{fingerprints} are in principle recoverable from the spatial arrangement of dead-tree
+locations even when individual tree species and cause-of-death records are unavailable.
 
 High-resolution aerial imagery now enables the detection and georeferencing of individual
 dead trees over large areas. The 2023 aerial sample used here produced 698,223
 dead-tree locations in ETRS89/TM35FIN (EPSG:3067) coordinates, distributed across Finland from the
-southern boreal zone to Lapland---a dataset large enough to support robust statistical
+southern boreal zone to Lapland, a dataset large enough to support robust statistical
 characterisation of cluster morphology at scales ranging from the individual stand to the
 national sample.
 
@@ -99,7 +98,7 @@ This paper makes three methodological contributions:
         K-means clustering on fractal dimension, Clark--Evans index, and aspect ratio recovers
         a dominant one-dimensional gradient. We show this structure exceeds a
         \emph{covariance-preserving} null (a single multivariate Gaussian matched to the observed
-        feature covariance; $p=0.001$)---a stricter test than column-shuffling, which destroys all
+        feature covariance; $p=0.001$), a stricter test than column-shuffling, which destroys all
         inter-feature correlation. We further show, via mixture-model BIC and a unimodal primary
         axis, that the gradient is \emph{not} a clean two-way dichotomy; the $k=2$ split is offered
         as an interpretive summary, not a discovered class boundary.
@@ -109,7 +108,7 @@ This paper makes three methodological contributions:
         an artefact of the aspect-ratio filter, it carries no directional structure beyond hull
         shape, and it is partly predictable from detector confidence alone. A held-out Random Forest
         reproduces the $k=2$ partition (AUC\,=\,0.976) only through geometric redundancy among shape
-        descriptors---the one shape-orthogonal feature (landscape connectivity) adds no signal. We
+        descriptors; the one shape-orthogonal feature (landscape connectivity) adds no signal. We
         therefore present a morphological gradient, explicitly not a disturbance typology.
 \end{enumerate}
 
@@ -118,7 +117,7 @@ wind, bark beetle, or other agents are testable hypotheses, not findings: confir
 would require species records, mortality dates linked to known events (the available
 \texttt{alku\_aika} field records flight-strip acquisition time, not mortality date), and
 multi-temporal imagery, none of which are present in the current dataset. We return to specific
-attribution caveats---including the absence of any directional signal in the elongated type---in
+attribution caveats, including the absence of any directional signal in the elongated type, in
 the Discussion.
 
 % ─────────────────────────────────────────────────────────────────────────────
@@ -188,13 +187,13 @@ individual-tree mortality U-Net segmentation model of \citet{junttila2024signifi
 high-resolution aerial imagery acquired in 2023; the underlying detection dataset is not yet
 publicly released. The detections come from 312 aerial
 image tiles distributed across Finland, spanning roughly 60.4--67.8\textdegree{}N and
-21.6--29.6\textdegree{}E---from the southern boreal zone to Lapland---in discrete latitudinal
+21.6--29.6\textdegree{}E, from the southern boreal zone to Lapland, in discrete latitudinal
 bands rather than continuous wall-to-wall coverage. Coordinates are provided in ETRS89/TM35FIN
 (EPSG:3067), a conformal transverse Mercator projection with metric units, appropriate for
 distance-based spatial analyses. The dataset is therefore a \emph{national-scale but spatially
 discontinuous sample}: reported cluster prevalences and densities are sample statistics across the
 surveyed tiles and should not be read as an exhaustive national census. Figure~\ref{fig:sampling}
-shows the sampling footprint---discrete study blocks from the southern coast to Lapland.
+shows the sampling footprint, discrete study blocks from the southern coast to Lapland.
 
 \begin{figure}[htb]
   \centering
@@ -326,7 +325,7 @@ K-means clustering was applied to the standardised feature vector
 (fractal\_dim, clark\_evans, aspect\_ratio) using $k \in \{2, \ldots, 7\}$.
 The optimal $k$ was selected by jointly evaluating the silhouette coefficient,
 Calinski--Harabasz (CH) score, and Davies--Bouldin (DB) index. At $k=2$ these were
-silhouette\,=\,0.401, CH\,=\,8767, DB\,=\,1.073---the best combined performance
+silhouette\,=\,0.401, CH\,=\,8767, DB\,=\,1.073, the best combined performance
 across the tested range.
 
 To assess whether the observed silhouette score reflects genuine structure rather than the
@@ -401,8 +400,8 @@ $[0^\circ,180^\circ)$ entered here as a linear feature, so the tree splits canno
 circular structure; given its low importance below, this does not affect the conclusions.)
 Spatial block cross-validation (GroupKFold, 5 folds,
 $100 \times 100$\,km grid, 12 blocks, mean 1215 clusters/block) was used to prevent
-spatial leakage. We caution that the blocks are size-imbalanced---the five largest hold roughly
-four-fifths of the clusters---so the tight fold-to-fold AUC range understates true spatial
+spatial leakage. We caution that the blocks are size-imbalanced, the five largest hold roughly
+four-fifths of the clusters, so the tight fold-to-fold AUC range understates true spatial
 variability. SHAP values \citep{lundberg2017unified} were computed to assess feature importance.
 
 \subsection{Stability Gates}
@@ -512,7 +511,7 @@ The observed silhouette (0.401) exceeded the mean (0.321) and 95th percentile (0
 999-replicate null drawn from a single multivariate Gaussian matched to the observed feature
 covariance, yielding $p = 0.001$ (Figure~\ref{fig:permtest}). Because this null preserves all
 inter-feature correlation, the result indicates that the data are more structured than one
-elongated correlated cloud---a substantially stronger statement than rejecting the
+elongated correlated cloud, a substantially stronger statement than rejecting the
 column-shuffled null, which any correlated dataset trivially beats.
 
 \mypar{Continuum, not dichotomy.}
@@ -526,11 +525,11 @@ We therefore interpret the $k=2$ partition as two endpoints of a continuous
 compactness--elongation gradient.
 
 \mypar{The gradient is within-band, not a latitudinal mixture.}
-Because the sample spans 60--68\textdegree{}N---across which disturbance regimes differ (beetle is
+Because the sample spans 60--68\textdegree{}N, across which disturbance regimes differ (beetle is
 host- and temperature-limited toward the south; snow-load and wind rise in the centre; spruce
-thins toward Lapland)---a pooled gradient could in principle be an artefact of mixing
+thins toward Lapland), a pooled gradient could in principle be an artefact of mixing
 latitudinally-distinct regimes. It is not. Computed separately within each of the 7 sampling blocks (Table~\ref{tab:blocks}), the defining
-gradient axis is essentially identical everywhere---the within-block compactness--aspect-ratio
+gradient axis is essentially identical everywhere: the within-block compactness--aspect-ratio
 correlation is $r \in [-0.869, -0.855]$ across all blocks, from the southern coast (60.6\textdegree{}N)
 to Lapland (67.6\textdegree{}N). The compactness--elongation gradient is thus a within-block
 morphological phenomenon reproduced at every site, not an artefact of pooling latitudinally-distinct
@@ -566,7 +565,7 @@ licenses is that the \emph{form} of the relationship is region-invariant, not th
   \caption{Significance and discreteness of the $k=2$ partition.
            \textbf{(a)} The observed silhouette (red line, 0.401) exceeds a 999-replicate
            \emph{covariance-preserving} null (single multivariate Gaussian matched to the feature
-           covariance; mean 0.321, 95th pct 0.324), $p = 0.001$---a far stricter test than
+           covariance; mean 0.321, 95th pct 0.324), $p = 0.001$, a far stricter test than
            column-shuffling. \textbf{(b)} Gaussian-mixture BIC decreases monotonically past $k=2$,
            so no two-component model is privileged. \textbf{(c)} The first principal component
            (60\% of variance) is unimodal (Sarle coefficient 0.486). Together: real structure, but
@@ -628,7 +627,7 @@ Figure~\ref{fig:typology_map}; the inset locates this window within the national
 \mypar{Size-frequency distributions (E1).}
 For both endpoints a lognormal cluster-size distribution is preferred over a power law
 (likelihood-ratio test $p < 0.001$; \citealt{clauset2009power}). We therefore do not interpret
-the nominal power-law exponents as process signatures---once the power law is rejected, its
+the nominal power-law exponents as process signatures, once the power law is rejected, its
 exponent is not a meaningful mechanistic parameter. Descriptively, Type\,1 has the heavier upper
 tail (Figure~\ref{fig:sizedist}), but this follows directly from its larger mean cluster area
 (1,269 vs.\ 382\,m$^2$) and does not by itself imply a contagious generating process.
@@ -647,8 +646,8 @@ Figure~\ref{fig:shapespace} plots each cluster in (compactness, aspect\_ratio) s
 set of \emph{illustrative} morphological regions loosely informed by qualitative descriptions of
 wind, beetle, and fire patches in the literature \citep{seidl2011unraveling, jonsson2012epidemics,
 gardiner2013wind}. We stress that these regions are author-defined bounding boxes, not published
-(compactness, aspect\_ratio) envelopes---the cited studies do not report cluster-level shape
-coordinates by agent---and that any apparent separation is partly circular: aspect ratio is a
+(compactness, aspect\_ratio) envelopes, the cited studies do not report cluster-level shape
+coordinates by agent, and that any apparent separation is partly circular: aspect ratio is a
 clustering input and compactness is geometrically coupled to it. The descriptive overlaps
 (Table~\ref{tab:shapespace}) therefore restate the gradient definition rather than provide
 independent ecological validation, and we report them only to locate the two endpoints in a
@@ -716,7 +715,7 @@ Second, the detection-robustness gate shows that the \emph{sign} of $I$ survives
 false-negative detection perturbation for Clark--Evans, aspect ratio, and compactness ($\geq 96\%$
 of realizations) but \emph{not} for fractal dimension (sign preserved in only 60--72\%), whose
 near-zero autocorrelation is indistinguishable from noise once detection error is propagated.
-Third---and importantly given the banded sample---the short-distance thresholds rest on very thin
+Third, and importantly given the banded sample, the short-distance thresholds rest on very thin
 support: at 200\,m, 80\% of the subsample clusters are islands (no neighbour within threshold,
 mean degree 0.3), falling to 52\% at 500\,m and 0.8\% at 5\,km (mean degree 29). The nominal
 ``strongest at 200\,m'' cells are therefore computed on $\sim$20\% of points, whereas the
@@ -765,7 +764,7 @@ Pooled across all clusters, Type\,1 appears more connected than Type\,0 (median 
 mean reach 11.03 vs.\ 8.98; Mann--Whitney $p = 1.7\times10^{-10}$), but this is a pseudoreplication
 artefact: the rank-biserial effect size is only $r = 0.07$, and the test treats 14,582
 block-nested clusters as independent. Tested honestly at the level of the 7 sampling blocks, the
-difference does not survive---only 2 of 7 blocks show Type\,1\,$>$\,Type\,0 median reach (sign test
+difference does not survive: only 2 of 7 blocks show Type\,1\,$>$\,Type\,0 median reach (sign test
 $p = 0.45$). The pooled ``significance'' was entirely a large-$n$ effect, and what difference exists
 is a direct consequence of Type\,1's larger area and denser packing (larger, denser clusters are
 mechanically more likely to fall within 200\,m of a neighbour). We therefore treat reach as a density correlate,
@@ -775,10 +774,10 @@ articulation points whose ecological relevance is untested. We also note that, b
 is in discrete blocks separated by far more than 200\,m, no connected component can bridge blocks:
 reach is a strictly within-block measure of local packing density and carries no between-region
 connectivity meaning by construction. A meaningful connectivity analysis
-would require a graph whose length scale is matched to a dispersal process---for a bark-beetle
+would require a graph whose length scale is matched to a dispersal process, for a bark-beetle
 hypothesis, a host-conditioned, dispersal-weighted graph at the $\sim$250\,m--1\,km scale of
 \textit{Ips typographus} flight; for wind, storm-front co-occurrence at the tens-of-kilometre
-scale of a storm footprint---and these are mutually incompatible graphs, which is itself why a
+scale of a storm footprint, and these are mutually incompatible graphs, which is itself why a
 single undirected 200\,m graph cannot adjudicate either process.
 
 \begin{figure}[htb]
@@ -807,8 +806,8 @@ The held-out Random Forest classifier achieved AUC\,=\,0.976\,$\pm$\,0.002
 with the 7 sampling blocks as the grouping variable (leave-one-block-out), which matches the true
 spatial-dependence structure, gives an essentially identical AUC\,=\,0.975\,$\pm$\,0.003. We caution
 against reading this as independent validation. The ``held-out'' features are geometrically coupled to the
-K-means inputs---compactness, for example, correlates with aspect ratio at $r = -0.865$ and alone
-attains a univariate AUC of about 0.96---so a high AUC is largely a restatement of the K-means
+K-means inputs: compactness, for example, correlates with aspect ratio at $r = -0.865$ and alone
+attains a univariate AUC of about 0.96, so a high AUC is largely a restatement of the K-means
 boundary through correlated geometry rather than corroboration from new information. We report it
 only as an internal coherence check; on an imbalanced 76.5/23.5 partition, ROC-AUC should in
 future be complemented by precision--recall AUC and per-class recall.
@@ -818,8 +817,8 @@ compactness (0.226) $>$ core\_to\_edge\_ratio (0.068) $>$ nnd\_mean (0.037)
 $>$ orientation (0.034) $>$ alpha\_compactness (0.019) $>$ nnd\_std (0.010)
 $>$ reach\_200m (0.005).
 Compactness dominates because it is geometrically correlated with aspect ratio
-(a K-means input). Crucially, reach\_200m---the only feature in this set that is
-independent of cluster shape---ranks last, confirming that high AUC is primarily
+(a K-means input). Crucially, reach\_200m, the only feature in this set that is
+independent of cluster shape, ranks last, confirming that high AUC is primarily
 driven by correlated shape dimensions rather than landscape connectivity.
 
 This same asymmetry is what licenses reporting the gradient while withholding the discrete
@@ -828,14 +827,14 @@ cluster's position along the \emph{continuous} gradient (first principal compone
 features) correlates with detection confidence at only $\rho = 0.07$. The discrete labels sit
 close to the detector's decision surface; the continuous morphospace coordinate does not. The
 gradient is therefore the level at which the signal is least entangled with the instrument, and
-the typology is the level at which it is most entangled---hence the former is reported and the
+the typology is the level at which it is most entangled, hence the former is reported and the
 latter withheld.
 
 Because the sample spans 60--68\textdegree{}N, we further checked whether this detector confound is
 merely a latitudinal gradient (canopy composition, solar geometry, and snow/phenology all vary with
 latitude and could structure detector recall). It is not: cluster location alone (easting, northing)
-predicts type at AUC\,=\,0.519---essentially chance, consistent with the near-constant Type\,0
-prevalence across latitude bands (22.9\%, 22.8\%, 29.3\% from south to north)---and the detector
+predicts type at AUC\,=\,0.519, essentially chance, consistent with the near-constant Type\,0
+prevalence across latitude bands (22.9\%, 22.8\%, 29.3\% from south to north), and the detector
 confound is unchanged when location is partialled out (AUC 0.727\,$\to$\,0.720). The confound is thus
 driven by detection covariates (confidence, density), not by geography, and the morphological
 gradient is not a latitudinal climate proxy.
@@ -845,7 +844,7 @@ gradient is not a latitudinal climate proxy.
   \includegraphics[width=\linewidth]{fig_shap_heldout.png}
   \caption{Mean $|$SHAP$|$ feature importance for the held-out Random Forest (E10).
            Compactness dominates; reach\_200m (the only shape-orthogonal feature,
-           highlighted) ranks last---so the high AUC reflects geometric redundancy among
+           highlighted) ranks last, so the high AUC reflects geometric redundancy among
            shape descriptors rather than independent signal.}
   \label{fig:shap}
 \end{figure}
@@ -888,7 +887,7 @@ interpretation.
   \centering
   \includegraphics[width=\linewidth]{fig_anisotropy.png}
   \caption{Second-order anisotropy gate (G3). \textbf{(a)} Overall, the elongated endpoint
-           appears more linear---but this is confounded by hull aspect ratio. \textbf{(b)}
+           appears more linear, but this is confounded by hull aspect ratio. \textbf{(b)}
            Matched on hull aspect ratio, the two endpoints' median point-scatter linearity is
            indistinguishable (n.s.\ where shown), so the elongated endpoint carries no directional
            point-process signal beyond hull shape.}
@@ -916,7 +915,7 @@ stratified detection precision/recall against ground truth, which the present da
 % ─────────────────────────────────────────────────────────────────────────────
 
 \mypar{A morphological gradient, not a disturbance-agent typology.}
-It is tempting to map the two endpoints onto dominant Finnish disturbance agents---the elongated,
+It is tempting to map the two endpoints onto dominant Finnish disturbance agents, the elongated,
 internally dispersed Type\,0 onto wind-felled strips \citep{gardiner2013wind, gregow2011combined},
 and the compact, denser Type\,1 onto radially spreading beetle kill
 \citep{raffa2008cross, jonsson2012epidemics, kautz2011simulating}. We deliberately resist this
@@ -930,21 +929,21 @@ or small salvage/clearcut polygons; the \texttt{alku\_aika} field records flight
 acquisition time, not mortality date, severing any link to specific storms or outbreak years; and
 the single 2023 snapshot cannot separate a recent event from a years-old palimpsest of snags.
 A compact morphology, in particular, is the default shape of almost any small mortality patch and
-is therefore the least diagnostic possible signal---making a 76.5\% ``compact'' prevalence
+is therefore the least diagnostic possible signal, making a 76.5\% ``compact'' prevalence
 uninformative about agent identity.
 
 \mypar{Three of our own results point the same way: this is geometry, not agent.}
 \label{sec:disc-orientation}
 The most telling evidence is internal and convergent. (i) \emph{Orientation.} The elongated
-endpoint shows no preferred orientation ($r = 0.009$, $p = 0.747$)---yet directional alignment
+endpoint shows no preferred orientation ($r = 0.009$, $p = 0.747$), yet directional alignment
 with storm tracks is the single most diagnostic fingerprint of windthrow. An elongated class with
 no net direction is precisely what one would \emph{not} expect from wind, and it is the main
 reason we decline the ``wind-thrown'' label. (ii) \emph{Scale dependence.} The prevalence of the
 elongated endpoint moves with the DBSCAN radius (22.9\% at 40\,m to 28.6\% at 10\,m); a genuine
 ecological class should be eps-stable, whereas a chaining artefact rescales with eps. (iii)
 \emph{Connectivity.} The only shape-orthogonal feature, 200\,m reach, carries essentially no
-discriminative signal (SHAP 0.005, last of seven). Read together---non-directional elongation,
-eps-dependent prevalence, and no independent connectivity signal---the most parsimonious account
+discriminative signal (SHAP 0.005, last of seven). Read together, non-directional elongation,
+eps-dependent prevalence, and no independent connectivity signal, the most parsimonious account
 is that the typology summarises a continuum of \emph{detection-and-clustering geometry} (how dead-
 tree detections chain together at a 20\,m radius, with mean within-cluster spacing of only
 7.79\,m), rather than two distinct disturbance processes. The earlier ecological reading of the
@@ -966,7 +965,7 @@ distinguishable.
 \mypar{Limitations.}
 Beyond the attribution caveats above, several additional limitations merit note. The upstream
 deep-learning detection model is reported here without validation metrics (precision, recall), and
-gate G4 shows its confidence score alone predicts type at AUC\,=\,0.727---so detection error,
+gate G4 shows its confidence score alone predicts type at AUC\,=\,0.727, so detection error,
 likely structured by forest type, canopy density, and flight-strip geometry, is partly entangled
 with the morphology we measure. Fully separating the two requires stratified detection
 precision/recall against ground truth, which the present data lack; this is the single most
@@ -978,12 +977,12 @@ eps\,=\,20\,m clustering scale partly determines the elongation it then measures
 because standing dead trees persist for years in boreal stands, a single-year snapshot cannot
 date mortality: what we treat as one ``cluster'' may aggregate trees killed by different agents in
 different years that happen to be co-located, so the unit of analysis is itself only loosely
-defined---a fundamental limit on any morphology-to-process inference from one acquisition. Finally,
+defined, a fundamental limit on any morphology-to-process inference from one acquisition. Finally,
 the 312 tiles form a purposive two-stage cluster sample (7 super-site blocks), not a probability
 sample of the boreal zone, and the design is latitudinally imbalanced: 5 of the 7 blocks are
 southern (60--62\textdegree{}N), while the central (65\textdegree{}N) and Lapland
 (67.6\textdegree{}N) regimes are each represented by a \emph{single, unreplicated} block. Any
-north--south contrast is therefore confounded with block identity---there is no way to separate a
+north--south contrast is therefore confounded with block identity: there is no way to separate a
 latitude effect from one block's idiosyncrasy with $n=1$ block per northern regime. Findings
 generalise to the within-landscape morphology of detected mortality at the southern super-sites
 (where blocks are replicated); extension to central and northern Finland is provisional, and the
@@ -1002,8 +1001,8 @@ genuinely beetle-dominated or a mix of fire, drought, snow-load, and salvage. We
 obstacle for the wind-versus-beetle question specifically: the publicly available pan-European
 attribution products \citep{senf2021mapping} group wind and bark beetle into a single
 combined class, so they cannot by themselves separate the two agents our endpoints might be
-hypothesised to represent---a dedicated regional agent layer (e.g.\ Metsäkeskus damage records)
-would be required. Multi-temporal imagery---feasible from the same pipeline for prior years---would add
+hypothesised to represent, a dedicated regional agent layer (e.g.\ Metsäkeskus damage records)
+would be required. Multi-temporal imagery, feasible from the same pipeline for prior years, would add
 the missing dimension: it would date mortality, permit a true wave-front and storm-track
 alignment test for the elongated endpoint, and turn the connectivity graph from a static density
 correlate into a flow model that asks whether this year's morphology predicts next year's
@@ -1029,17 +1028,17 @@ the DBSCAN radius (G1), its 23.5\%/76.5\% split is an artefact of the aspect-rat
 dissolves into a single continuous tail once that filter is released (G2), the elongated class
 carries no directional structure beyond hull shape (G3, consistent with the orientation null), and
 it is partly predictable from detector confidence alone (G4). The held-out Random Forest
-(AUC\,=\,0.976) reproduces the split only through geometric redundancy among shape descriptors---the
+(AUC\,=\,0.976) reproduces the split only through geometric redundancy among shape descriptors, the
 one shape-orthogonal feature, landscape connectivity, adds no signal.
 
-The framework demonstrates that remote-sensing-derived point clouds of tree mortality contain a
-recoverable and reproducible morphological gradient---but that the temptation to discretise it into
+The framework demonstrates that remote-sensing-derived maps of dead-tree locations contain a
+recoverable and reproducible morphological gradient, but that the temptation to discretise it into
 disturbance types must be resisted on the present evidence. The discrete partition is an artefact of
 clustering scale and a filter applied to its own defining axis, with no second-order content and a
 measurable detector confound; the gradient is what is real. Rather than a ready ``first filter'' for
 the field, the pipeline is best positioned as a hypothesis-generating characterisation whose
 ecological meaning must be established by overlay with independent disturbance-agent maps, species
-layers, and multi-temporal imagery---a programme we outline as the natural next step.
+layers, and multi-temporal imagery, a programme we outline as the natural next step.
 
 % ─────────────────────────────────────────────────────────────────────────────
 \bibliographystyle{unsrtnat}
