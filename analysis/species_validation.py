@@ -69,10 +69,10 @@ def type_contrast(d):
         for b, g in d.groupby("block"):
             if len(g) < MINB:
                 continue
-            t0 = g.loc[g.morph_type == "Type0", sp + "_frac"]   # compact endpoint
-            t1 = g.loc[g.morph_type == "Type1", sp + "_frac"]   # elongated endpoint
-            if len(t0) >= 10 and len(t1) >= 10:
-                diffs.append(t1.median() - t0.median())         # elongated - compact
+            elong = g.loc[g.morph_type == "Type0", sp + "_frac"]   # Type0 = elongated/dispersed (23.5%)
+            comp = g.loc[g.morph_type == "Type1", sp + "_frac"]    # Type1 = compact/aggregated (76.5%)
+            if len(elong) >= 10 and len(comp) >= 10:
+                diffs.append(elong.median() - comp.median())       # elongated - compact
         diffs = np.array(diffs)
         pos = int((diffs > 0).sum()); k = len(diffs)
         sp_p = stats.binomtest(max(pos, k - pos), k, 0.5).pvalue
@@ -122,10 +122,10 @@ def figure(d, per, tc):
     # (b) species mix by morphological endpoint (pooled distributions, for display)
     sps = ["spruce", "pine", "birch"]
     x = np.arange(len(sps)); w = 0.36
-    m0 = [d.loc[d.morph_type == "Type0", sp + "_frac"].median() for sp in sps]
-    m1 = [d.loc[d.morph_type == "Type1", sp + "_frac"].median() for sp in sps]
-    ax[1].bar(x - w/2, m0, w, label="compact (Type0)", color=PALETTE["primary"])
-    ax[1].bar(x + w/2, m1, w, label="elongated (Type1)", color=PALETTE["secondary"])
+    m0 = [d.loc[d.morph_type == "Type0", sp + "_frac"].median() for sp in sps]   # elongated
+    m1 = [d.loc[d.morph_type == "Type1", sp + "_frac"].median() for sp in sps]   # compact
+    ax[1].bar(x - w/2, m0, w, label="elongated (Type0)", color=PALETTE["secondary"])
+    ax[1].bar(x + w/2, m1, w, label="compact (Type1)", color=PALETTE["primary"])
     ax[1].set_xticks(x); ax[1].set_xticklabels(sps)
     ax[1].set_ylabel("median species fraction of total volume")
     ax[1].set_title("Species mix at the two morphological endpoints")

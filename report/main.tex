@@ -361,8 +361,9 @@ distribution. Results were stratified by type.
 
 Global Moran's $I$ was computed for four cluster-level metrics
 (fractal\_dim, clark\_evans, aspect\_ratio, compactness) at five spatial thresholds
-(200, 500, 1000, 2000, 5000\,m) using a stratified random subsample of $n=2{,}000$ clusters.
-A distance-band contiguity at threshold $\delta$ ($d_{ij} \leq \delta$) was used, with the
+(200, 500, 1000, 2000, 5000\,m) using a random subsample of $n=2{,}000$ clusters stratified by
+block, which preserves the regional structure while keeping the dense distance-band weight matrix
+tractable. A distance-band contiguity at threshold $\delta$ ($d_{ij} \leq \delta$) was used, with the
 weights row-standardised ($\sum_j w_{ij} = 1$). With 20 simultaneous tests we applied a
 Bonferroni-corrected significance threshold $\alpha^* = 0.05/20 = 0.0025$; significance is
 assessed with the analytical (normal-approximation) $p$-value, since a 999-permutation $p_{\rm sim}$
@@ -1219,6 +1220,34 @@ measurable detector confound; the gradient is what is real. Rather than a ready 
 the field, the pipeline is best positioned as a hypothesis-generating characterisation whose
 ecological meaning must be established by overlay with independent disturbance-agent maps, species
 layers, and multi-temporal imagery, a programme we outline as the natural next step.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section*{Data and Code Availability}
+The dead-tree detections analysed here were produced by the U-Net segmentation model of
+\citet{junttila2024significant} applied to 2023 National Land Survey of Finland aerial imagery; the
+derived cluster-level table (14,582 clusters with shape, point-pattern, and connectivity metrics) and
+the per-tree coordinates are released with the analysis code. The host and species covariates are the
+public multi-source national forest inventory (MS-NFI / MVMI) growing-stock volume and land-class
+rasters of the Natural Resources Institute Finland (Luke; CC-BY 4.0, 16\,m, EPSG:3067), pre-mortality
+(2021) vintage: \texttt{kuusi} (spruce), \texttt{manty} (pine), \texttt{koivu} (birch),
+\texttt{tilavuus} (total volume) and \texttt{maaluokka} (land class), file stamp \texttt{vmi1x\_1721},
+retrieved from the Paituli / funet geodata archive
+(\texttt{rsync.nic.funet.fi/index/geodata/luke/vmi/2021/}). All analysis code (clustering, shape
+metrics, the four falsification gates, the host-conditioned point-process engine and its
+\texttt{spatstat} cross-check, and the external species validation) is available at
+\url{https://github.com/aniskhan25/TreeMortSpatial}. The national raster tiles are redistributed by
+Luke and are not duplicated in the repository; the \texttt{rsync} paths above reproduce them exactly.
+
+\section*{Reproducibility}
+Analyses were run with Python 3.9.6 (numpy 2.0.2, scipy 1.13.1, pandas 2.3.3, scikit-learn 1.6.1,
+geopandas 1.0.1, rasterio 1.4.3, shapely 2.0.7, pyproj 3.6.1, pointpats 2.3.0, matplotlib 3.9.4) and
+R 4.6.1 with \texttt{spatstat} 3.6.1. All stochastic steps are seeded: the covariance-preserving null
+and discreteness tests use seed 42, the per-block tree subsampling for the tree-level point process
+uses seed 42, and the \texttt{spatstat} envelopes use 39 host-conditioned simulations per block
+(self-tested on inhomogeneous-Poisson patterns). DBSCAN (\texttt{eps}\,=\,20\,m for clusters,
+15\,km for blocks; \texttt{min\_samples}\,=\,1 for the block grouping) is deterministic. Software
+versions, per-figure provenance, the shape-feature correlation matrix, and univariate feature AUCs
+are tabulated in the Supplementary Information.
 
 % ─────────────────────────────────────────────────────────────────────────────
 \bibliographystyle{unsrtnat}

@@ -719,3 +719,30 @@ shape space and the detector: pre-mortality (2021) MS-NFI species composition.
 - Manuscript: added Methods G5 (external species validation), a Discussion paragraph
   "External corroboration: morphology does not track species composition" + fig:species, and folded
   it into contributions 2 (harness) and 3 (shape-not-agent). Recompiled clean (0 undefined refs).
+
+### M3 REPRODUCIBILITY + SUPPLEMENTARY INFORMATION + HOUSEKEEPING — EXECUTED (2026-06-26)
+Closes the pre-submission housekeeping from the session-5 list.
+- **Data & Code Availability + Reproducibility** sections added to main.tex (before bibliography):
+  detector provenance (Junttila 2024 + NLS imagery), MS-NFI raster sources (Luke CC-BY 4.0, exact
+  funet rsync paths, vmi1x_1721 vintage), GitHub repo, full Python 3.9.6 + R 4.6.1/spatstat 3.6.1
+  version list, all seeds (42) and DBSCAN determinism.
+- **Supplementary Information** (`report/supplementary.tex` -> supplementary.pdf, 3pp): S1 software/
+  seeds table; S2 shape-feature Spearman correlation matrix (fig_si_corr) + interpretation; S3
+  univariate feature AUCs table (compactness 0.961, AR 0.945, ... honestly flagged as expected/
+  circular geometric redundancy, not independent validation); S4 per-figure provenance table
+  (every main-text figure -> generating script). New `analysis/make_si_tables.py` ->
+  si_feature_corr.csv, si_univariate_auc.csv, figures/fig_si_corr.{png,pdf}.
+- **m1** (Moran subsample): added rationale (stratified-by-block, tractability) to Methods; the
+  existing text already handles 5km support honestly (mean degree 29 of 2000 = sparse, well-supported).
+- **CORRECTNESS FIX:** caught a swapped endpoint label in species_validation.py (Type0=elongated/
+  23.5%, Type1=compact/76.5% per the C4 relabel; I had them reversed). Q1 (continuous aspect_ratio
+  correlations -- the main result) unaffected; fixed Q2 figure legend + type-contrast sign labels and
+  regenerated fig_species_validation. Manuscript species paragraph (|rho|<=0.05, <=2pp, no consistent
+  sign) still holds.
+- Both PDFs recompiled clean (main 19pp, SI 3pp, 0 undefined refs).
+
+### STILL OPEN (not blocking; reframe lowered priority)
+- M4 size-matched/partial-effect connectivity re-analysis: NOT re-run, but the section is caveated
+  (reach=density correlate; corridor/sentinel language removed) so no false claim stands.
+- AR-from-raw sweep is done (gate2_ar_sweep.json); only the cosmetic fold-back into NB07 is pending.
+- src/severity.py (CSI, m5): unused by the paper; left in place, flagged.

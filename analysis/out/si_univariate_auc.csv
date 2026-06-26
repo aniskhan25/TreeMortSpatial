@@ -1,0 +1,12 @@
+feature,auc,direction_with_compact,n_missing,kmeans_input
+compactness,0.961404228175688,+,0,False
+aspect_ratio,0.945060163102338,-,0,True
+elongation,0.945060163102338,-,0,False
+fractal_dim,0.9375978540709599,+,0,True
+core_to_edge_ratio,0.8367903026798975,+,0,False
+clark_evans,0.7598241873686813,-,0,True
+area_m2,0.7332093202533051,+,0,False
+n_points,0.726352308172504,+,0,False
+alpha_compactness,0.6619402123328711,+,995,False
+nnd_mean,0.6220423299376374,-,0,False
+perimeter_m,0.5768592011630416,+,0,False
