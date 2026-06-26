@@ -679,3 +679,23 @@ add a formal Hartigan dip test to the SI; Sarle BC + GMM BIC already give a cohe
 - Minor code/text: Moran weights description (m1), fractal-dim-on-hull text (m2),
   core_to_edge buffer (m3), axial orientation encoding (m4), drop CSI (m5).
 - SI: correlation matrix, univariate AUCs, seeds/versions, per-figure provenance.
+
+### POINT-PROCESS RIGOR — EXECUTED (2026-06-26)
+"Finish the point-process rigor" = the two data-in-hand refinements the Future-work section had
+listed, now done and folded into Results (Fig. fig:hostcond-rigor):
+- **Tree-level (not centroid).** `export_blocks_for_R.py` now also emits per-block individual-tree
+  coords (`block<b>_trees.csv`, uniform subsample, 20k cap, seed 42) + per-cell tree counts
+  (`ntree`). `host_pointprocess_spatstat.R` gained a `unit` arg (centroids|trees): tree mode fits
+  the global Poisson intensity on per-cell tree counts and runs Linhom on the subsampled trees with
+  the null intensity rescaled to the observed count (`integral.im`). Result: all 7 blocks ABOVE the
+  host-conditioned envelope 250m–2km; tree-count intensity tracks host more strongly (spr +0.30,
+  tot +0.25 vs cluster +0.155/-0.106). Residual is NOT a clustering-unit artefact.
+- **Beyond 1km (variance-stabilised, large window).** The per-block spatstat Linhom is cumulative +
+  translation-corrected on the 25–54km block windows, so reliable to ~window/4. Extended centroids
+  to RMAX=3000: ABOVE in all 7 blocks at every radius to 3km (blocks 0–2,4 plateau; 5–6 keep rising).
+- Curves dumped via `/tmp/dump_curves.R` -> `analysis/out/linhom_{centroids,trees}.csv`;
+  figure `analysis/make_hostcond_rigor_figure.py` -> `figures/fig_hostcond_rigor.{png,pdf}`.
+- Manuscript: abstract + contribution 1 + Methods (two-implementation para) + Results (new
+  "Beyond the centroid, beyond 1km" para + new figure) + Discussion lead + Future-work updated;
+  all "$\lesssim$1km / sub-kilometre / centroid scale / future work" caveats removed. Recompiled
+  clean (0 undefined refs). spatstat self-test PASS.

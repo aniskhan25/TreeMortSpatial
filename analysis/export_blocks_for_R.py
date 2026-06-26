@@ -55,6 +55,11 @@ def main():
                                       y0=("y", "min"), y1=("y", "max"))
     ct = ct[ct.cluster_id.isin(cl_tile.index)].copy()
     ct["tile"] = ct.cluster_id.map(cl_tile)
+    tr["tile"] = tr.image_name
+    tile_block = ct.drop_duplicates("tile").set_index("tile")["block"]
+    tr["block"] = tr.tile.map(tile_block)
+    rng = np.random.default_rng(42)
+    TREE_CAP = 20000   # subsample cap per block for tree-level Linhom (uniform; lambda rescaled)
 
     for b, sub in ct.groupby("block"):
         if len(sub) < 60:
@@ -66,16 +71,30 @@ def main():
         _, _, tot = block_grid(TOTAL, x0, x1, y0, y1)
         _, _, lc = block_grid(LAND, x0, x1, y0, y1, categorical=True)
         ny, nx = spr.shape
-        GX, GY = np.meshgrid(xs[:nx], ys[:ny])
+        xs, ys = xs[:nx], ys[:ny]
+        ox, oy = np.argsort(xs), np.argsort(ys)        # ascending axes (raster is north-up)
+        xs, ys = xs[ox], ys[oy]
+        spr, tot, lc = (a[np.ix_(oy, ox)] for a in (spr, tot, lc))
+        GX, GY = np.meshgrid(xs, ys)
+        # tree counts per grid cell (all trees in block) -> for tree-level intensity model
+        bt = tr[tr.block == b]
+        xe = np.r_[xs - (xs[1]-xs[0])/2, xs[-1] + (xs[1]-xs[0])/2]
+        ye = np.r_[ys - (ys[1]-ys[0])/2, ys[-1] + (ys[1]-ys[0])/2]
+        tcount = np.histogram2d(bt.y, bt.x, bins=[ye, xe])[0]
         grid = pd.DataFrame({"x": GX.ravel(), "y": GY.ravel(),
                              "spr": np.nan_to_num(spr).ravel(),
                              "tot": np.nan_to_num(tot).ravel(),
-                             "lc": np.nan_to_num(lc, nan=-1).ravel()})
+                             "lc": np.nan_to_num(lc, nan=-1).ravel(),
+                             "ntree": tcount.ravel().astype(int)})
         grid.to_csv(f"{OUT}/block{b}_grid.csv", index=False)
         sub[["cx", "cy"]].to_csv(f"{OUT}/block{b}_pts.csv", index=False)
+        # tree points (subsampled to cap); record full count for lambda rescaling
+        tsub = bt if len(bt) <= TREE_CAP else bt.iloc[rng.choice(len(bt), TREE_CAP, replace=False)]
+        tsub[["x", "y"]].rename(columns={"x": "cx", "y": "cy"}).assign(
+            ntree_full=len(bt)).to_csv(f"{OUT}/block{b}_trees.csv", index=False)
         tiles.reset_index()[["x0", "x1", "y0", "y1"]].to_csv(f"{OUT}/block{b}_tiles.csv", index=False)
-        print(f"block {b}: pts={len(sub)} tiles={len(tiles)} grid={ny}x{nx} "
-              f"forest%={100*np.mean(np.round(np.nan_to_num(lc,nan=-1))==1):.0f}")
+        print(f"block {b}: clusters={len(sub)} trees={len(bt)} (sub={len(tsub)}) tiles={len(tiles)} "
+              f"grid={ny}x{nx} forest%={100*np.mean(np.round(np.nan_to_num(lc,nan=-1))==1):.0f}")
     print(f"exported to {OUT}/")
 
 

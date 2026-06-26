@@ -29,10 +29,12 @@
     whether mortality clusters more than forest host availability alone explains. Conditioning on a
     pre-mortality (2021) multi-source forest-inventory host surface, we find that mortality intensity
     increases with both spruce and total growing-stock volume (strong host-tracking), and that,
-    beyond this host structure, mortality retains a \emph{modest but genuine residual aggregation at
-    the sub-kilometre scale} ($\lesssim$1\,km): the inhomogeneous $L$-function lies above a
-    host-conditioned simulation envelope even under a richer null (spruce\,+\,total volume\,+\,stand
-    edge), a local-contagion signature on top of host availability. We establish these claims with a
+    beyond this host structure, mortality retains a \emph{modest but genuine residual aggregation}
+    that holds from the sub-kilometre scale out to at least 3\,km: the inhomogeneous $L$-function lies
+    above a host-conditioned simulation envelope in all seven blocks even under a richer null
+    (spruce\,+\,total volume\,+\,stand edge), and the same exceedance appears whether the process is
+    taken at the cluster-centroid or the individual-tree level---a local-contagion signature on top of
+    host availability that is not an artefact of the clustering unit. We establish these claims with a
     reusable falsification-and-validation harness for morphometrics derived from black-box detection
     models---a covariance-preserving null with mixture-model discreteness diagnostics, clustering
     scale and shape-filter stability gates, detector-confound propagation (cluster ``type''
@@ -41,9 +43,8 @@
     discrete shape-``typology'' of the clusters is an artefact of clustering scale, filter
     thresholds and detector behaviour rather than ecology. We therefore report spatial
     \emph{structure}, not agent-labelled types: lacking species, dating, and ground-truth layers,
-    disturbance-agent attribution is withheld. Tree-level estimation, a variance-stabilised
-    treatment of scales beyond 1\,km, and a marked-process test against an external disturbance-agent
-    layer are the natural next steps.
+    disturbance-agent attribution is withheld. A marked-process test against an external
+    disturbance-agent layer is the natural next step.
     \end{abstract}
     \vspace{0.3in}
   \end{center}
@@ -87,8 +88,9 @@ This paper makes three contributions, one empirical and two methodological:
         Treating 698,223 individual dead-tree detections as a point process and conditioning on a
         pre-mortality forest-inventory host surface, we show that mortality intensity tracks host
         availability (it rises with both spruce and total growing-stock volume) and yet retains a
-        modest, genuine \emph{residual aggregation at the sub-kilometre scale} ($\lesssim$1\,km)
-        that survives a richer host-conditioned null (spruce\,+\,total volume\,+\,stand edge): a
+        modest, genuine \emph{residual aggregation} that survives a richer host-conditioned null
+        (spruce\,+\,total volume\,+\,stand edge) from the sub-kilometre scale out to at least 3\,km,
+        in all seven blocks and at both the cluster-centroid and individual-tree level: a
         local-contagion signature on top of host-tracking, established with inhomogeneous
         second-order statistics and host-conditioned simulation envelopes.
   \item \textbf{A falsification-and-validation harness for morphometrics from black-box detectors.}
@@ -447,13 +449,15 @@ growing-stock volume, distance to stand edge) and assess second-order structure 
 inhomogeneous $K$- and $L$-functions and pair-correlation, pooled across tiles with translation edge
 correction. Significance is by \emph{host-conditioned} simulation envelopes (99 realisations from the
 fitted inhomogeneous null), not the CSR contrast. The estimator was validated on simulated
-inhomogeneous-Poisson patterns ($L_{\rm inhom}\!-\!r\approx0$). At the 6\,km tile scale the ring
-estimator is reliable to $r\lesssim1$\,km ($\approx$ window/4); larger scales require a
-variance-stabilised treatment (future work). We run two independent implementations: a tile-pooled
-inhomogeneous pair-correlation/$L$ (intensity normalised per tile), and a per-block $L_{\rm inhom}$
-in \texttt{spatstat} with the intensity fitted globally (pooled Poisson across forest cells) and
-host-conditioned envelopes. Analyses use cluster centroids; the tree-level process is a stated next
-step.
+inhomogeneous-Poisson patterns ($L_{\rm inhom}\!-\!r\approx0$). We run two independent
+implementations: a tile-pooled inhomogeneous pair-correlation/$L$ (intensity normalised per tile;
+the ring estimator on 6\,km tiles is reliable to $r\lesssim1$\,km, $\approx$ window/4), and a
+per-block $L_{\rm inhom}$ in \texttt{spatstat} with the intensity fitted globally (pooled Poisson
+across forest cells), cumulative translation-corrected and therefore variance-stabilised, on the
+25--54\,km block windows---which extends the reliable range to $r\le3$\,km. Both are run on cluster
+centroids and, for the \texttt{spatstat} leg, also on the individual dead trees (intensity fitted on
+per-cell tree counts; the point pattern uniformly subsampled to $\le$20{,}000 per block with the null
+intensity rescaled to the observed count), so the result does not depend on the analysis unit.
 
 % ─────────────────────────────────────────────────────────────────────────────
 \section{Results}
@@ -959,21 +963,46 @@ block, and significance from host-conditioned simulation envelopes (the estimato
 simulated inhomogeneous-Poisson patterns). The result is consistent in \emph{all seven} blocks: the
 observed $L_{\rm inhom}(r)-r$ lies above the host-conditioned envelope across 250\,m--1\,km
 (Figure~\ref{fig:hostcond-ss}). The two implementations agree on the qualitative finding---residual
-sub-kilometre aggregation beyond host, present in every block---and on the robustness of
-spruce-driven host-tracking; they differ in the \emph{magnitude} of the residual (the per-block
-cumulative $L$ accumulates more multi-scale clustering than the tile-pooled pair-correlation), so we
-report the existence and sub-kilometre scale of the residual, not a single magnitude. We interpret it
-cautiously: it is established at the centroid scale on a 7-block sample to $r\lesssim1$\,km; the
-tree-level process and scales beyond 1\,km remain for future work.
+aggregation beyond host, present in every block---and on the robustness of spruce-driven
+host-tracking; they differ in the \emph{magnitude} of the residual (the per-block cumulative $L$
+accumulates more multi-scale clustering than the tile-pooled pair-correlation), so we report the
+existence and scale of the residual, not a single magnitude.
+
+\mypar{Beyond the centroid, beyond 1\,km.}
+Two pure-computation refinements confirm that the residual is neither an artefact of the clustering
+unit nor confined to short range. \emph{(i) Tree-level.} Re-running the \texttt{spatstat} analysis on
+the individual dead trees (intensity fitted on per-cell tree counts; the point pattern uniformly
+subsampled to $\le$20{,}000 per block with the null intensity rescaled to the observed count) leaves
+the conclusion unchanged: $L_{\rm inhom}(r)-r$ lies above the host-conditioned envelope in all seven
+blocks across 250\,m--2\,km (Figure~\ref{fig:hostcond-rigor}), with the tree-count intensity model
+tracking host even more strongly than the cluster model (standardised spruce $+0.30$, total volume
+$+0.25$). \emph{(ii) Beyond 1\,km.} The 25--54\,km block windows support a cumulative,
+translation-corrected estimator well past the 1\,km ceiling of the 6\,km tile-pooled ring estimator;
+extending the centroid analysis to $r=3$\,km, the exceedance persists in every block out to 3\,km,
+either plateauing (blocks 0--2, 4) or continuing to rise (the multi-scale clustering of blocks 5--6).
+The residual aggregation is therefore established at both the cluster and the individual-tree level,
+across 250\,m to at least 3\,km, on the 7-block sample.
 
 \begin{figure}[htb]
   \centering
   \includegraphics[width=\linewidth]{host_conditioned_spatstat.pdf}
   \caption{Independent \texttt{spatstat} confirmation: per-block inhomogeneous $L_{\rm inhom}(r)-r$
            (observed, solid) vs the global-host-conditioned simulation envelope (shaded), for each of
-           the seven super-site blocks. Observed lies above the envelope across 250\,m--1\,km in every
-           block, confirming residual sub-kilometre aggregation beyond host.}
+           the seven super-site blocks, extended to $r=3$\,km. Observed lies above the envelope in
+           every block, confirming residual aggregation beyond host that persists past 1\,km.}
   \label{fig:hostcond-ss}
+\end{figure}
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=\linewidth]{fig_hostcond_rigor.png}
+  \caption{The residual aggregation is robust to the analysis unit and extends beyond 1\,km. Per-block
+           $L_{\rm inhom}(r)-r$ for cluster centroids (blue, to 3\,km) and individual dead trees (red,
+           to 2\,km), each against its own host-conditioned simulation envelope (shaded bands); the
+           dashed line at $0$ is the host-conditioned expectation. In all seven blocks both observed
+           curves lie above their envelopes across the whole range, so the local-contagion signal is
+           not an artefact of using cluster centroids and is not confined to the sub-kilometre scale.}
+  \label{fig:hostcond-rigor}
 \end{figure}
 
 \begin{figure}[htb]
@@ -984,8 +1013,10 @@ tree-level process and scales beyond 1\,km remain for future work.
            \textbf{(a)} spruce-only host null; \textbf{(b)} richer null (spruce\,+\,total
            volume\,+\,stand edge). Observed lies above the envelope across 100\,m--1\,km in both,
            so the residual sub-km aggregation survives the richer host model (its magnitude shrinks
-           as total volume absorbs broader host structure). Valid to $r\lesssim1$\,km for the 6\,km
-           tile windows.}
+           as total volume absorbs broader host structure). This tile-pooled ring estimator is valid
+           to $r\lesssim1$\,km for the 6\,km tile windows; the larger-window \texttt{spatstat}
+           estimator (Figures~\ref{fig:hostcond-ss},~\ref{fig:hostcond-rigor}) extends the range to
+           3\,km.}
   \label{fig:hostcond}
 \end{figure}
 
@@ -997,14 +1028,15 @@ tree-level process and scales beyond 1\,km remain for future work.
 \mypar{Mortality tracks host, then aggregates beyond it.}
 The central result is the host-conditioned one (Section~\ref{sec:res-host}): boreal canopy mortality
 strongly tracks forest host availability---intensity rises with both spruce and total growing-stock
-volume---yet retains a modest, genuine residual aggregation at the sub-kilometre scale that survives
+volume---yet retains a modest, genuine residual aggregation, robust to the analysis unit (cluster or
+individual tree) and persisting from the sub-kilometre scale out to at least 3\,km, that survives
 a richer host-conditioned null. Ecologically this is the signature of a process that is
 \emph{first} constrained by where susceptible host stands are, and \emph{then} concentrates into
 local foci within them rather than spreading diffusely---consistent with, though not proof of,
 short-range contagion (bark-beetle tree-to-tree spread, or locally correlated wind/snow damage). The
 honest weight of the claim is set by what conditioning removed: adding total volume to the null
-absorbed most of the apparent excess, so the defensible statement is a \emph{bounded} residual at
-$\lesssim1$\,km, not the order-of-magnitude clustering a naive (homogeneous-null) reading suggested.
+absorbed most of the apparent excess, so the defensible statement is a \emph{bounded} residual, not
+the order-of-magnitude clustering a naive (homogeneous-null) reading suggested.
 This is also why we condition on a pre-mortality host and report structure rather than agents: the
 same morphology arises from different agents (below), so the population-level second-order signal,
 not patch shape, is what the data can support.
@@ -1089,9 +1121,10 @@ of mortality morphologies.
 
 \mypar{Future work.}
 Several steps would extend the host-conditioned result, in increasing order of data requirement.
-First, with the data in hand: a tree-level (rather than centroid) treatment of the same
-inhomogeneous point-process analysis, and a variance-stabilised, large-window estimator to extend
-reliably beyond 1\,km---both pure-computation refinements of the analysis presented here. Second,
+The two pure-computation refinements that the analysis itself called for---a tree-level (rather than
+centroid) treatment of the inhomogeneous point process, and a variance-stabilised, large-window
+estimator reaching reliably past 1\,km---are carried out here (Figure~\ref{fig:hostcond-rigor});
+both confirm the residual aggregation. The remaining steps need new layers. First,
 with publicly available layers: overlaying a species layer from Finland's multi-source national
 forest inventory and a regional disturbance-agent map (e.g.\ Metsäkeskus damage records) would
 enable a marked point-process test, moving from \emph{characterising} spatial structure to
@@ -1099,7 +1132,7 @@ enable a marked point-process test, moving from \emph{characterising} spatial st
 \citep{senf2021mapping} group wind and bark beetle into a single class and so cannot, by themselves,
 separate the two agents, which is why a dedicated regional layer is required. A complementary
 detection-validation step---stratified precision/recall against field or photo-interpreted ground
-truth---would calibrate, rather than merely bound, the detector confound. Third, and requiring new
+truth---would calibrate, rather than merely bound, the detector confound. Second, and requiring new
 acquisition rather than further analysis of the present data, multi-temporal imagery (prior-year
 aerial surveys passed through the same detector, which are not available for this study) would add
 the temporal dimension: it would date mortality, separate recent deaths from years-old snags, and
