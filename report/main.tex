@@ -22,7 +22,7 @@
     \maketitle
     \begin{abstract}
     Finland's boreal forests are experiencing a documented increase in non-harvest tree
-    mortality \citep{junttila2024significant}, and the spatial arrangement of dead trees encodes the
+    mortality~\citep{junttila2024significant}, and the spatial arrangement of dead trees encodes the
     processes that generate it. We analyse 698,223 individual dead-tree locations---detected by a
     U-Net segmentation model from 2023 aerial imagery across a national-scale sample of seven boreal
     super-sites ($\sim$60.4--67.8\textdegree{}N)---as a \emph{host-conditioned point process}, asking
@@ -60,7 +60,7 @@ morphological gradient; cluster shape metrics; clustering-scale sensitivity; Fin
 
 Boreal forests store roughly 30\% of terrestrial carbon and support exceptional
 biodiversity, yet they are undergoing accelerating disturbance as climate change intensifies
-drought, windstorms, and pest outbreaks \citep{bradshaw2015global, allen2010global}.
+drought, windstorms, and pest outbreaks~\citep{bradshaw2015global, allen2010global}.
 In Finland, non-harvest tree mortality has increased substantially in recent years
 \citep{junttila2024significant}, a trajectory that demands systematic monitoring. Understanding which
 ecological processes drive this mortality, and where they concentrate across the
@@ -68,10 +68,10 @@ landscape, is a prerequisite for adaptive management and carbon-flux modelling.
 
 The spatial arrangement of dead trees encodes information about the process that killed them.
 Bark-beetle outbreaks typically generate dense, spatially contagious patches as infestation
-spreads from tree to tree \citep{raffa2008cross, hlasny2021bark}. Wind damage, by contrast,
+spreads from tree to tree~\citep{raffa2008cross, hlasny2021bark}. Wind damage, by contrast,
 tends to produce elongated, directionally oriented swaths aligned with storm tracks
 \citep{gardiner2013wind, gregow2011combined}. Drought-induced mortality can produce more
-scattered, diffuse patterns tied to soil-water gradients \citep{mcdowell2008mechanisms}.
+scattered, diffuse patterns tied to soil-water gradients~\citep{mcdowell2008mechanisms}.
 These morphological \textit{fingerprints} are in principle recoverable from the spatial arrangement of dead-tree
 locations even when individual tree species and cause-of-death records are unavailable.
 
@@ -85,8 +85,8 @@ national sample.
 This paper makes three contributions, one empirical and two methodological:
 \begin{enumerate}
   \item \textbf{Host-conditioned spatial characterisation of boreal canopy mortality.}
-        Treating 698,223 individual dead-tree detections as a point process and conditioning on a
-        pre-mortality forest-inventory host surface, we show that mortality intensity tracks host
+        Treating 698,223 individual dead-tree detections as a point process (their mapped locations
+        analysed as a spatial pattern) and conditioning on a pre-mortality forest-inventory host surface, we show that mortality intensity tracks host
         availability (it rises with both spruce and total growing-stock volume) and yet retains a
         modest, genuine \emph{residual aggregation} that survives a richer host-conditioned null
         (spruce\,+\,total volume\,+\,stand edge) from the sub-kilometre scale out to at least 3\,km,
@@ -139,7 +139,7 @@ not just by area affected, but by the spatial structure of affected patches.
 
 \mypar{Bark beetle ecology and spatial signatures.}
 The Eurasian spruce bark beetle (\textit{Ips typographus}) is the dominant biotic disturbance
-agent in boreal and subalpine Europe \citep{hlasny2021bark}. \citet{raffa2008cross} showed
+agent in boreal and subalpine Europe~\citep{hlasny2021bark}. \citet{raffa2008cross} showed
 that bark-beetle eruptions are governed by cross-scale feedbacks: fine-scale tree-to-tree
 contagion at the stand level, mediated by pheromone plumes and resource depletion, scales up
 to landscape-level epidemics when predisposing conditions (drought, windthrow) are met.
@@ -164,7 +164,7 @@ directional morphology of wind-felled areas has been noted in several Fennoscand
 as a diagnostic feature distinguishing wind damage from beetle-induced mortality.
 
 \mypar{Spatial statistics methods.}
-The Clark--Evans statistic \citep{clarkevans1954} remains the canonical index of point
+The Clark--Evans statistic~\citep{clarkevans1954} remains the canonical index of point
 dispersion within bounded study regions. \citet{donnelly1978} derived an analytical edge
 correction that removes the downward bias introduced by boundary effects in finite study
 areas, making the corrected statistic suitable for small clusters with irregular convex-hull
@@ -226,7 +226,7 @@ coverage or national population estimates.
 \subsection{Clustering}
 \label{sec:clustering}
 
-Density-based spatial clustering was performed using DBSCAN \citep{ester1996density} with
+Density-based spatial clustering was performed using DBSCAN~\citep{ester1996density} with
 neighbourhood radius eps\,=\,20\,m and minimum neighbourhood size min\_samples\,=\,3.
 The eps\,=\,20\,m threshold was chosen to capture within-stand tree-to-tree spread typical
 of both bark-beetle and wind disturbance, while separating clusters arising from distinct
@@ -253,7 +253,7 @@ and $\sigma_{\mathrm{NND}} = \sqrt{n^{-1}\sum_i (d_i - \overline{\mathrm{NND}})^
 
 \mypar{Clark--Evans index with Donnelly edge correction.}
 The Clark--Evans index compares the observed mean NND to its expectation under complete
-spatial randomness \citep{clarkevans1954}:
+spatial randomness~\citep{clarkevans1954}:
 \begin{equation}
   R = \frac{\overline{\mathrm{NND}}}{E[\bar{r}]},
 \end{equation}
@@ -350,7 +350,7 @@ as evidence of a natural class boundary.
 \label{sec:orientation}
 
 Cluster orientations $\theta \in [0^\circ, 180^\circ)$ are axial data and must be doubled before
-applying circular statistics \citep{wiegand2014handbook}. The Rayleigh test for uniformity
+applying circular statistics~\citep{wiegand2014handbook}. The Rayleigh test for uniformity
 was applied to the doubled angles $2\theta \in [0^\circ, 360^\circ)$ using pycircstat.
 The mean resultant length $r = \|\sum \exp(i \cdot 2\theta_j)\| / n$ and its associated
 $p$-value quantify whether orientations depart from a uniform (no preferred direction)
@@ -404,13 +404,15 @@ Spatial block cross-validation (GroupKFold, 5 folds,
 $100 \times 100$\,km grid, 12 blocks, mean 1215 clusters/block) was used to prevent
 spatial leakage. We caution that the blocks are size-imbalanced, the five largest hold roughly
 four-fifths of the clusters, so the tight fold-to-fold AUC range understates true spatial
-variability. SHAP values \citep{lundberg2017unified} were computed to assess feature importance.
+variability. SHAP values~\citep{lundberg2017unified} were computed to assess feature importance.
 
 \subsection{Stability Gates}
 \label{sec:sensitivity}
 
-To test whether the $k=2$ partition is a genuine structure or an artefact of the pipeline's
-free parameters, we re-ran the entire pipeline from the raw points under four gates.
+These gates are deliberate attempts to \emph{falsify} our own two-type result: a genuine ecological
+partition should survive them, whereas one manufactured by an analysis choice should break. To test
+whether the $k=2$ partition is a genuine structure or an artefact of the pipeline's free parameters,
+we re-ran the entire pipeline from the raw points under four gates.
 
 \mypar{(G1) Scale stability.}
 We re-clustered the raw points at eps $\in \{10,15,20,25,30,40\}$\,m and, at each scale, recomputed
@@ -452,7 +454,10 @@ would be pseudo-replicated across $\sim$2{,}000 clusters per block).
 
 To ask whether mortality clusters \emph{more than forest host availability alone predicts}, we
 replace the homogeneous-CSR null---meaningless over heterogeneous forest---with an
-\emph{inhomogeneous} null whose first-order intensity is driven by host. The host surface is the
+\emph{inhomogeneous} null whose first-order intensity is driven by host. In plain terms, the baseline
+we compare against is not ``dead trees scattered evenly across the landscape'' but ``dead trees in
+proportion to how much host forest is present''; any clustering beyond that baseline---what we call
+\emph{residual aggregation}---is the part not explained by where the forest is. The host surface is the
 Multi-Source National Forest Inventory (MS-NFI) spruce growing-stock volume from \emph{2021}, i.e.\
 \emph{before} the 2023 mortality: a 2023 host layer would be endogenous, since dead spruce drops out
 of the standing-volume estimate. The observation window is the union of the 6\,km map-sheet tiles
@@ -682,7 +687,7 @@ tail (Figure~\ref{fig:sizedist}), but this follows directly from its larger mean
 \mypar{Position in shape space (E5).}
 Figure~\ref{fig:shapespace} plots each cluster in (compactness, aspect\_ratio) space against a
 set of \emph{illustrative} morphological regions loosely informed by qualitative descriptions of
-wind, beetle, and fire patches in the literature \citep{seidl2011unraveling, jonsson2012epidemics,
+wind, beetle, and fire patches in the literature~\citep{seidl2011unraveling, jonsson2012epidemics,
 gardiner2013wind}. We stress that these regions are author-defined bounding boxes, not published
 (compactness, aspect\_ratio) envelopes, the cited studies do not report cluster-level shape
 coordinates by agent, and that any apparent separation is partly circular: aspect ratio is a
@@ -956,8 +961,10 @@ coefficients $+0.23$ and $+0.21$ respectively; stand-edge proximity negligible, 
 mortality strongly tracks forest host availability, as expected.
 
 Beyond this host-tracking, mortality is \emph{still} aggregated more than the host predicts at short
-range. Against a spruce-only host null, the inhomogeneous $L$-function lies far above the
-host-conditioned envelope across 100\,m--1\,km (Figure~\ref{fig:hostcond}a). Crucially, the signal
+range. Against a spruce-only host null, the inhomogeneous $L$-function (a standard measure of how
+clustered points are, here calibrated against the host surface rather than against an even scatter)
+lies far above the host-conditioned envelope---the band of values expected if mortality merely
+followed host---across 100\,m--1\,km (Figure~\ref{fig:hostcond}a). Crucially, the signal
 survives the richer null: with intensity conditioned on spruce, total volume, and stand edge, the
 observed $L_{\rm inhom}(r)-r$ remains above the simulation envelope across the same range
 (Figure~\ref{fig:hostcond}b), although the excess is much smaller---adding total volume absorbs most
@@ -1039,7 +1046,7 @@ across 250\,m to at least 3\,km, on the 7-block sample.
 \label{sec:discussion}
 % ─────────────────────────────────────────────────────────────────────────────
 
-\mypar{Mortality tracks host, then aggregates beyond it.}
+\mypar{What controls where dead trees concentrate?}
 The central result is the host-conditioned one (Section~\ref{sec:res-host}): boreal canopy mortality
 strongly tracks forest host availability---intensity rises with both spruce and total growing-stock
 volume---yet retains a modest, genuine residual aggregation, robust to the analysis unit (cluster or
@@ -1055,9 +1062,9 @@ This is also why we condition on a pre-mortality host and report structure rathe
 same morphology arises from different agents (below), so the population-level second-order signal,
 not patch shape, is what the data can support.
 
-\mypar{A morphological gradient, not a disturbance-agent typology.}
+\mypar{Why don't patch shapes sort into distinct disturbance types?}
 It is tempting to map the two endpoints onto dominant Finnish disturbance agents, the elongated,
-internally dispersed Type\,0 onto wind-felled strips \citep{gardiner2013wind, gregow2011combined},
+internally dispersed Type\,0 onto wind-felled strips~\citep{gardiner2013wind, gregow2011combined},
 and the compact, denser Type\,1 onto radially spreading beetle kill
 \citep{raffa2008cross, jonsson2012epidemics, kautz2011simulating}. We deliberately resist this
 mapping, because the evidence that would license it is either absent or circular. The shape-space
@@ -1103,7 +1110,7 @@ favour. This is the conservative outcome, and it strengthens the decision to wit
   \label{fig:species}
 \end{figure}
 
-\mypar{Three of our own results point the same way: this is geometry, not agent.}
+\mypar{Do our own analyses point to a disturbance agent, or to geometry?}
 \label{sec:disc-orientation}
 The most telling evidence is internal and convergent. (i) \emph{Orientation.} The elongated
 endpoint shows no preferred orientation ($r = 0.009$, $p = 0.747$), yet directional alignment
@@ -1122,7 +1129,7 @@ size-frequency tails is correspondingly withdrawn: with the power law rejected i
 lognormal for both endpoints, the heavier Type\,1 tail is explained by its larger mean area, not
 by contagious spread.
 
-\mypar{Interpretation of the held-out classifier AUC.}
+\mypar{What does the held-out classifier's high accuracy actually mean?}
 The AUC\,=\,0.976 shows that the two endpoints occupy largely non-overlapping regions of the
 held-out feature space, but the SHAP decomposition shows why this is not independent validation:
 performance is driven almost entirely by compactness and core-to-edge ratio, both geometrically
