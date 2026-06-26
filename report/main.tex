@@ -1088,32 +1088,24 @@ regions; what the design cannot support is any claim about the national frequenc
 of mortality morphologies.
 
 \mypar{Future work.}
-Three steps would consolidate the host-conditioned result. First, a variance-stabilised
-point-process treatment in \texttt{spatstat}: tree-level (rather than centroid) intensity, the
-inhomogeneous $K$/$L$ with proper large-window edge correction to extend reliably beyond 1\,km, and
-the fitted-intensity model as a formal \texttt{ppm} with simulation envelopes. Second, a
-marked-process test against an external disturbance-agent layer would move from characterising
-structure to attributing it; we note one obstacle for the wind-versus-beetle question specifically:
-the publicly available pan-European attribution products \citep{senf2021mapping} group wind and bark
-beetle into a single combined class, so a dedicated regional agent layer (e.g.\ Metsäkeskus damage
-records) would be required. Third, multi-temporal imagery, feasible from the same pipeline for prior
-years, would date mortality and turn the static host-conditioned pattern into a space--time process,
-testing directly whether this year's foci predict next year's mortality---the definitive contagion
-test. Beyond this, external validation that breaks the circularity of a shape-only study would
-overlay a species layer from Finland's multi-source national forest inventory and an independent
-disturbance-agent map would convert the morphological endpoints from an unsupervised gradient into
-a testable, supervised agent classification, and would let us check whether the compact endpoint is
-genuinely beetle-dominated or a mix of fire, drought, snow-load, and salvage. We note one concrete
-obstacle for the wind-versus-beetle question specifically: the publicly available pan-European
-attribution products \citep{senf2021mapping} group wind and bark beetle into a single
-combined class, so they cannot by themselves separate the two agents our endpoints might be
-hypothesised to represent, a dedicated regional agent layer (e.g.\ Metsäkeskus damage records)
-would be required. Multi-temporal imagery, feasible from the same pipeline for prior years, would add
-the missing dimension: it would date mortality, permit a true wave-front and storm-track
-alignment test for the elongated endpoint, and turn the connectivity graph from a static density
-correlate into a flow model that asks whether this year's morphology predicts next year's
-mortality. The pipeline itself is computationally scalable and, once validated, could support
-comparative analysis across the Nordic countries.
+Several steps would extend the host-conditioned result, in increasing order of data requirement.
+First, with the data in hand: a tree-level (rather than centroid) treatment of the same
+inhomogeneous point-process analysis, and a variance-stabilised, large-window estimator to extend
+reliably beyond 1\,km---both pure-computation refinements of the analysis presented here. Second,
+with publicly available layers: overlaying a species layer from Finland's multi-source national
+forest inventory and a regional disturbance-agent map (e.g.\ Metsäkeskus damage records) would
+enable a marked point-process test, moving from \emph{characterising} spatial structure to
+\emph{attributing} it; we note that the pan-European attribution products
+\citep{senf2021mapping} group wind and bark beetle into a single class and so cannot, by themselves,
+separate the two agents, which is why a dedicated regional layer is required. A complementary
+detection-validation step---stratified precision/recall against field or photo-interpreted ground
+truth---would calibrate, rather than merely bound, the detector confound. Third, and requiring new
+acquisition rather than further analysis of the present data, multi-temporal imagery (prior-year
+aerial surveys passed through the same detector, which are not available for this study) would add
+the temporal dimension: it would date mortality, separate recent deaths from years-old snags, and
+turn the static host-conditioned pattern into a space--time process---the definitive test of whether
+this year's foci predict next year's mortality. The pipeline itself is computationally scalable and,
+once these layers are in place, could support comparative analysis across the Nordic countries.
 
 % ─────────────────────────────────────────────────────────────────────────────
 \section{Conclusion}
