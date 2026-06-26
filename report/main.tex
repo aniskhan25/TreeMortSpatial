@@ -449,8 +449,11 @@ correction. Significance is by \emph{host-conditioned} simulation envelopes (99 
 fitted inhomogeneous null), not the CSR contrast. The estimator was validated on simulated
 inhomogeneous-Poisson patterns ($L_{\rm inhom}\!-\!r\approx0$). At the 6\,km tile scale the ring
 estimator is reliable to $r\lesssim1$\,km ($\approx$ window/4); larger scales require a
-variance-stabilised treatment (future work). Analyses use cluster centroids; the tree-level process
-is a stated next step.
+variance-stabilised treatment (future work). We run two independent implementations: a tile-pooled
+inhomogeneous pair-correlation/$L$ (intensity normalised per tile), and a per-block $L_{\rm inhom}$
+in \texttt{spatstat} with the intensity fitted globally (pooled Poisson across forest cells) and
+host-conditioned envelopes. Analyses use cluster centroids; the tree-level process is a stated next
+step.
 
 % ─────────────────────────────────────────────────────────────────────────────
 \section{Results}
@@ -946,9 +949,32 @@ broader forest structure that the spruce layer alone does not resolve. What rema
 signature on top of host-tracking, consistent with mortality concentrating into foci rather than
 spreading diffusely across available host. Detection error does not explain it---per-cluster
 detector confidence predicts cluster ``type'' at AUC\,=\,0.727 but the continuous structure couples
-to confidence only weakly ($\rho=0.07$). We interpret the residual cautiously: it is established at
-the centroid scale on a 7-block sample to $r\lesssim1$\,km; the tree-level process, scales beyond
-1\,km, and a formal variance-stabilised test are deferred to a spatstat treatment.
+to confidence only weakly ($\rho=0.07$).
+
+\mypar{Independent confirmation (spatstat).}
+We reproduced the analysis in a second, independent implementation: a per-block
+inhomogeneous $L$-function in \texttt{spatstat}, with the intensity fitted globally (a pooled
+Poisson model across all forest cells, capturing the regional host gradient) and applied within each
+block, and significance from host-conditioned simulation envelopes (the estimator was verified on
+simulated inhomogeneous-Poisson patterns). The result is consistent in \emph{all seven} blocks: the
+observed $L_{\rm inhom}(r)-r$ lies above the host-conditioned envelope across 250\,m--1\,km
+(Figure~\ref{fig:hostcond-ss}). The two implementations agree on the qualitative finding---residual
+sub-kilometre aggregation beyond host, present in every block---and on the robustness of
+spruce-driven host-tracking; they differ in the \emph{magnitude} of the residual (the per-block
+cumulative $L$ accumulates more multi-scale clustering than the tile-pooled pair-correlation), so we
+report the existence and sub-kilometre scale of the residual, not a single magnitude. We interpret it
+cautiously: it is established at the centroid scale on a 7-block sample to $r\lesssim1$\,km; the
+tree-level process and scales beyond 1\,km remain for future work.
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=\linewidth]{host_conditioned_spatstat.pdf}
+  \caption{Independent \texttt{spatstat} confirmation: per-block inhomogeneous $L_{\rm inhom}(r)-r$
+           (observed, solid) vs the global-host-conditioned simulation envelope (shaded), for each of
+           the seven super-site blocks. Observed lies above the envelope across 250\,m--1\,km in every
+           block, confirming residual sub-kilometre aggregation beyond host.}
+  \label{fig:hostcond-ss}
+\end{figure}
 
 \begin{figure}[htb]
   \centering

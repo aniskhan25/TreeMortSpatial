@@ -38,6 +38,22 @@ distribution and the fraction preserving sign + Bonferroni significance. PASS if
 Smaller: report connectivity-reach effect size (not just p); state the ρ=0.07 (gradient) vs
 AUC=0.727 (discrete) contrast explicitly as the reason the gradient survives while types don't.
 
+## SPATSTAT LEG — EXECUTED (2026-06-26): independent gold-standard confirmation
+
+Installed R 4.6.1 (brew) + spatstat; terra unavailable (no binary, GDAL-from-source avoided) so
+bridged via Python: `analysis/export_blocks_for_R.py` (rasterio → per-block covariate CSVs),
+`analysis/host_pointprocess_spatstat.R` (spatstat only). Intensity fitted GLOBALLY (pooled Poisson
+over forest cells, captures the regional host gradient) and applied per block; per-block L_inhom with
+host-conditioned simulation envelopes; estimator self-test PASS (L_inhom−r≈0 on inhomogeneous Poisson).
+
+Result: ALL 7 blocks ABOVE the global-host-conditioned envelope at 250/500/1000 m → residual sub-km
+aggregation beyond host confirmed in every block. Spruce host-tracking robust (coef +0.16); total/edge
+partial coefs specification-sensitive (collinearity). Magnitude differs from the Python tile-pooled
+PCF (per-block cumulative L accumulates more multi-scale clustering) → report existence + sub-km scale,
+not a single magnitude. Two independent implementations + two self-tests agree on the qualitative
+finding. Woven into Methods (two implementations) + Results (confirmation paragraph + per-block
+figure `host_conditioned_spatstat.pdf`). 18 pp, compiles clean.
+
 ## ECOLOGY-FLAGSHIP REFRAME — EXECUTED (2026-06-25)
 
 Ran the host-conditioned analysis in Python (no spatstat in env) and reframed the manuscript.

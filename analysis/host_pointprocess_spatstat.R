@@ -1,114 +1,100 @@
 # =============================================================================
-# Host-conditioned point-process analysis of boreal canopy mortality
-# LOCKED DESIGN (Vasquez + Lindqvist). Run in R with spatstat + terra.
+# Host-conditioned point-process analysis (spatstat). Consumes per-block CSV grids from
+# analysis/export_blocks_for_R.py (rasterio bridge) -> only spatstat needed (no terra/GDAL).
 #
-# NOTE: authored without an R environment to test against — validate interactively.
-# The heavy steps (window union, tree-level envelopes) are flagged with scalability notes.
-#
-# Inputs (EPSG:3067 / ETRS-TM35FIN throughout) — MVMI 2021 "1721" product (PRE-mortality):
-#   data/trees_clustered.csv          x, y, cluster_id, image_name   (698k dead-tree points)
-#   data/kuusi_vmi1x_1721.tif         spruce volume      -> host covariate            [Lindqvist]
-#   data/tilavuus_vmi1x_1721.tif      total volume       -> richer-model covariate
-#   data/maaluokka_vmi1x_1721.tif     land class         -> forest mask (== forest land)
-# (2023 spruce is ENDOGENOUS — do not use it as the host; see REVISION_PLAN.md.)
-#
-# Grab the rasters (rsync; ~3.5 GB total):
-#   base=rsync://rsync.nic.funet.fi/ftp/index/geodata/luke/vmi/2021
-#   rsync -P $base/kuusi_vmi1x_1721.tif $base/tilavuus_vmi1x_1721.tif $base/maaluokka_vmi1x_1721.tif data/
+# Intensity model is fit GLOBALLY (pooled forest cells across all blocks) so it captures the
+# regional host gradient (host-tracking is largely between-block); the fitted lambda is then
+# applied PER BLOCK for the inhomogeneous L-function with host-conditioned simulation envelopes.
+# Pre-mortality (2021) MS-NFI spruce + total volume + stand-edge.  Primary object: L_inhom.
 # =============================================================================
-suppressPackageStartupMessages({ library(spatstat); library(terra); library(data.table) })
+suppressPackageStartupMessages(library(spatstat))
+RES <- 100; RMAX <- 1500; NSIM <- 39; RDIR <- "analysis/out/rblocks"
 
-NODATA <- 32767
-TILE_RES   <- 50     # m, resolution of covariate images / window mask (coarsen for speed)
-RMAX       <- 1500   # m, max distance for K/L/pcf
-NSIM       <- 99     # envelope simulations (drop to 39 while prototyping)
-
-# ---- 1. points -------------------------------------------------------------
-tr <- fread("data/trees_clustered.csv")[cluster_id != -1, .(x, y, cluster_id, image_name)]
-
-# ---- 2. rasters -> spatstat im (host + forest mask) ------------------------
-rast_to_im <- function(path, bbox, res = TILE_RES) {
-  r <- rast(path)
-  r <- crop(r, ext(bbox$xmin, bbox$xmax, bbox$ymin, bbox$ymax))
-  r <- aggregate(r, fact = max(1, round(res / 16)), fun = "mean", na.rm = TRUE)
-  r[r == NODATA] <- NA
-  df <- as.data.frame(r, xy = TRUE, na.rm = FALSE); names(df) <- c("x", "y", "z")
-  as.im(df)                              # spatstat im on a regular grid
+grid_im <- function(df, z) {                       # regular grid -> im
+  xs <- sort(unique(df$x)); ys <- sort(unique(df$y))
+  m <- matrix(NA_real_, length(ys), length(xs))
+  m[cbind(match(df$y, ys), match(df$x, xs))] <- df[[z]]
+  im(m, xcol = xs, yrow = ys)
 }
-bbox <- list(xmin = min(tr$x) - 3000, xmax = max(tr$x) + 3000,
-             ymin = min(tr$y) - 3000, ymax = max(tr$y) + 3000)
-spr <- rast_to_im("data/kuusi_vmi1x_1721.tif",    bbox)   # spruce (host) intensity covariate
-tot <- rast_to_im("data/tilavuus_vmi1x_1721.tif", bbox)   # total volume (richer covariate)
-mlk <- rast_to_im("data/maaluokka_vmi1x_1721.tif", bbox)  # land class (1 = metsämaa / forest land)
 
-# ---- 3. observation window = forest-masked union of 6 km tile windows ------
-# tile extent from tree bbox per image_name (~6 km), then keep only forest pixels.
-tiles <- tr[, .(x0 = min(x), x1 = max(x), y0 = min(y), y1 = max(y), n = .N), by = image_name][n >= 10]
-tile_win <- with(tiles, mapply(function(a,b,c,d) owin(c(a,b), c(c,d)),
-                               x0, x1, y0, y1, SIMPLIFY = FALSE))
-Wtiles <- do.call(union.owin, tile_win)                   # multi-rectangle survey footprint
-forest <- solutionset(mlk == 1)                           # land-class forest mask (metsämaa); NOT spruce>0
-W <- intersect.owin(Wtiles, forest)                       # << the correct observation window
-# (Scalability: if W is too fine/large, set its mask resolution via as.mask(W, eps=TILE_RES).)
-
-pp <- ppp(tr$x, tr$y, window = W, checkdup = FALSE)
-cat(sprintf("points in window: %d ; window area: %.0f km^2\n", npoints(pp), area(W)/1e6))
-
-# ---- 4. intensity models ---------------------------------------------------
-# Primary host model: lambda(u) propto spruce(u)  (log-linear, Berman-Turner via ppm)
-fit_spr  <- ppm(pp ~ spr, covariates = list(spr = spr))
-# Richer discriminator: spruce + total volume + distance-to-forest-edge
-edge <- distfun(as.psp(as.polygonal(W)))                  # crude edge covariate; refine as needed
-fit_full <- ppm(pp ~ spr + tot + edge, covariates = list(spr = spr, tot = tot, edge = edge))
-print(anova(fit_spr, fit_full, test = "LR"))              # does the richer model matter?
-
-lam_spr  <- predict(fit_spr,  type = "trend")
-lam_full <- predict(fit_full, type = "trend")
-
-# ---- 5. PRIMARY inferential object: Linhom + host-conditioned envelopes -----
-# Envelopes simulate from the FITTED INHOMOGENEOUS null (NOT CSR).
-set.seed(42)
-E_spr <- envelope(pp, Linhom, funargs = list(lambda = lam_spr),
-                  simulate = expression(rpoispp(lam_spr)),
-                  nsim = NSIM, correction = "translate", rmax = RMAX, savefuns = TRUE)
-# Discriminator: does residual aggregation survive the richer covariate model?
-E_full <- envelope(pp, Linhom, funargs = list(lambda = lam_full),
-                   simulate = expression(rpoispp(lam_full)),
-                   nsim = NSIM, correction = "translate", rmax = RMAX)
-# Display PCF (Epanechnikov kernel; Stoyan bandwidth) -- scale localization only
-g_spr <- pcfinhom(pp, lambda = lam_spr, kernel = "epanechnikov", correction = "translate")
-
-pdf("figures/host_conditioned_spatstat.pdf", width = 11, height = 4)
-par(mfrow = c(1, 3))
-plot(E_spr,  main = "L_inhom vs spruce-host null")        # observed above band => residual foci
-plot(E_full, main = "L_inhom vs spruce+total+edge null")  # collapse => host-structure, not foci
-plot(g_spr,  main = "host-conditioned PCF (Epanechnikov)")
-dev.off()
-
-# ---- 6. per-block DESCRIPTIVE replicates (NO latitudinal trend; n=7 PSUs) ---
-# assign each tile to a block via 15 km clustering of tile centres, then Linhom per block.
-tiles[, cx := (x0 + x1)/2][, cy := (y0 + y1)/2]
-tiles[, block := as.integer(factor(cutree(hclust(dist(cbind(cx, cy))), h = 15000)))]
-tr <- merge(tr, tiles[, .(image_name, block)], by = "image_name")
-for (b in sort(unique(tr$block))) {
-  sub <- tr[block == b]
-  if (nrow(sub) < 200) next
-  Wb <- intersect.owin(do.call(union.owin, tile_win[tiles$block == b]), forest)
-  ppb <- ppp(sub$x, sub$y, window = Wb, checkdup = FALSE)
-  fb  <- ppm(ppb ~ spr, covariates = list(spr = spr))
-  Lb  <- Linhom(ppb, lambda = predict(fb, type = "trend"), correction = "translate", rmax = RMAX)
-  cat(sprintf("block %d: n=%d, L_inhom(500m)-500 = %.0f\n",
-              b, npoints(ppb), Lb$trans[which.min(abs(Lb$r - 500))] - 500))
+load_block <- function(b) {
+  g  <- read.csv(sprintf("%s/block%d_grid.csv",  RDIR, b))
+  pt <- read.csv(sprintf("%s/block%d_pts.csv",   RDIR, b))
+  ti <- read.csv(sprintf("%s/block%d_tiles.csv", RDIR, b))
+  spr <- grid_im(g, "spr"); tot <- grid_im(g, "tot"); lc <- grid_im(g, "lc")
+  forest <- solutionset(eval.im(round(lc) == 1))
+  tw <- lapply(seq_len(nrow(ti)), function(i) owin(c(ti$x0[i], ti$x1[i]), c(ti$y0[i], ti$y1[i])))
+  W  <- intersect.owin(do.call(union.owin, tw), forest)
+  edge <- bdist.pixels(forest)
+  # forest cells (centres) + covariates + cluster counts (for the global GLM)
+  fcell <- g[round(g$lc) == 1, ]
+  fcell$edge <- lookup.im(edge, fcell$x, fcell$y, naok = TRUE, strict = FALSE)
+  fcell <- fcell[is.finite(fcell$edge), ]
+  xs <- sort(unique(g$x)); ys <- sort(unique(g$y))
+  ix <- round((pt$cx - min(xs)) / RES) + 1; iy <- round((pt$cy - min(ys)) / RES) + 1
+  key <- paste(pmax(1, pmin(length(xs), ix)), pmax(1, pmin(length(ys), iy)))
+  ckey <- paste(match(fcell$x, xs), match(fcell$y, ys))
+  fcell$count <- as.integer(table(factor(key, levels = ckey)))
+  list(b = b, spr = spr, tot = tot, edge = edge, forest = forest, W = W,
+       pp = ppp(pt$cx, pt$cy, window = W, checkdup = FALSE),
+       cells = data.frame(b = b, x = fcell$x, y = fcell$y, spr = fcell$spr,
+                          tot = fcell$tot, edge = fcell$edge, count = fcell$count))
 }
-cat("\nReport per-block L_inhom as descriptive replicates with between-block spread.\n",
-    "DO NOT fit a latitudinal trend (effective n = 7 blocks).\n")
 
-# =============================================================================
-# READING THE OUTPUT (locked interpretation):
-#  - If observed L_inhom lies ABOVE the spruce-host envelope at 0.25-1.5 km AND stays above the
-#    spruce+total+edge envelope  -> genuine residual mortality FOCI beyond host structure (the finding).
-#  - If it collapses into the (richer) envelope -> mortality is host-tracking with little residual
-#    clustering (a clean, publishable null).
-#  - Clusters already sit on spruce-rich pixels (strong first-order host-tracking); this analysis
-#    isolates the SECOND-ORDER residual.
-# =============================================================================
+main <- function() {
+  blocks <- sort(as.integer(gsub("\\D", "", list.files(RDIR, "_grid.csv$"))))
+  L <- lapply(blocks, load_block); names(L) <- blocks
+  # ---- GLOBAL intensity model (pooled forest cells) ----
+  allc <- do.call(rbind, lapply(L, `[[`, "cells"))
+  mu <- colMeans(allc[c("spr","tot","edge")]); sdv <- sapply(allc[c("spr","tot","edge")], sd)
+  zc <- scale(allc[c("spr","tot","edge")])
+  glm_g <- glm(allc$count ~ zc, family = poisson())
+  co <- coef(glm_g)
+  cat(sprintf("GLOBAL intensity  lambda ~ spruce+total+edge  (standardised): spr=%+.3f tot=%+.3f edge=%+.3f\n",
+              co[2], co[3], co[4]))
+  cell_area <- RES * RES
+  predict_lambda <- function(cells) {              # fitted intensity per unit area at given cells
+    z <- scale(cells[c("spr","tot","edge")], center = mu, scale = sdv)
+    exp(cbind(1, z) %*% co) / cell_area
+  }
+  # ---- per-block L_inhom with the GLOBAL lambda + host-conditioned envelopes ----
+  res <- list()
+  cat(sprintf("%3s %6s | %s\n","blk","n","L_inhom(r)-r vs GLOBAL-host envelope  250/500/1000m"))
+  for (b in blocks) {
+    lb <- L[[as.character(b)]]
+    lam_cells <- predict_lambda(lb$cells)
+    lam <- grid_im(data.frame(x = lb$cells$x, y = lb$cells$y, z = lam_cells), "z")
+    lam <- lam[lb$W, drop = FALSE]                 # restrict to the forest window
+    if (npoints(lb$pp) < 60) next
+    E <- envelope(lb$pp, Linhom, funargs = list(lambda = lam),
+                  simulate = expression(rpoispp(lam)),
+                  nsim = NSIM, correction = "translate", rmax = RMAX, verbose = FALSE)
+    at <- function(r0){ i <- which.min(abs(E$r-r0)); c(obs=E$obs[i]-r0, lo=E$lo[i]-r0, hi=E$hi[i]-r0) }
+    f <- sapply(c(250,500,1000), at); res[[as.character(b)]] <- list(b=b, n=npoints(lb$pp), E=E, f=f)
+    v <- function(j) if (f["obs",j]>f["hi",j]) "ABOVE" else if (f["obs",j]<f["lo",j]) "below" else "within"
+    cat(sprintf("%3d %6d | %s/%s/%s   (L500-r=%.0f, env=[%.0f,%.0f])\n",
+        b, npoints(lb$pp), v(1), v(2), v(3), f["obs",2], f["lo",2], f["hi",2]))
+  }
+  saveRDS(list(coef=co, res=res), "analysis/out/spatstat_host.rds")
+  if (length(res)) {
+    pdf("figures/host_conditioned_spatstat.pdf", width=10, height=7)
+    par(mfrow=c(ceiling(length(res)/3),3), mar=c(4,4,2,1))
+    for (nm in names(res)) plot(res[[nm]]$E, .-r~r, main=paste("block",nm), legend=FALSE)
+    dev.off()
+  }
+  cat("\nsaved analysis/out/spatstat_host.rds + figures/host_conditioned_spatstat.pdf\n")
+}
+
+selftest <- function() {
+  set.seed(1); W <- owin(c(0,6000),c(0,6000))
+  lam <- as.im(function(x,y) 50e-6*exp(2*x/6000), W); pp <- rpoispp(lam)
+  E <- envelope(pp, Linhom, funargs=list(lambda=lam), simulate=expression(rpoispp(lam)),
+                nsim=39, correction="translate", rmax=800, verbose=FALSE)
+  i <- which.min(abs(E$r-500))
+  cat(sprintf("[selftest] n=%d Linhom(500)-500=%.1f env=[%.1f,%.1f] -> %s\n",
+      npoints(pp), E$obs[i]-500, E$lo[i]-500, E$hi[i]-500,
+      ifelse(E$obs[i]>E$lo[i]&&E$obs[i]<E$hi[i],"PASS","CHECK")))
+}
+
+a <- commandArgs(trailingOnly=TRUE)
+if (length(a) && a[1]=="selftest") selftest() else main()

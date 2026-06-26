@@ -29,3 +29,6 @@ data/*.tiff
 analysis/out/host_pcf.json
 analysis/out/host_pcf_pooled.json
 analysis/out/permtest_null.npy
+
+# R bridge intermediates (regenerable via export_blocks_for_R.py)
+analysis/out/rblocks/
