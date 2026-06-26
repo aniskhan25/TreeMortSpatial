@@ -23,9 +23,9 @@
     \begin{abstract}
     Finland's boreal forests are experiencing a documented increase in non-harvest tree
     mortality~\citep{junttila2024significant}, and the spatial arrangement of dead trees encodes the
-    processes that generate it. We analyse 698,223 individual dead-tree locations---detected by a
+    processes that generate it. We analyse 698,223 individual dead-tree locations (detected by a
     U-Net segmentation model from 2023 aerial imagery across a national-scale sample of seven boreal
-    super-sites ($\sim$60.4--67.8\textdegree{}N)---as a \emph{host-conditioned point process}, asking
+    super-sites, $\sim$60.4--67.8\textdegree{}N) as a \emph{host-conditioned point process}, asking
     whether mortality clusters more than forest host availability alone explains. Conditioning on a
     pre-mortality (2021) multi-source forest-inventory host surface, we find that mortality intensity
     increases with both spruce and total growing-stock volume (strong host-tracking), and that,
@@ -33,13 +33,13 @@
     that holds from the sub-kilometre scale out to at least 3\,km: the inhomogeneous $L$-function lies
     above a host-conditioned simulation envelope in all seven blocks even under a richer null
     (spruce\,+\,total volume\,+\,stand edge), and the same exceedance appears whether the process is
-    taken at the cluster-centroid or the individual-tree level---a local-contagion signature on top of
+    taken at the cluster-centroid or the individual-tree level: a local-contagion signature on top of
     host availability that is not an artefact of the clustering unit. We establish these claims with a
     reusable falsification-and-validation harness for morphometrics derived from black-box detection
-    models---a covariance-preserving null with mixture-model discreteness diagnostics, clustering
+    models: a covariance-preserving null with mixture-model discreteness diagnostics, clustering
     scale and shape-filter stability gates, detector-confound propagation (cluster ``type''
     predictable from detector confidence alone at AUC\,=\,0.727), and purposive cluster-sample
-    inference (effective sample size = 7 blocks, not 14,582 clusters)---which also shows that a
+    inference (effective sample size = 7 blocks, not 14,582 clusters), which also shows that a
     discrete shape-``typology'' of the clusters is an artefact of clustering scale, filter
     thresholds and detector behaviour rather than ecology. We therefore report spatial
     \emph{structure}, not agent-labelled types: lacking species, dating, and ground-truth layers,
@@ -103,8 +103,8 @@ This paper makes three contributions, one empirical and two methodological:
         check against forest-inventory species composition. Applied here it
         overturns most candidate signals and certifies the host-conditioned residual.
   \item \textbf{A demonstration that cluster shape alone does not attribute disturbance agent.}
-        A candidate two-type morphological ``typology'' of the clusters dissolves under the harness
-        --- it is not invariant to the clustering radius, its prevalence is an artefact of the
+        A candidate two-type morphological ``typology'' of the clusters dissolves under the harness:
+        it is not invariant to the clustering radius, its prevalence is an artefact of the
         aspect-ratio filter, and (aspect-ratio-matched) it carries no directional point-process
         signal beyond hull shape; an external check against forest-inventory species composition
         confirms the morphological gradient does not even track the stand species mix. We therefore
@@ -444,7 +444,7 @@ To break the circularity of reading an agent off the shape we clustered on, we a
 non-shape variable to each cluster: the pre-mortality (2021) MS-NFI growing-stock volume of spruce,
 pine and birch, sampled at the cluster centroid (EPSG:3067, nodata-masked; clusters off forest host
 dropped). We then asked whether the morphological gradient tracks the species mix of the stand that
-died, with the block as the replicate---a within-block Spearman correlation between aspect ratio and
+died, with the block as the replicate: a within-block Spearman correlation between aspect ratio and
 each species fraction combined across the seven blocks by a sign test, and a per-block comparison of
 species fractions between the two morphological endpoints. No per-cluster $p$-value is reported (it
 would be pseudo-replicated across $\sim$2{,}000 clusters per block).
@@ -453,15 +453,15 @@ would be pseudo-replicated across $\sim$2{,}000 clusters per block).
 \label{sec:methods-host}
 
 To ask whether mortality clusters \emph{more than forest host availability alone predicts}, we
-replace the homogeneous-CSR null---meaningless over heterogeneous forest---with an
+replace the homogeneous-CSR null, meaningless over heterogeneous forest, with an
 \emph{inhomogeneous} null whose first-order intensity is driven by host. In plain terms, the baseline
 we compare against is not ``dead trees scattered evenly across the landscape'' but ``dead trees in
-proportion to how much host forest is present''; any clustering beyond that baseline---what we call
-\emph{residual aggregation}---is the part not explained by where the forest is. The host surface is the
+proportion to how much host forest is present''; any clustering beyond that baseline (what we call
+\emph{residual aggregation}) is the part not explained by where the forest is. The host surface is the
 Multi-Source National Forest Inventory (MS-NFI) spruce growing-stock volume from \emph{2021}, i.e.\
 \emph{before} the 2023 mortality: a 2023 host layer would be endogenous, since dead spruce drops out
 of the standing-volume estimate. The observation window is the union of the 6\,km map-sheet tiles
-restricted to forest land (MS-NFI land-class mask)---not the tile bounding boxes (which include
+restricted to forest land (MS-NFI land-class mask), not the tile bounding boxes (which include
 lakes) and not ``spruce $>0$'' (which would conflate covariate and window). We model the intensity
 $\lambda(u)$ by a pixel-Poisson log-linear fit on the forest grid (covariates: spruce volume, total
 growing-stock volume, distance to stand edge) and assess second-order structure with the
@@ -473,7 +473,7 @@ implementations: a tile-pooled inhomogeneous pair-correlation/$L$ (intensity nor
 the ring estimator on 6\,km tiles is reliable to $r\lesssim1$\,km, $\approx$ window/4), and a
 per-block $L_{\rm inhom}$ in \texttt{spatstat} with the intensity fitted globally (pooled Poisson
 across forest cells), cumulative translation-corrected and therefore variance-stabilised, on the
-25--54\,km block windows---which extends the reliable range to $r\le3$\,km. Both are run on cluster
+25--54\,km block windows, which extends the reliable range to $r\le3$\,km. Both are run on cluster
 centroids and, for the \texttt{spatstat} leg, also on the individual dead trees (intensity fitted on
 per-cell tree counts; the point pattern uniformly subsampled to $\le$20{,}000 per block with the null
 intensity rescaled to the observed count), so the result does not depend on the analysis unit.
@@ -963,16 +963,16 @@ mortality strongly tracks forest host availability, as expected.
 Beyond this host-tracking, mortality is \emph{still} aggregated more than the host predicts at short
 range. Against a spruce-only host null, the inhomogeneous $L$-function (a standard measure of how
 clustered points are, here calibrated against the host surface rather than against an even scatter)
-lies far above the host-conditioned envelope---the band of values expected if mortality merely
-followed host---across 100\,m--1\,km (Figure~\ref{fig:hostcond}a). Crucially, the signal
+lies far above the host-conditioned envelope (the band of values expected if mortality merely
+followed host) across 100\,m--1\,km (Figure~\ref{fig:hostcond}a). Crucially, the signal
 survives the richer null: with intensity conditioned on spruce, total volume, and stand edge, the
 observed $L_{\rm inhom}(r)-r$ remains above the simulation envelope across the same range
-(Figure~\ref{fig:hostcond}b), although the excess is much smaller---adding total volume absorbs most
+(Figure~\ref{fig:hostcond}b), although the excess is much smaller: adding total volume absorbs most
 of the apparent ``foci beyond spruce,'' confirming that a large part of the spruce-only residual is
 broader forest structure that the spruce layer alone does not resolve. What remains is a
 \emph{modest but genuine residual aggregation at the sub-kilometre scale}: a local-contagion
 signature on top of host-tracking, consistent with mortality concentrating into foci rather than
-spreading diffusely across available host. Detection error does not explain it---per-cluster
+spreading diffusely across available host. Detection error does not explain it: per-cluster
 detector confidence predicts cluster ``type'' at AUC\,=\,0.727 but the continuous structure couples
 to confidence only weakly ($\rho=0.07$).
 
@@ -983,8 +983,8 @@ Poisson model across all forest cells, capturing the regional host gradient) and
 block, and significance from host-conditioned simulation envelopes (the estimator was verified on
 simulated inhomogeneous-Poisson patterns). The result is consistent in \emph{all seven} blocks: the
 observed $L_{\rm inhom}(r)-r$ lies above the host-conditioned envelope across 250\,m--1\,km
-(Figure~\ref{fig:hostcond-ss}). The two implementations agree on the qualitative finding---residual
-aggregation beyond host, present in every block---and on the robustness of spruce-driven
+(Figure~\ref{fig:hostcond-ss}). The two implementations agree on the qualitative finding (residual
+aggregation beyond host, present in every block) and on the robustness of spruce-driven
 host-tracking; they differ in the \emph{magnitude} of the residual (the per-block cumulative $L$
 accumulates more multi-scale clustering than the tile-pooled pair-correlation), so we report the
 existence and scale of the residual, not a single magnitude.
@@ -1048,12 +1048,12 @@ across 250\,m to at least 3\,km, on the 7-block sample.
 
 \mypar{What controls where dead trees concentrate?}
 The central result is the host-conditioned one (Section~\ref{sec:res-host}): boreal canopy mortality
-strongly tracks forest host availability---intensity rises with both spruce and total growing-stock
-volume---yet retains a modest, genuine residual aggregation, robust to the analysis unit (cluster or
+strongly tracks forest host availability (intensity rises with both spruce and total growing-stock
+volume) yet retains a modest, genuine residual aggregation, robust to the analysis unit (cluster or
 individual tree) and persisting from the sub-kilometre scale out to at least 3\,km, that survives
 a richer host-conditioned null. Ecologically this is the signature of a process that is
 \emph{first} constrained by where susceptible host stands are, and \emph{then} concentrates into
-local foci within them rather than spreading diffusely---consistent with, though not proof of,
+local foci within them rather than spreading diffusely, consistent with, though not proof of,
 short-range contagion (bark-beetle tree-to-tree spread, or locally correlated wind/snow damage). The
 honest weight of the claim is set by what conditioning removed: adding total volume to the null
 absorbed most of the apparent excess, so the defensible statement is a \emph{bounded} residual, not
@@ -1082,16 +1082,16 @@ uninformative about agent identity.
 
 \mypar{External corroboration: morphology does not track species composition.}
 The sharpest test of the circularity is to bring in a variable from outside the shape space and the
-detector altogether. We attached the pre-mortality (2021) MS-NFI species composition---spruce, pine
-and birch growing-stock volume---to every cluster at its location and asked whether the morphological
+detector altogether. We attached the pre-mortality (2021) MS-NFI species composition (spruce, pine
+and birch growing-stock volume) to every cluster at its location and asked whether the morphological
 gradient covaries with the species mix of the stand that died (Section~\ref{sec:methods-host}, G5).
 It does not. Within each block the Spearman correlation between aspect ratio and species fraction is
 negligible ($|\rho|\le0.05$ for spruce, pine and birch; Figure~\ref{fig:species}a), and the two
 morphological endpoints sit in near-identical species mixes (median elongated-minus-compact
 difference $\le2$ percentage points for every species, with no consistent sign across blocks;
 Figure~\ref{fig:species}b). The only relationships whose sign is reproducible across all seven
-blocks---a faint tendency for more elongated patches to fall in slightly more broadleaf-rich, less
-coniferous stands (birch $\rho=+0.05$, conifer $\rho=-0.04$, sign-test $p=0.016$)---are an order of
+blocks, a faint tendency for more elongated patches to fall in slightly more broadleaf-rich, less
+coniferous stands (birch $\rho=+0.05$, conifer $\rho=-0.04$, sign-test $p=0.016$), are an order of
 magnitude too small to carry ecological, let alone agent-level, meaning. An external, non-shape
 variable thus confirms what the internal diagnostics imply: patch morphology is not a proxy for
 forest composition, so it cannot be read as a proxy for the agent that a given composition would
@@ -1172,9 +1172,9 @@ of mortality morphologies.
 
 \mypar{Future work.}
 Several steps would extend the host-conditioned result, in increasing order of data requirement.
-The two pure-computation refinements that the analysis itself called for---a tree-level (rather than
-centroid) treatment of the inhomogeneous point process, and a variance-stabilised, large-window
-estimator reaching reliably past 1\,km---are carried out here (Figure~\ref{fig:hostcond-rigor});
+The two pure-computation refinements that the analysis itself called for, a tree-level (rather than
+centroid) treatment of the inhomogeneous point process and a variance-stabilised, large-window
+estimator reaching reliably past 1\,km, are carried out here (Figure~\ref{fig:hostcond-rigor});
 both confirm the residual aggregation. The remaining steps need new layers. First,
 with publicly available layers: overlaying a species layer from Finland's multi-source national
 forest inventory and a regional disturbance-agent map (e.g.\ Metsäkeskus damage records) would
@@ -1182,12 +1182,12 @@ enable a marked point-process test, moving from \emph{characterising} spatial st
 \emph{attributing} it; we note that the pan-European attribution products
 \citep{senf2021mapping} group wind and bark beetle into a single class and so cannot, by themselves,
 separate the two agents, which is why a dedicated regional layer is required. A complementary
-detection-validation step---stratified precision/recall against field or photo-interpreted ground
-truth---would calibrate, rather than merely bound, the detector confound. Second, and requiring new
+detection-validation step (stratified precision/recall against field or photo-interpreted ground
+truth) would calibrate, rather than merely bound, the detector confound. Second, and requiring new
 acquisition rather than further analysis of the present data, multi-temporal imagery (prior-year
 aerial surveys passed through the same detector, which are not available for this study) would add
 the temporal dimension: it would date mortality, separate recent deaths from years-old snags, and
-turn the static host-conditioned pattern into a space--time process---the definitive test of whether
+turn the static host-conditioned pattern into a space-time process, the definitive test of whether
 this year's foci predict next year's mortality. The pipeline itself is computationally scalable and,
 once these layers are in place, could support comparative analysis across the Nordic countries.
 
@@ -1201,7 +1201,7 @@ We have analysed 698,223 individual dead-tree detections from a 2023 national-sc
 Conditioning on a pre-mortality forest-inventory host surface, we find that canopy mortality
 strongly tracks forest host availability (intensity rises with spruce and total growing-stock
 volume) and yet retains a modest, genuine residual aggregation at the sub-kilometre scale that
-survives a richer host-conditioned null---a local-contagion signature on top of host-tracking,
+survives a richer host-conditioned null, a local-contagion signature on top of host-tracking,
 established with inhomogeneous second-order statistics and host-conditioned simulation envelopes.
 We deliberately report this spatial \emph{structure} rather than disturbance-agent labels, because a
 candidate morphological ``typology'' of the clusters does not survive scrutiny. Using DBSCAN
