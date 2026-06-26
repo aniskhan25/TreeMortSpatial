@@ -699,3 +699,23 @@ listed, now done and folded into Results (Fig. fig:hostcond-rigor):
   "Beyond the centroid, beyond 1km" para + new figure) + Discussion lead + Future-work updated;
   all "$\lesssim$1km / sub-kilometre / centroid scale / future work" caveats removed. Recompiled
   clean (0 undefined refs). spatstat self-test PASS.
+
+### EXTERNAL SPECIES VALIDATION — EXECUTED (2026-06-26)
+"External validation that breaks the shape-only circularity." Brought in a variable from OUTSIDE the
+shape space and the detector: pre-mortality (2021) MS-NFI species composition.
+- Downloaded public Luke/Paituli volume rasters manty_vmi1x_1721.tif (pine, 1.7GB) +
+  koivu_vmi1x_1721.tif (birch, 1.3GB) via funet rsync (gitignored, as with spruce/total).
+- `analysis/species_validation.py`: sample spruce/pine/birch/total at each cluster centroid
+  (_sample_raster, nodata-masked); 14,387/14,582 clusters on forest host. Tests respect the 7-block
+  design (block = replicate): within-block Spearman(aspect_ratio, species_frac) combined by sign test;
+  per-block type-endpoint species-mix contrast. Outputs species_corr.csv, species_typecontrast.csv,
+  figures/fig_species_validation.{png,pdf}.
+- RESULT (conservative / null, strengthens the thesis): morphology does NOT track species mix.
+  |rho| <= 0.05 for spruce/pine/birch within block; endpoints near-identical species mix (<=2pp).
+  Only reproducible-sign relationships are negligible: birch rho=+0.05 (7/7 +), conifer rho=-0.04
+  (0/7 +), sign-test p=0.016 -- an order of magnitude too small to matter. Shape is not a proxy for
+  forest composition, so it cannot be a proxy for agent. Caveat: species != agent, so this is a
+  partial (not full-attribution) break; the disturbance-agent map remains future work.
+- Manuscript: added Methods G5 (external species validation), a Discussion paragraph
+  "External corroboration: morphology does not track species composition" + fig:species, and folded
+  it into contributions 2 (harness) and 3 (shape-not-agent). Recompiled clean (0 undefined refs).

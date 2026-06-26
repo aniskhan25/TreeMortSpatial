@@ -98,14 +98,17 @@ This paper makes three contributions, one empirical and two methodological:
         segmentation outputs reflect ecology or the instrument: a detector-confound test using the
         model's own confidence (cluster ``type'' predictable at AUC\,=\,0.727), detection-error
         propagation through the full pipeline, clustering-scale and shape-filter stability gates, a
-        covariance-preserving null with mixture-model discreteness diagnostics, and purposive
-        cluster-sample inference (effective sample size = the 7 sampling blocks). Applied here it
+        covariance-preserving null with mixture-model discreteness diagnostics, purposive
+        cluster-sample inference (effective sample size = the 7 sampling blocks), and an external
+        check against forest-inventory species composition. Applied here it
         overturns most candidate signals and certifies the host-conditioned residual.
   \item \textbf{A demonstration that cluster shape alone does not attribute disturbance agent.}
         A candidate two-type morphological ``typology'' of the clusters dissolves under the harness
         --- it is not invariant to the clustering radius, its prevalence is an artefact of the
         aspect-ratio filter, and (aspect-ratio-matched) it carries no directional point-process
-        signal beyond hull shape. We therefore characterise spatial structure rather than infer
+        signal beyond hull shape; an external check against forest-inventory species composition
+        confirms the morphological gradient does not even track the stand species mix. We therefore
+        characterise spatial structure rather than infer
         agents from patch geometry, a transferable caution for the aerial mortality-mapping
         literature.
 \end{enumerate}
@@ -432,6 +435,16 @@ The upstream detector provides a per-detection confidence (\texttt{max\_value}) 
 We tested whether per-cluster detection covariates (mean/SD confidence, $n$, density) predict type
 (5-fold logistic AUC), and whether modest false-negative perturbation (dropping 10--20\% of detections
 per cluster and re-fitting) changes type assignments.
+
+\mypar{(G5) External species validation.}
+To break the circularity of reading an agent off the shape we clustered on, we attached an external,
+non-shape variable to each cluster: the pre-mortality (2021) MS-NFI growing-stock volume of spruce,
+pine and birch, sampled at the cluster centroid (EPSG:3067, nodata-masked; clusters off forest host
+dropped). We then asked whether the morphological gradient tracks the species mix of the stand that
+died, with the block as the replicate---a within-block Spearman correlation between aspect ratio and
+each species fraction combined across the seven blocks by a sign test, and a per-block comparison of
+species fractions between the two morphological endpoints. No per-cluster $p$-value is reported (it
+would be pseudo-replicated across $\sim$2{,}000 clusters per block).
 
 \subsection{Host-Conditioned Point-Process Analysis}
 \label{sec:methods-host}
@@ -1050,7 +1063,7 @@ mapping, because the evidence that would license it is either absent or circular
 ``reference zones'' are author-defined boxes in a space whose axes (aspect ratio, and the
 compactness coupled to it) \emph{define} the gradient, so their overlap with the endpoints is a
 restatement of the clustering, not external corroboration. Several confounders independently block
-attribution: the dataset carries no species information, so a beetle-killed spruce cannot be
+attribution: the detections themselves carry no species label, so a beetle-killed spruce cannot be
 distinguished from a drought- or pathogen-killed pine, nor a compact patch from fire, snow-load,
 or small salvage/clearcut polygons; the \texttt{alku\_aika} field records flight-strip
 acquisition time, not mortality date, severing any link to specific storms or outbreak years; and
@@ -1058,6 +1071,36 @@ the single 2023 snapshot cannot separate a recent event from a years-old palimps
 A compact morphology, in particular, is the default shape of almost any small mortality patch and
 is therefore the least diagnostic possible signal, making a 76.5\% ``compact'' prevalence
 uninformative about agent identity.
+
+\mypar{External corroboration: morphology does not track species composition.}
+The sharpest test of the circularity is to bring in a variable from outside the shape space and the
+detector altogether. We attached the pre-mortality (2021) MS-NFI species composition---spruce, pine
+and birch growing-stock volume---to every cluster at its location and asked whether the morphological
+gradient covaries with the species mix of the stand that died (Section~\ref{sec:methods-host}, G5).
+It does not. Within each block the Spearman correlation between aspect ratio and species fraction is
+negligible ($|\rho|\le0.05$ for spruce, pine and birch; Figure~\ref{fig:species}a), and the two
+morphological endpoints sit in near-identical species mixes (median elongated-minus-compact
+difference $\le2$ percentage points for every species, with no consistent sign across blocks;
+Figure~\ref{fig:species}b). The only relationships whose sign is reproducible across all seven
+blocks---a faint tendency for more elongated patches to fall in slightly more broadleaf-rich, less
+coniferous stands (birch $\rho=+0.05$, conifer $\rho=-0.04$, sign-test $p=0.016$)---are an order of
+magnitude too small to carry ecological, let alone agent-level, meaning. An external, non-shape
+variable thus confirms what the internal diagnostics imply: patch morphology is not a proxy for
+forest composition, so it cannot be read as a proxy for the agent that a given composition would
+favour. This is the conservative outcome, and it strengthens the decision to withhold attribution.
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=\linewidth]{fig_species_validation.png}
+  \caption{External validation against pre-mortality MS-NFI species composition (outside the shape
+           space and the detector). \textbf{(a)} Within-block Spearman $\rho$ between cluster aspect
+           ratio and the spruce/pine/birch/conifer fraction of stand volume; points are the seven
+           blocks, bars the across-block means. All $|\rho|\le0.10$ and means near zero: the
+           morphological gradient does not track species mix (the reproducible-sign but negligible
+           birch$+$/conifer$-$ tendency aside). \textbf{(b)} Median species fraction at the compact
+           and elongated endpoints is near-identical. Shape is not a proxy for forest composition.}
+  \label{fig:species}
+\end{figure}
 
 \mypar{Three of our own results point the same way: this is geometry, not agent.}
 \label{sec:disc-orientation}

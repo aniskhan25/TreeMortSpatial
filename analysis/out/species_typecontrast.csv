@@ -1,0 +1,4 @@
+species,n_blocks,median_diff_elong_minus_compact,blocks_positive,sign_p
+spruce,7,0.00836120401337792,4,1.0
+pine,7,-0.019599919175591007,3,1.0
+birch,7,-0.006843524300462402,1,0.125
