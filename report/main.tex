@@ -196,7 +196,7 @@ discontinuous sample}: reported cluster prevalences and densities are sample sta
 surveyed tiles and should not be read as an exhaustive national census. Figure~\ref{fig:sampling}
 shows the sampling footprint, discrete study blocks from the southern coast to Lapland.
 
-\begin{figure}[htb]
+\begin{figure}[!htb]
   \centering
   \includegraphics[width=0.7\linewidth]{fig_sampling_extent.png}
   \caption{Sampling footprint: all 14,582 cluster centroids (from 312 aerial tiles) on a national
@@ -506,7 +506,7 @@ Correlation analysis (Figure~\ref{fig:correlation}) shows strong positive covari
 among size metrics ($n$, area) and expected trade-offs between compactness and aspect
 ratio. Figure~\ref{fig:scatters} presents key pairwise scatter plots.
 
-\begin{figure}[htb]
+\begin{figure}[!htb]
   \centering
   \includegraphics[width=\linewidth]{fig2_histograms.png}
   \caption{Distributions of key cluster metrics across all 14,582 clusters, coloured by metric
@@ -531,16 +531,8 @@ ratio. Figure~\ref{fig:scatters} presents key pairwise scatter plots.
   \label{fig:scatters}
 \end{figure}
 
-The spatial distribution of all 14,582 cluster centroids across the sampled tiles is shown in
-Figure~\ref{fig:spatial_extent}.
-
-\begin{figure}[htb]
-  \centering
-  \includegraphics[width=\linewidth]{fig1_spatial_extent.png}
-  \caption{Map of dead-tree cluster centroids ($n=14{,}582$) sampled across Finland
-           ($\sim$60.4--67.8\textdegree{}N; EPSG:3067), in discrete latitudinal bands.}
-  \label{fig:spatial_extent}
-\end{figure}
+The spatial distribution of all 14,582 cluster centroids across the sampled tiles is the sampling
+footprint shown earlier in Figure~\ref{fig:sampling}.
 
 \subsection{Morphological Gradient and Candidate Partition}
 \label{sec:res-typology}
@@ -581,15 +573,19 @@ geometric near-tautology (both axes are hull-derived) rather than an ecological 
 licenses is that the \emph{form} of the relationship is region-invariant, not that the
 \emph{position} of clusters along it is representatively sampled.
 
-\begin{table}[htb]
-  \centering
-  \caption{Per-block coverage. The compactness--aspect-ratio gradient axis is invariant across all
+\begin{table}[!t]
+    \def\arraystretch{1.1}
+    \centering
+    \footnotesize
+    \caption{Per-block coverage. The compactness--aspect-ratio gradient axis is invariant across all
            seven sampling blocks; Type-0 share and block size vary. Blocks are ordered by latitude.}
-  \label{tab:blocks}
-  \small
-  \begin{tabular}{lccc}
+    \begin{adjustbox}{max width=0.9\columnwidth}
+    \begin{tabular}{llccccc}
     \toprule
-    \textbf{Block (approx.\ location)} & \textbf{$n$ clusters} & \textbf{Type\,0 \%} & \textbf{$r$(AR, comp.)} \\
+    \textsc{\shortstack{Block\\(approx.\ location)}} 
+    & \textsc{\shortstack{$n$ clusters}} 
+    & \textsc{\shortstack{Type\,0 \%}} 
+    & \textsc{\shortstack{$r$(AR, comp.)}} \\
     \midrule
     SW coast (60.6\textdegree{}N)   & 1{,}243 & 23.6 & $-0.860$ \\
     South (60.7\textdegree{}N)      & 4{,}275 & 22.7 & $-0.866$ \\
@@ -599,7 +595,9 @@ licenses is that the \emph{form} of the relationship is region-invariant, not th
     Central-north (65.1\textdegree{}N) & 4{,}217 & 22.8 & $-0.867$ \\
     Lapland (67.6\textdegree{}N)    & 1{,}377 & 29.3 & $-0.868$ \\
     \bottomrule
-  \end{tabular}
+    \end{tabular}
+    \end{adjustbox}
+    \label{tab:blocks}
 \end{table}
 
 \begin{figure}[htb]
@@ -627,17 +625,19 @@ dimension (1.679$\pm$0.051) and larger mean area (1,269\,m$^2$ vs.\ 382\,m$^2$).
 \textit{Type\,0}/\textit{Type\,1} purely as labels for the two ends of the gradient and attach
 no disturbance-agent meaning to them here.
 
-\begin{table*}[htb]
-  \centering
-  \caption{Per-type means $\pm$ SD for all morphological features.
+\begin{table}[!t]
+    \def\arraystretch{1.1}
+    \centering
+    \footnotesize
+    \caption{Per-type means $\pm$ SD for all morphological features.
            Clustering was performed on fractal\_dim, clark\_evans, and aspect\_ratio only;
            the remaining features are descriptive.}
-  \label{tab:types}
-  \small
-  \begin{tabular}{lcc}
+    \begin{adjustbox}{max width=0.9\columnwidth}
+    \begin{tabular}{lcc}
     \toprule
-    \textbf{Feature} & \textbf{Type\,0 (elongated/dispersed)} ($n=3{,}422$)
-                     & \textbf{Type\,1 (compact/aggregated)} ($n=11{,}160$) \\
+    \textsc{\shortstack{Feature}}
+    & \textsc{\shortstack{Type 0\\(elongated/dispersed)\\(\textnormal{$n=3,422$})}}
+    & \textsc{\shortstack{Type 1\\(compact/aggregated)\\(\textnormal{$n=11,160$})}} \\
     \midrule
     Fractal dimension         & $1.555 \pm 0.069$ & $1.679 \pm 0.051$ \\
     Clark--Evans index        & $2.044 \pm 0.360$ & $1.681 \pm 0.363$ \\
@@ -649,8 +649,10 @@ no disturbance-agent meaning to them here.
     Mean area (m$^2$)         & 382               & 1{,}269           \\
     Mean $n$ (trees)          & 7.7               & 15.6              \\
     \bottomrule
-  \end{tabular}
-\end{table*}
+    \end{tabular}
+    \end{adjustbox}
+    \label{tab:types}
+\end{table}
 
 The spatial distribution of the two gradient endpoints within a southern display window
 (one tile, 10.9\% of clusters, shown for legibility) is given in
@@ -697,22 +699,27 @@ independent ecological validation, and we report them only to locate the two end
 shape space comparable to qualitative literature accounts. Establishing genuine agent
 correspondence requires overlay with an independent disturbance-agent map (see Discussion).
 
-\begin{table}[htb]
-  \centering
-  \caption{Position of each endpoint relative to illustrative, author-defined shape regions
+\begin{table}[!t]
+    \def\arraystretch{1.1}
+    \centering
+    \footnotesize
+      \caption{Position of each endpoint relative to illustrative, author-defined shape regions
            (E5). These regions are not published reference envelopes and the overlaps are
            partly circular (see text); they are descriptive, not validating.}
-  \label{tab:shapespace}
-  \small
-  \begin{tabular}{lcc}
+    \begin{adjustbox}{max width=0.9\columnwidth}
+    \begin{tabular}{lcc}
     \toprule
-    \textbf{Illustrative region} & \textbf{Type\,0} & \textbf{Type\,1} \\
+    \textsc{\shortstack{Illustrative region}} 
+    & \textsc{\shortstack{Type\,0}}
+    & \textsc{\shortstack{Type\,1}} \\
     \midrule
     ``Elongated'' (wind-like)    & 57.0\% & 1.2\%  \\
     ``Intermediate'' (beetle-like) & 75.0\% & 66.4\% \\
     ``Compact'' (fire-like)      & 32.3\% & 94.7\% \\
     \bottomrule
-  \end{tabular}
+    \end{tabular}
+    \end{adjustbox}
+    \label{tab:shapespace}
 \end{table}
 
 \begin{figure}[htb]
@@ -773,7 +780,7 @@ structure of fractal-dimension autocorrelation within the southern display windo
 computed on the full survey dataset to preserve correct neighbourhood weights, and given the
 weak global signal for this metric they are best read qualitatively.
 
-\begin{figure*}[htb]
+\begin{figure}[htb]
   \centering
   \includegraphics[width=\linewidth]{fig_moran_heatmap.png}
   \caption{Moran's $I$ heatmap (E6): four metrics (rows) $\times$ five distance
@@ -785,7 +792,7 @@ weak global signal for this metric they are best read qualitatively.
            column rests on $\sim$20\% of points (80\% islands); km-scale columns are well
            supported. Weights connect within-band neighbours only.}
   \label{fig:morans}
-\end{figure*}
+\end{figure}
 
 \begin{figure}[htb]
   \centering
