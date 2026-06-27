@@ -1,6 +1,8 @@
 \documentclass{article}
 \input{preamble}
 \graphicspath{{../figures/}}
+\renewcommand{\thefigure}{S\arabic{figure}}
+\renewcommand{\thetable}{S\arabic{table}}
 
 \title{\textbf{Supplementary Information}\\[2pt]
 \large Host-Conditioned Spatial Structure of Canopy Mortality in Finland's Boreal Forests}
@@ -12,7 +14,8 @@
 
 This Supplement records the software environment and random seeds (\S\ref{si:env}), the shape-feature
 correlation structure (\S\ref{si:corr}) and univariate feature AUCs (\S\ref{si:auc}) that underpin the
-morphological-gradient framing, and the per-figure provenance trail (\S\ref{si:prov}). It accompanies
+morphological-gradient framing, the per-figure provenance trail (\S\ref{si:prov}), and a set of
+supporting figures relocated from the main text (\S\ref{si:figs}). It accompanies
 the main text and uses the same cluster table (14,582 clusters; 3,422 elongated/dispersed ``Type\,0''
 and 11,160 compact/aggregated ``Type\,1'').
 
@@ -127,7 +130,6 @@ scripts apply the shared house style (\texttt{analysis/figstyle.py}) to notebook
 \textbf{Figure} & \textbf{Generating script} & \textbf{Primary input} \\
 \midrule
 fig2\_histograms & \texttt{make\_histograms\_figure.py} & cluster table \\
-fig3\_correlation & \texttt{restyle\_charts.py} & cluster table \\
 fig4\_scatters & \texttt{restyle\_charts.py} & cluster table \\
 fig6\_typology\_map & \texttt{restyle\_maps.py} & cluster table \\
 fig8\_local\_morans & \texttt{restyle\_maps.py} & \texttt{gate\_moran*} \\
@@ -142,7 +144,6 @@ fig\_shap\_heldout & \texttt{restyle\_shap.py} & held-out RF \\
 fig\_contagion\_a/b & \texttt{restyle\_maps.py} & cluster table \\
 fig\_sampling\_extent & \texttt{scope\_experiments.py} & cluster table \\
 fig\_host\_conditioned & \texttt{make\_hostcond\_figure.py} & \texttt{host\_pointprocess.py} \\
-host\_conditioned\_spatstat & \texttt{host\_pointprocess\_spatstat.R} & per-block grids \\
 fig\_hostcond\_rigor & \texttt{make\_hostcond\_rigor\_figure.py} & \texttt{linhom\_*.csv} \\
 fig\_species\_validation & \texttt{species\_validation.py} & MS-NFI species rasters \\
 fig\_si\_corr (this SI) & \texttt{make\_si\_tables.py} & cluster table \\
@@ -152,5 +153,73 @@ fig\_si\_corr (this SI) & \texttt{make\_si\_tables.py} & cluster table \\
 artifacts are written to \texttt{analysis/out/}.}
 \label{tab:si-prov}
 \end{table}
+
+% ============================================================================
+\section{Supporting figures relocated from the main text}
+\label{si:figs}
+
+These descriptive and supporting figures are referenced from the main text. They were moved here to
+keep the main figures focused on the three contributions; the analyses they depict are unchanged.
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=0.9\linewidth]{fig4_scatters.png}
+  \caption{Pairwise scatter plots of selected spatial metrics, coloured by morphological endpoint.}
+  \label{fig:scatters}
+\end{figure}
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=0.9\linewidth]{fig6_typology_map.png}
+  \caption{Spatial distribution of the two gradient endpoints within a southern display window
+           (one tile, 10.9\% of clusters, shown for legibility). Blue circles: Type\,1
+           (compact/aggregated); brown triangles: Type\,0 (elongated/dispersed). Inset: all 14,582
+           clusters sampled across Finland for geographic context.}
+  \label{fig:typology_map}
+\end{figure}
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=0.9\linewidth]{fig_size_dist.png}
+  \caption{Complementary cumulative distribution functions (CCDF) of cluster size ($n$) per endpoint.
+           Both are better described by a lognormal than a power law; Type\,1 has the heavier upper
+           tail, consistent with its larger mean cluster area.}
+  \label{fig:sizedist}
+\end{figure}
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=0.9\linewidth]{fig8_local_morans.png}
+  \caption{LISA hotspot map for fractal dimension in the southern display window. Labels computed on
+           the full survey dataset. Red: high--high clusters; blue: low--low clusters. Inset:
+           full-survey cluster distribution for geographic context.}
+  \label{fig:lisa}
+\end{figure}
+
+\begin{figure}[htb]
+  \centering
+  \begin{subfigure}{0.9\linewidth}
+    \includegraphics[width=\linewidth]{fig_contagion_a.png}
+    \caption{Connectivity reach at 200\,m (component size). Inset: full-survey cluster distribution.}
+    \label{fig:contagion_a}
+  \end{subfigure}
+  \begin{subfigure}{0.9\linewidth}
+    \includegraphics[width=\linewidth]{fig_contagion_b.png}
+    \caption{Top 1\% betweenness clusters (red) as geometric articulation points (no temporal
+             validation). All metrics computed on the full graph.}
+    \label{fig:contagion_b}
+  \end{subfigure}
+  \caption{Landscape connectivity in the southern display window.}
+  \label{fig:contagion}
+\end{figure}
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=0.9\linewidth]{fig_shap_heldout.png}
+  \caption{Mean $|$SHAP$|$ feature importance for the held-out Random Forest. Compactness dominates;
+           reach\_200m (the only shape-orthogonal feature, highlighted) ranks last, so the high AUC
+           reflects geometric redundancy among shape descriptors rather than independent signal.}
+  \label{fig:shap}
+\end{figure}
 
 \end{document}

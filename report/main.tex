@@ -502,9 +502,9 @@ not be over-interpreted as an ecological property of tree placement. Mean within
 7.79\,m (SD\,=\,2.43\,m), consistent with individual-tree-scale spacing. Fractal dimension
 averages 1.650 (SD\,=\,0.077).
 
-Correlation analysis (Figure~\ref{fig:correlation}) shows strong positive covariation
+Correlation analysis (Supplementary Fig.~S1) shows strong positive covariation
 among size metrics ($n$, area) and expected trade-offs between compactness and aspect
-ratio. Figure~\ref{fig:scatters} presents key pairwise scatter plots.
+ratio. Supplementary Fig.~S2 presents key pairwise scatter plots.
 
 \begin{figure}[!htb]
   \centering
@@ -515,20 +515,6 @@ ratio. Figure~\ref{fig:scatters} presents key pairwise scatter plots.
            log-spaced bins; on this scale area and perimeter are approximately lognormal. The
            remaining panels use linear axes. Dashed lines mark per-metric medians.}
   \label{fig:histograms}
-\end{figure}
-
-\begin{figure}[htb]
-  \centering
-  \includegraphics[width=\linewidth]{fig3_correlation.png}
-  \caption{Correlation matrix for cluster-level spatial metrics.}
-  \label{fig:correlation}
-\end{figure}
-
-\begin{figure}[htb]
-  \centering
-  \includegraphics[width=\linewidth]{fig4_scatters.png}
-  \caption{Pairwise scatter plots of selected spatial metrics, coloured by morphological type.}
-  \label{fig:scatters}
 \end{figure}
 
 The spatial distribution of all 14,582 cluster centroids across the sampled tiles is the sampling
@@ -656,35 +642,17 @@ no disturbance-agent meaning to them here.
 
 The spatial distribution of the two gradient endpoints within a southern display window
 (one tile, 10.9\% of clusters, shown for legibility) is given in
-Figure~\ref{fig:typology_map}; the inset locates this window within the national sample.
+Supplementary Fig.~S3; the inset locates this window within the national sample.
 
-\begin{figure}[htb]
-  \centering
-  \includegraphics[width=\linewidth]{fig6_typology_map.png}
-  \caption{Spatial distribution of the two gradient endpoints within a southern display window
-           (one tile, 10.9\% of clusters, shown for legibility).
-           Blue circles: Type\,1 (compact/aggregated);
-           brown triangles: Type\,0 (elongated/dispersed). Inset: all 14,582 clusters
-           sampled across Finland for geographic context.}
-  \label{fig:typology_map}
-\end{figure}
 
 \mypar{Size-frequency distributions (E1).}
 For both endpoints a lognormal cluster-size distribution is preferred over a power law
 (likelihood-ratio test $p < 0.001$; \citealt{clauset2009power}). We therefore do not interpret
 the nominal power-law exponents as process signatures, once the power law is rejected, its
 exponent is not a meaningful mechanistic parameter. Descriptively, Type\,1 has the heavier upper
-tail (Figure~\ref{fig:sizedist}), but this follows directly from its larger mean cluster area
+tail (Supplementary Fig.~S4), but this follows directly from its larger mean cluster area
 (1,269 vs.\ 382\,m$^2$) and does not by itself imply a contagious generating process.
 
-\begin{figure}[htb]
-  \centering
-  \includegraphics[width=\linewidth]{fig_size_dist.png}
-  \caption{Complementary cumulative distribution functions (CCDF) of cluster size ($n$)
-           per endpoint. Both are better described by a lognormal than a power law; Type\,1
-           has the heavier upper tail, consistent with its larger mean cluster area.}
-  \label{fig:sizedist}
-\end{figure}
 
 \mypar{Position in shape space (E5).}
 Figure~\ref{fig:shapespace} plots each cluster in (compactness, aspect\_ratio) space against a
@@ -775,7 +743,7 @@ threshold is the sparsest. The defensible statement is therefore narrow: within-
 1--5\,km scale, while the shape metrics show at most marginal, detection-sensitive structure.
 Because the sample is in discrete latitudinal bands separated by large gaps, all distance-band
 weights connect only within-band neighbours: the reported autocorrelation is a \emph{within-band}
-quantity, and between-band (latitudinal) structure is unsampled rather than absent. LISA maps (Figure~\ref{fig:lisa}) illustrate the spatial
+quantity, and between-band (latitudinal) structure is unsampled rather than absent. LISA maps (Supplementary Fig.~S5) illustrate the spatial
 structure of fractal-dimension autocorrelation within the southern display window; labels are
 computed on the full survey dataset to preserve correct neighbourhood weights, and given the
 weak global signal for this metric they are best read qualitatively.
@@ -794,21 +762,13 @@ weak global signal for this metric they are best read qualitatively.
   \label{fig:morans}
 \end{figure}
 
-\begin{figure}[htb]
-  \centering
-  \includegraphics[width=\linewidth]{fig8_local_morans.png}
-  \caption{LISA hotspot map for fractal dimension in the southern display window. Labels
-           computed on the full survey dataset. Red: high--high clusters; blue: low--low
-           clusters. Inset: full-survey cluster distribution for geographic context.}
-  \label{fig:lisa}
-\end{figure}
 
 \subsection{Landscape Connectivity}
 \label{sec:res-connectivity}
 
 At the 200\,m threshold, the proximity graph over all clusters contains 13,351 edges; the largest
 connected component spans only 175 of 14,582 clusters and roughly a third of clusters are
-isolated singletons, so the graph is sparse. Figure~\ref{fig:contagion} shows connectivity
+isolated singletons, so the graph is sparse. Supplementary Fig.~S6 shows connectivity
 reach and bridge clusters within the southern display window (statistics from the full graph).
 Pooled across all clusters, Type\,1 appears more connected than Type\,0 (median reach\,=\,3 vs.\ 2;
 mean reach 11.03 vs.\ 8.98; Mann--Whitney $p = 1.7\times10^{-10}$), but this is a pseudoreplication
@@ -830,29 +790,12 @@ hypothesis, a host-conditioned, dispersal-weighted graph at the $\sim$250\,m--1\
 scale of a storm footprint, and these are mutually incompatible graphs, which is itself why a
 single undirected 200\,m graph cannot adjudicate either process.
 
-\begin{figure}[htb]
-  \centering
-  \begin{subfigure}{\linewidth}
-    \includegraphics[width=\linewidth]{fig_contagion_a.png}
-    \caption{Connectivity reach at 200\,m (component size). Inset: full-survey
-             cluster distribution.}
-    \label{fig:contagion_a}
-  \end{subfigure}
-  \begin{subfigure}{\linewidth}
-    \includegraphics[width=\linewidth]{fig_contagion_b.png}
-    \caption{Top 1\% betweenness clusters (red) as geometric articulation points
-             (no temporal validation). All metrics computed on the full graph.}
-    \label{fig:contagion_b}
-  \end{subfigure}
-  \caption{Landscape connectivity in the southern display window.}
-  \label{fig:contagion}
-\end{figure}
 
 \subsection{Feature-Space Coherence Check}
 \label{sec:res-validation}
 
 The held-out Random Forest classifier achieved AUC\,=\,0.976\,$\pm$\,0.002
-(range 0.973--0.978 across 5 spatial folds; Figure~\ref{fig:shap}); re-running the cross-validation
+(range 0.973--0.978 across 5 spatial folds; Supplementary Fig.~S7); re-running the cross-validation
 with the 7 sampling blocks as the grouping variable (leave-one-block-out), which matches the true
 spatial-dependence structure, gives an essentially identical AUC\,=\,0.975\,$\pm$\,0.003. We caution
 against reading this as independent validation. The ``held-out'' features are geometrically coupled to the
@@ -889,15 +832,6 @@ confound is unchanged when location is partialled out (AUC 0.727\,$\to$\,0.720).
 driven by detection covariates (confidence, density), not by geography, and the morphological
 gradient is not a latitudinal climate proxy.
 
-\begin{figure}[htb]
-  \centering
-  \includegraphics[width=\linewidth]{fig_shap_heldout.png}
-  \caption{Mean $|$SHAP$|$ feature importance for the held-out Random Forest (E10).
-           Compactness dominates; reach\_200m (the only shape-orthogonal feature,
-           highlighted) ranks last, so the high AUC reflects geometric redundancy among
-           shape descriptors rather than independent signal.}
-  \label{fig:shap}
-\end{figure}
 
 \subsection{Stability Gates}
 \label{sec:res-sensitivity}
@@ -921,7 +855,8 @@ the Type\,0 fraction is conditional on where the cap falls: 33.1\% (AR\,$\leq 5$
 AR distribution is pressed against the cap (maximum 9.94 at AR\,$\leq 10$) and, once released, extends
 as a single smooth tail to AR\,$\approx 30$ with no second mode. Membership ARI against the AR\,$\leq 10$
 partition decays monotonically as the tail is restored (1.00\,$\to$\,0.92\,$\to$\,0.89). Aspect ratio is
-therefore a continuum, and the AR\,$\leq 10$ cap manufactured the clean ``23.5\%'' figure.
+therefore a continuum, and the AR\,$\leq 10$ cap manufactured the clean ``23.5\%'' figure
+(Figure~\ref{fig:sensitivity} summarises G1 and G2).
 
 \mypar{(G3) No directional signal beyond hull shape.}
 Within matched hull-AR bins, Type\,0 and Type\,1 have statistically indistinguishable point-scatter
@@ -990,7 +925,7 @@ Poisson model across all forest cells, capturing the regional host gradient) and
 block, and significance from host-conditioned simulation envelopes (the estimator was verified on
 simulated inhomogeneous-Poisson patterns). The result is consistent in \emph{all seven} blocks: the
 observed $L_{\rm inhom}(r)-r$ lies above the host-conditioned envelope across 250\,m--1\,km
-(Figure~\ref{fig:hostcond-ss}). The two implementations agree on the qualitative finding (residual
+(the centroid curves of Figure~\ref{fig:hostcond-rigor}). The two implementations agree on the qualitative finding (residual
 aggregation beyond host, present in every block) and on the robustness of spruce-driven
 host-tracking; they differ in the \emph{magnitude} of the residual (the per-block cumulative $L$
 accumulates more multi-scale clustering than the tile-pooled pair-correlation), so we report the
@@ -1011,15 +946,6 @@ either plateauing (blocks 0--2, 4) or continuing to rise (the multi-scale cluste
 The residual aggregation is therefore established at both the cluster and the individual-tree level,
 across 250\,m to at least 3\,km, on the 7-block sample.
 
-\begin{figure}[htb]
-  \centering
-  \includegraphics[width=\linewidth]{host_conditioned_spatstat.pdf}
-  \caption{Independent \texttt{spatstat} confirmation: per-block inhomogeneous $L_{\rm inhom}(r)-r$
-           (observed, solid) vs the global-host-conditioned simulation envelope (shaded), for each of
-           the seven super-site blocks, extended to $r=3$\,km. Observed lies above the envelope in
-           every block, confirming residual aggregation beyond host that persists past 1\,km.}
-  \label{fig:hostcond-ss}
-\end{figure}
 
 \begin{figure}[htb]
   \centering
@@ -1043,7 +969,7 @@ across 250\,m to at least 3\,km, on the 7-block sample.
            so the residual sub-km aggregation survives the richer host model (its magnitude shrinks
            as total volume absorbs broader host structure). This tile-pooled ring estimator is valid
            to $r\lesssim1$\,km for the 6\,km tile windows; the larger-window \texttt{spatstat}
-           estimator (Figures~\ref{fig:hostcond-ss},~\ref{fig:hostcond-rigor}) extends the range to
+           estimator (Figure~\ref{fig:hostcond-rigor}) extends the range to
            3\,km.}
   \label{fig:hostcond}
 \end{figure}

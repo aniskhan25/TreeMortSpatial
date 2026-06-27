@@ -746,3 +746,13 @@ Closes the pre-submission housekeeping from the session-5 list.
   (reach=density correlate; corridor/sentinel language removed) so no false claim stands.
 - AR-from-raw sweep is done (gate2_ar_sweep.json); only the cosmetic fold-back into NB07 is pending.
 - src/severity.py (CSI, m5): unused by the paper; left in place, flagged.
+
+### FIGURE TRIAGE — EXECUTED (2026-06-27)
+Reduced main-text figures 19 -> 11 (must + useful only). Two duplicates CUT: fig3_correlation
+(SI fig_si_corr = Fig S1 covers it) and host_conditioned_spatstat (subsumed by fig_hostcond_rigor's
+centroid curves). Six supporting figures MOVED to the SI as S2-S7 (scatters, typology_map, size_dist,
+local_morans/LISA, contagion, shap_heldout); SI now uses S-prefixed figure/table numbering and a new
+"Supporting figures relocated from the main text" section. Main-text citations rewritten to
+"Supplementary Fig. S2-S7" (numbers verified against supplementary.aux). Fixed the previously UNCITED
+fig_dbscan_sensitivity (G1/G2). Both PDFs compile clean: main 16pp, SI 9pp, 0 undefined refs. All
+figure files retained on disk.
