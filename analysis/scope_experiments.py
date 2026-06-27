@@ -53,6 +53,14 @@ try:
     padx = (xmax - xmin) * 0.25; pady = (ymax - ymin) * 0.08
     ax.set_xlim(xmin - padx, xmax + padx); ax.set_ylim(ymin - pady, ymax + pady)
     ctx.add_basemap(ax, source=ctx.providers.CartoDB.Positron, attribution_size=5)
+    # scale bar: data are EPSG:3857 (Web Mercator), so 1 map unit = cos(lat) ground metres;
+    # correct at the view's centre latitude so "150 km" is true ground distance.
+    from matplotlib_scalebar.scalebar import ScaleBar
+    yc = sum(ax.get_ylim()) / 2
+    latc = math.degrees(math.atan(math.sinh(yc / 6378137.0)))
+    ax.add_artist(ScaleBar(math.cos(math.radians(latc)), units="m", location="lower right",
+                           fixed_value=150, fixed_units="km", box_alpha=0.6, color="#333",
+                           frameon=True, font_properties={"size": 8}))
     ax.set_axis_off()
     ax.set_title("Sampled cluster locations across Finland\n"
                  "($n$=14,582 clusters; 312 aerial tiles; ~60.4–67.8°N)",
