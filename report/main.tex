@@ -4,6 +4,10 @@
 
 \graphicspath{{../figures/}}
 
+% Cross-reference the Supplementary Information (compile supplementary.tex first so its .aux exists).
+\usepackage{xr}
+\externaldocument{supplementary}
+
 \title{\textbf{Host-Conditioned Spatial Structure of Canopy Mortality in Finland's Boreal Forests}}
 
 \author[1]{\textbf{Anis Ur Rahman}}
@@ -502,9 +506,9 @@ not be over-interpreted as an ecological property of tree placement. Mean within
 7.79\,m (SD\,=\,2.43\,m), consistent with individual-tree-scale spacing. Fractal dimension
 averages 1.650 (SD\,=\,0.077).
 
-Correlation analysis (Supplementary Fig.~S1) shows strong positive covariation
+Correlation analysis (Supplementary Fig.~\ref{fig:si-corr}) shows strong positive covariation
 among size metrics ($n$, area) and expected trade-offs between compactness and aspect
-ratio. Supplementary Fig.~S2 presents key pairwise scatter plots.
+ratio. Supplementary Fig.~\ref{fig:scatters} presents key pairwise scatter plots.
 
 \begin{figure}[!htb]
   \centering
@@ -642,7 +646,7 @@ no disturbance-agent meaning to them here.
 
 The spatial distribution of the two gradient endpoints within a southern display window
 (one tile, 10.9\% of clusters, shown for legibility) is given in
-Supplementary Fig.~S3; the inset locates this window within the national sample.
+Supplementary Fig.~\ref{fig:typology_map}; the inset locates this window within the national sample.
 
 
 \mypar{Size-frequency distributions (E1).}
@@ -650,7 +654,7 @@ For both endpoints a lognormal cluster-size distribution is preferred over a pow
 (likelihood-ratio test $p < 0.001$; \citealt{clauset2009power}). We therefore do not interpret
 the nominal power-law exponents as process signatures, once the power law is rejected, its
 exponent is not a meaningful mechanistic parameter. Descriptively, Type\,1 has the heavier upper
-tail (Supplementary Fig.~S4), but this follows directly from its larger mean cluster area
+tail (Supplementary Fig.~\ref{fig:sizedist}), but this follows directly from its larger mean cluster area
 (1,269 vs.\ 382\,m$^2$) and does not by itself imply a contagious generating process.
 
 
@@ -743,7 +747,7 @@ threshold is the sparsest. The defensible statement is therefore narrow: within-
 1--5\,km scale, while the shape metrics show at most marginal, detection-sensitive structure.
 Because the sample is in discrete latitudinal bands separated by large gaps, all distance-band
 weights connect only within-band neighbours: the reported autocorrelation is a \emph{within-band}
-quantity, and between-band (latitudinal) structure is unsampled rather than absent. LISA maps (Supplementary Fig.~S5) illustrate the spatial
+quantity, and between-band (latitudinal) structure is unsampled rather than absent. LISA maps (Supplementary Fig.~\ref{fig:lisa}) illustrate the spatial
 structure of fractal-dimension autocorrelation within the southern display window; labels are
 computed on the full survey dataset to preserve correct neighbourhood weights, and given the
 weak global signal for this metric they are best read qualitatively.
@@ -768,7 +772,7 @@ weak global signal for this metric they are best read qualitatively.
 
 At the 200\,m threshold, the proximity graph over all clusters contains 13,351 edges; the largest
 connected component spans only 175 of 14,582 clusters and roughly a third of clusters are
-isolated singletons, so the graph is sparse. Supplementary Fig.~S6 shows connectivity
+isolated singletons, so the graph is sparse. Supplementary Fig.~\ref{fig:contagion} shows connectivity
 reach and bridge clusters within the southern display window (statistics from the full graph).
 Pooled across all clusters, Type\,1 appears more connected than Type\,0 (median reach\,=\,3 vs.\ 2;
 mean reach 11.03 vs.\ 8.98; Mann--Whitney $p = 1.7\times10^{-10}$), but this is a pseudoreplication
@@ -795,7 +799,7 @@ single undirected 200\,m graph cannot adjudicate either process.
 \label{sec:res-validation}
 
 The held-out Random Forest classifier achieved AUC\,=\,0.976\,$\pm$\,0.002
-(range 0.973--0.978 across 5 spatial folds; Supplementary Fig.~S7); re-running the cross-validation
+(range 0.973--0.978 across 5 spatial folds; Supplementary Fig.~\ref{fig:shap}); re-running the cross-validation
 with the 7 sampling blocks as the grouping variable (leave-one-block-out), which matches the true
 spatial-dependence structure, gives an essentially identical AUC\,=\,0.975\,$\pm$\,0.003. We caution
 against reading this as independent validation. The ``held-out'' features are geometrically coupled to the
